@@ -2,6 +2,7 @@
 
 Written in JavaScript.
 
+Based on this tutorial: https://github.com/hellogustav/fb-chatbot-boilerplate
 
 ### Quality
 
