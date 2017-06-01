@@ -1,40 +1,17 @@
 # Chatbot Tutorial
 
-https://github.com/jw84/messenger-bot-witai-tutorial
+Message Arthur
+https://m.me/2278578462368010
 
+Based on this Tutorial
+https://github.com/jw84/messenger-bot-witai-tutorial
 
 Heroku URL
 https://infinite-falls-46264.herokuapp.com/
 
-	```
-	heroku apps:create
-	git push heroku master
-	heroku open
-	```
+Facebook Page
+https://www.facebook.com/Arthur-Bot-2278578462368010/
 
-Setup Facebook to talk to your chat bot
-
-1. Go to [https://developers.facebook.com](https://developers.facebook.com) and create a new app, be sure to add Facebook Messenger as a product to the app. You can also use an existing an app.
-
-2. Go to the settings page of the app you’ve made then go to the Messenger settings page. Here you will generate a token of the Facebook Page to link to with Messenger. Remember to save this token key somewhere.
-
-![Alt text](/demo/Demo2.jpg)
-
-3. Set up Webhooks to your FB app. Remember to use the link to your own Heroku app.
-
-![Alt text](/demo/Demo3.jpg)
-![Alt text](/demo/Demo4.jpg)
-
-Click Verify and Save. You should see the Complete sign!
-
-4. Now we’ll set up the server again. Set the keys required as environment variables to make the bot work by running these commands in Terminal:
-
-	```
-	heroku config:set WIT_TOKEN='your_token_here'
-	heroku config:set FB_PAGE_TOKEN='your_token_here'
-	```
-
-When that’s done you should be able to at least say hi to your chat bot and have it echo back hi! 🤖
 
 
 ### *Create stories in Wit.ai*
@@ -123,21 +100,3 @@ Remember, your chat bot has to be approved by Facebook so that anyone can talk t
 ### *Add a chat button to your webpage*
 
 Go [here](https://developers.facebook.com/docs/messenger-platform/plugin-reference) to learn how to add a chat button your page.
-
-### *Create a shortlink*
-
-You can use https://m.me/<PAGE_USERNAME> to have someone start a chat.
-
-## 💡 What's next?
-
-Read about all things chat bots with the ChatBots Magazine [here](https://medium.com/chat-bots)
-
-You can also design Messenger bots in Sketch with the [Bots UI Kit](https://bots.mockuuups.com)!
-
-## How I can help
-
-I build and design bots all day. Email me for help!
-
-## Credit
-
-Thanks to [https://github.com/hunkim/Wit-Facebook](https://github.com/hunkim/Wit-Facebook) for the inspiration
