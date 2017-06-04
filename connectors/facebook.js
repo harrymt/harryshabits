@@ -61,31 +61,31 @@ var newMessage = function (recipientId, msg, atts, cb) {
 	//   }
 	// }
 
-	var replies = [];
-	var example_reply = {
-    "content_type": "text",
-    "title": "Okay",
-    "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
-	};
-	replies.push(example_reply);
+	// var replies = [];
+	// var example_reply = {
+ //    "content_type": "text",
+ //    "title": "Okay",
+ //    "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+	// };
+	// replies.push(example_reply);
 
-	var message = null;
-	if (atts) {
-		message = {
-			attachment: {
-				"type": "image",
-				"payload": {
-					"url": msg
-				}
-			}
-		};
-	} else {
-		message = {
-			text: msg,
-			quick_replies: replies
-		};
-	}
-	opts.form.message = message;
+	// var message = null;
+	// // if (atts) {
+	// // 	message = {
+	// // 		attachment: {
+	// // 			"type": "image",
+	// // 			"payload": {
+	// // 				"url": msg
+	// // 			}
+	// // 		}
+	// // 	};
+	// // } else {
+	// message = {
+	// 	text: msg,
+	// 	quick_replies: replies
+	// };
+	// // }
+	opts.form.message = msg;
 
 	newRequest(opts, function (err, resp, data) {
 		if (cb) {
@@ -107,8 +107,8 @@ var getMessageEntry = function (body) {
 						body.entry[0].messaging.length > 0 &&
 						body.entry[0].messaging[0];
 
-	console.log(body);
-	console.log(val);
+	// console.log(body);
+	// console.log(val);
 	return val || null;
 };
 
