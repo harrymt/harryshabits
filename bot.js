@@ -12,6 +12,7 @@ var findOrCreateSession = function (fbid) {
   // DOES USER SESSION ALREADY EXIST?
   Object.keys(sessions).forEach(k => {
     if (sessions[k].fbid === fbid) {
+      console.log('User session already exists with fb');
       // YUP
       sessionId = k;
     }
@@ -20,6 +21,7 @@ var findOrCreateSession = function (fbid) {
   // No session so we will create one
   if (!sessionId) {
     sessionId = new Date().toISOString();
+     console.log('User session does not exist, creating one...');
     sessions[sessionId] = {
       fbid: fbid,
       context: {
@@ -36,6 +38,8 @@ var read = function (sender, message, reply) {
 		// Let's reply back hello
 		message = 'Hello yourself! I am a chat bot. You can say "what is the weather like in london"';
 		reply(sender, message);
+
+
 	} else {
 		// Let's find the user
 		var sessionId = findOrCreateSession(sender);

@@ -36,12 +36,20 @@ app.get('/webhooks', function (req, res) {
 
 // to send messages to facebook
 app.post('/webhooks', function (req, res) {
+  console.log('Receiving message:');
+
   var entry = FB.getMessageEntry(req.body);
+
+  console.log('Vaildating the following entry...');
+  console.log(entry);
+
   // IS THE ENTRY A VALID MESSAGE?
   if (entry && entry.message) {
+    console.log('Entry has a message');
+
     if (entry.message.attachments) {
       // NOT SMART ENOUGH FOR ATTACHMENTS YET
-      FB.newMessage(entry.sender.id, "That's interesting!");
+      FB.newMessage(entry.sender.id, "Wow an attachment");
     } else {
       // SEND TO BOT FOR PROCESSING
       Bot.read(entry.sender.id, entry.message.text, function (sender, reply) {

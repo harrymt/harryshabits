@@ -61,6 +61,14 @@ var newMessage = function (recipientId, msg, atts, cb) {
 	//   }
 	// }
 
+	var replies = [];
+	var example_reply = {
+    "content_type": "text",
+    "title": "Okay",
+    "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+	};
+	replies.push(example_reply);
+
 	var message = null;
 	if (atts) {
 		message = {
@@ -73,7 +81,8 @@ var newMessage = function (recipientId, msg, atts, cb) {
 		};
 	} else {
 		message = {
-			text: msg
+			text: msg,
+			quick_replies: replies
 		};
 	}
 	opts.form.message = message;
@@ -97,6 +106,9 @@ var getMessageEntry = function (body) {
 						Array.isArray(body.entry[0].messaging) &&
 						body.entry[0].messaging.length > 0 &&
 						body.entry[0].messaging[0];
+
+	console.log(body);
+	console.log(val);
 	return val || null;
 };
 
