@@ -18,8 +18,9 @@
   "bugs": "https://github.com/harrymt/habit-reward-chatbot/issues",
   "author": "Harry Mumford-Turner",
   "license": "MIT",
-    "dependencies": {
+  "dependencies": {
     "body-parser": "^1.15.0",
+    "dotenv": "^4.0.0",
     "express": "^4.13.4",
     "node-wit": "^3.3.2",
     "request": "^2.71.0"

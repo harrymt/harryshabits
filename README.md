@@ -10,6 +10,15 @@
 
 ## Build
 
+- Create a `.env` file containing the following environment variables and save it in the root directory:
+
+*.env*
+```
+WIT_TOKEN=<your wit token here>
+FB_PAGE_TOKEN=<your fb page token here>
+FB_VERIFY_TOKEN='just_do_it'
+```
+
 - Make changes
 - `git commit -am "message"`
 - `git push`
