@@ -47,6 +47,9 @@ var read = function (sender, message, reply) {
   // console.log(reply);
 
 
+  if(message.quick_reply !== undefined) {
+
+
   // STRETCHING
   if(message.quick_reply.payload == "DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_STRETCH") {
 
@@ -112,6 +115,8 @@ var read = function (sender, message, reply) {
       };
 
       reply(sender, message);
+
+  }
 
   } else {
 
