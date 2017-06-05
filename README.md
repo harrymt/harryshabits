@@ -8,7 +8,7 @@
 [Chat to him](https://m.me/2278578462368010).
 
 
-## Build
+## Run
 
 - Create a `.env` file containing the following environment variables and save it in the root directory:
 
@@ -19,7 +19,8 @@ FB_PAGE_TOKEN=<your fb page token here>
 FB_VERIFY_TOKEN='just_do_it'
 ```
 
-- Make changes
+## Build
+
 - `git commit -am "message"`
 - `git push`
 - `git push heroku master` to deploy
