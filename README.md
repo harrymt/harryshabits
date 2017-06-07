@@ -5,6 +5,8 @@
 
 ## Arthur - A Messenger Chatbot
 
+Tracks habits and gives you rewards from 3 different modalities.
+
 [Chat to him](https://m.me/2278578462368010).
 
 
