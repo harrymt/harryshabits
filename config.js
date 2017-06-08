@@ -3,6 +3,8 @@
 
 require('dotenv').load();
 
+var port_number = process.env.PORT || 5000;
+
 const WIT_TOKEN = process.env.WIT_TOKEN;
 if (!WIT_TOKEN) {
   throw new Error('Missing WIT_TOKEN. Go to https://wit.ai/docs/quickstart to get one.');
@@ -23,4 +25,5 @@ module.exports = {
   WIT_TOKEN: WIT_TOKEN,
   FB_PAGE_TOKEN: FB_PAGE_TOKEN,
   FB_VERIFY_TOKEN: FB_VERIFY_TOKEN,
+  PORT: port_number
 };
