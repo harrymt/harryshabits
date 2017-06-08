@@ -12,6 +12,11 @@ Tracks habits and gives you rewards from 3 different modalities.
 
 ## Run
 
+- `npm start`
+- Visit http://localhost:5000/webhooks
+
+### Setup
+
 - Create a `.env` file containing the following environment variables and save it in the root directory:
 
 *.env*
