@@ -11,44 +11,13 @@
     request("http://localhost:" + Config.PORT, function (error, response, body) {
        if (!error && response.statusCode === 200) {
           console.log(body);
-          callback(1);
+          callback(false);
        } else {
           console.log(error);
-          callback(-1);
+          console.log(response);
+          console.log(body);
+          callback(true);
        }
     });
-
-
-
-    // PAGE_ACCESS_TOKEN=$(cat .env | grep FB_VERIFY_TOKEN | cut -d '=' -f 2)
-    // echo PAGE_ACCESS_TOKEN
-    // http://localhost:5000/webhooks
-
-    //  {
-    //   "hub": {
-    //      "verify_token": "just_do_it"
-
-    //    },
-    //   "object":"page",
-    //   "entry":[
-    //     {
-
-    //       "id":"PAGE_ID",
-    //       "time":1458692752478,
-    //       "messaging":[
-    //         {
-    //           "sender":{
-    //             "id":"10153895902809565"
-    //           },
-    //           "recipient":{
-    //             "id":"EAAEirKcDylYBAAudOU4ma2sE48aXA97Ih676G3sJxkCVrQwOUdock9uW4bmQ2f3glUlSMo5IdTMmY6JwQ8240nlAFmRCLPgvMkF2IeCz8iWOfZCYOWtZBVG9j73bnsimyNKTKs5AD3Km0XDZBVR9wSxxoqId9vGrc3Wpi7DhgZDZD"
-    //           },
-    //           "message": "hello"
-    //         }
-    //       ]
-    //     }
-    //   ]
-    // }
-
   };
 })();
