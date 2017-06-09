@@ -1,7 +1,6 @@
 'use strict';
 
 var request = require('request');
-var Config = require('../config');
 
 // SETUP A REQUEST TO FACEBOOK SERVER
 var newRequest = request.defaults({
@@ -9,7 +8,7 @@ var newRequest = request.defaults({
 	method: 'POST',
 	json: true,
 	qs: {
-		access_token: Config.FB_PAGE_TOKEN
+		access_token: process.env.FB_PAGE_TOKEN
 	},
 	headers: {
 		'Content-Type': 'application/json'

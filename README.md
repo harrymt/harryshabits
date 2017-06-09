@@ -23,7 +23,8 @@ Tracks habits and gives you rewards from 3 different modalities.
 ```
 WIT_TOKEN=<your wit token here>
 FB_PAGE_TOKEN=<your fb page token here>
-FB_VERIFY_TOKEN='just_do_it'
+FB_VERIFY_TOKEN='<verify token>'
+USER_ID=<user id>
 ```
 
 ## Build
@@ -32,6 +33,12 @@ FB_VERIFY_TOKEN='just_do_it'
 - `git push`
 - `git push heroku master` to deploy
 - Message Arthur https://m.me/2278578462368010
+
+## Deploy
+
+- `gcloud app deploy`
+- `gcloud app browse` to view
+
 
 ### Quality
 

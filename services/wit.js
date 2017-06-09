@@ -1,6 +1,5 @@
 'use strict';
 
-var Config = require('../config');
 var FB = require('../connectors/facebook');
 var Wit = require('node-wit').Wit;
 var request = require('request');
@@ -105,7 +104,7 @@ var actions = {
 // SETUP THE WIT.AI SERVICE
 var getWit = function () {
 	console.log('> Connecting to wit.ai');
-	return new Wit(Config.WIT_TOKEN, actions);
+	return new Wit(process.env.WIT_TOKEN, actions);
 };
 
 module.exports = {

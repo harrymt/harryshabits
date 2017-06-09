@@ -5,13 +5,12 @@
   module.exports = function(callback) {
     console.log('Start of ' + __filename.slice(__dirname.length + 1));
 
-    var Config = require('../config');
     var request = require('request');
 
     var json_response =
     {
      "hub": {
-        "verify_token": Config.verify_token
+        "verify_token": process.env.FB_VERIFY_TOKEN
       },
      "object":"page",
      "entry":[
@@ -21,10 +20,10 @@
           "messaging":[
           {
             "sender":{
-              "id": Config.USER_ID
+              "id": process.env.USER_ID
             },
             "recipient":{
-              "id": Config.FB_PAGE_TOKEN
+              "id": process.env.FB_PAGE_TOKEN
             },
             "message": {
               "mid": "mid.1464990849238:b9a22a2bcb1de31773",
@@ -42,7 +41,7 @@
 
     request.post(
       {
-        url: "http://localhost:" + Config.PORT + "/webhooks",
+        url: "http://localhost:" + process.env.PORT + "/webhooks",
         body: json_response,
         json: true
       }, function (error, response, body) {

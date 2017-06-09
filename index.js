@@ -1,76 +1,78 @@
 
 (function() {
-
   'use strict';
 
-  var express = require('express');
-  var bodyParser = require('body-parser');
-  var request = require('request');
+  // After config loads
+  require('./config').isReady(function(err) {
+    if(err) { throw new Error('Error getting config' + err); }
+    // Can now access variables like process.env.PORT
 
-  var Config = require('./config');
-  var FB = require('./connectors/facebook');
-  var Bot = require('./bot');
+    var express = require('express');
+    var bodyParser = require('body-parser');
+    // var request = require('request');
 
+    var FB = require('./connectors/facebook');
+    var Bot = require('./bot');
 
-  // LETS MAKE A SERVER!
-  var app = express();
-  app.set('port', Config.PORT);
-  // SPIN UP SERVER
-  var server_instance = app.listen(app.get('port'), function () {
-    console.log('> Running on port', app.get('port'));
-  });
-  // PARSE THE BODY
-  app.use(bodyParser.json());
+    // LETS MAKE A SERVER!
+    var app = express();
+    var server_instance = app.listen(process.env.PORT, function () {
+      console.log('> Running on port', process.env.PORT);
+    });
 
+    // PARSE THE BODY
+    app.use(bodyParser.json());
 
-  // index page
-  app.get('/', function (req, res) {
-    res.send('<p>nodejs server, index page .... hello world i am a chat bot');
-  });
+    // index page
+    app.get('/', function (req, res) {
+      res.send('<p>nodejs server, index page .... hello world i am a chat bot');
+    });
 
-  // for facebook to verify
-  app.get('/webhooks', function (req, res) {
-    if (req.query['hub.verify_token'] === Config.FB_VERIFY_TOKEN) {
-      res.send(req.query['hub.challenge']);
-    }
-    res.send('> Error, wrong fb verify token');
-  });
-
-  // to send messages to facebook
-  app.post('/webhooks', function (req, res) {
-    console.log('> Receiving Message');
-
-    var entry = FB.getMessageEntry(req.body);
-    console.log(entry);
-
-    // IS THE ENTRY A VALID MESSAGE?
-    if (entry && entry.message) {
-      console.log('> Valid message');
-
-      if (entry.message.attachments) {
-        // NOT SMART ENOUGH FOR ATTACHMENTS YET
-        FB.newMessage(entry.sender.id, "Wow an attachment");
-      } else {
-        // SEND TO BOT FOR PROCESSING
-        Bot.read(entry.sender.id, entry.message, function (sender, reply) {
-          console.log("-- from bot to user vv --");
-          console.log(reply);
-          FB.newMessage(sender, reply);
-        });
+    // for facebook to verify
+    app.get('/webhooks', function (req, res) {
+      if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
+        res.send(req.query['hub.challenge']);
       }
-    }
+      res.send('> Error, wrong fb verify token'); // Error on this line: Error: Can't set headers after they are sent
+    });
 
-    res.sendStatus(200);
+    // to send messages to facebook
+    app.post('/webhooks', function (req, res) {
+      console.log('> Receiving Message');
+
+      var entry = FB.getMessageEntry(req.body);
+      console.log(entry);
+
+      // IS THE ENTRY A VALID MESSAGE?
+      if (entry && entry.message) {
+        console.log('> Valid message');
+
+        if (entry.message.attachments) {
+          // NOT SMART ENOUGH FOR ATTACHMENTS YET
+          FB.newMessage(entry.sender.id, "Wow an attachment");
+        } else {
+          // SEND TO BOT FOR PROCESSING
+          Bot.read(entry.sender.id, entry.message, function (sender, reply) {
+            console.log("-- from bot to user vv --");
+            console.log(reply);
+            FB.newMessage(sender, reply);
+          });
+        }
+      }
+
+      res.sendStatus(200);
+    });
+
+    var shutdown_server = function () {
+      console.log('Server shutting down');
+      server_instance.close();
+    };
+
+
+    module.exports = {
+      shutdown: shutdown_server
+    };
+
   });
-
-  var shutdown_server = function () {
-    console.log('Server shutting down');
-    server_instance.close();
-  };
-
-
-  module.exports = {
-    shutdown: shutdown_server
-  };
 
 })();
