@@ -3,4 +3,3 @@ node_modules/
 *.txt
 *.log
 .env
-gcloud-key.json

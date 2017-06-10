@@ -41,7 +41,7 @@
       console.log('> Receiving Message');
 
       var entry = FB.getMessageEntry(req.body);
-      console.log(entry);
+      //console.log(entry);
 
       // IS THE ENTRY A VALID MESSAGE?
       if (entry && entry.message) {
@@ -53,8 +53,8 @@
         } else {
           // SEND TO BOT FOR PROCESSING
           Bot.read(entry.sender.id, entry.message, function (sender, reply) {
-            console.log("-- from bot to user vv --");
-            console.log(reply);
+            //console.log("-- from bot to user vv --");
+            //console.log(reply);
             FB.newMessage(sender, reply);
           });
         }

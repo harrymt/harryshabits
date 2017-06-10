@@ -6,19 +6,29 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   var datastore = require('@google-cloud/datastore')(
     { // Dev only
-      projectId: process.env.PROJECT_ID,
-      keyFilename: 'gcloud-key.json'
+      credentials: {
+        client_email: process.env.GCLOUD_CLIENT_EMAIL,
+        private_key:
+          '-----BEGIN PRIVATE KEY-----\n' +
+          process.env.GCLOUD_PRIVATE_KEY +
+          '\n-----END PRIVATE KEY-----\n'
+      },
+      projectId: process.env.PROJECT_ID
     }
   );
 }
-
 
 var findOrCreateUser = function (fbid, callback) {
 
   // Query our datastore for this fbid user
   const query = datastore.createQuery('User').filter('fbid', '=', fbid);
   datastore.runQuery(query, function(err, entities, info) {
-    if(err) { console.log(err); console.log('Error running query, with User=fbid'); }
+    if(err) {
+      console.log(err);
+      console.log('Error running query, with User=fbid');
+      throw new Error('Error running query with User=' + fbid);
+      return;
+    }
 
     console.log(entities.length + ' results found.');
 

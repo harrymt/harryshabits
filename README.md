@@ -18,6 +18,7 @@ Tracks habits and gives you rewards from 3 different modalities.
 ### Setup
 
 - Create a `.env` file containing the following environment variables and save it in the root directory:
+- Environment variables in Travis should also have these set
 
 *.env*
 ```
@@ -25,10 +26,11 @@ WIT_TOKEN=<your wit token here>
 FB_PAGE_TOKEN=<your fb page token here>
 FB_VERIFY_TOKEN=<verify token>
 USER_ID=<user id>
-PROJECT_ID=<Google App engine Project>
-```
+PROJECT_ID=<Google App engine Project id>
+GCLOUD_CLIENT_EMAIL=<Google App engine Service email>
+GCLOUD_PRIVATE_KEY="M....dwc=\n" # All things after -- BEGIN PRIVATE KEY -- and -- END .. KEY -- The Google App engine serivce json private key, private_key value
 
-- Also create a Google App Engine service json key called `gcloud-key.json` and place it in root.
+```
 
 ## Build
 
