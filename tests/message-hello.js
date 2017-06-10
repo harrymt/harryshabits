@@ -39,15 +39,16 @@
         body: json_response,
         json: true
       }, function (error, response, body) {
-       if (!error && response.statusCode === 200) {
-          console.log(body);
-          callback(false);
-       } else {
-          console.log(error);
-          console.log(response);
-          console.log(response.statusCode);
-          callback(true);
-       }
+         if (!error && response.statusCode === 200) {
+            console.log(body);
+            callback(false);
+         } else {
+            console.log(error);
+            console.log(body);
+            console.log(response);
+            console.log(response.statusCode);
+            callback(true);
+         }
     });
   };
 })();

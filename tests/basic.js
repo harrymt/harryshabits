@@ -1,22 +1,20 @@
 
-(function() {
+(function () {
   'use strict';
 
-  module.exports = function(callback) {
+  module.exports = function (callback) {
     console.log('Start of ' + __filename.slice(__dirname.length + 1));
 
-    var request = require('request');
-
-    request("http://localhost:" + process.env.PORT, function (error, response, body) {
-       if (!error && response.statusCode === 200) {
-          console.log(body);
-          callback(false);
-       } else {
-          console.log(error);
-          console.log(response);
-          console.log(body);
-          callback(true);
-       }
+    require('request')('http://localhost:' + process.env.PORT, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        console.log(body);
+        callback(false);
+      } else {
+        console.log(error);
+        console.log(response);
+        console.log(body);
+        callback(true);
+      }
     });
   };
 })();

@@ -15,7 +15,8 @@
 
 
   function test_message_hello() {
-    require('./message-hello')(function() {
+    require('./message-hello')(function(is_error) {
+      if(is_error) { process.exit(1); }
       test_choose_habit(); // should be the next test
     });
   }
@@ -42,8 +43,7 @@
   }
 
   function end_tests() {
-    bot_server.shutdown();
-    process.exit(0);
+    console.log('Finished processing tests...waiting for promises...');
   }
 
 })();
