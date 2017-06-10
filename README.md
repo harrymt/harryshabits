@@ -23,9 +23,12 @@ Tracks habits and gives you rewards from 3 different modalities.
 ```
 WIT_TOKEN=<your wit token here>
 FB_PAGE_TOKEN=<your fb page token here>
-FB_VERIFY_TOKEN='<verify token>'
+FB_VERIFY_TOKEN=<verify token>
 USER_ID=<user id>
+PROJECT_ID=<Google App engine Project>
 ```
+
+- Also create a Google App Engine service json key called `gcloud-key.json` and place it in root.
 
 ## Build
 
@@ -43,4 +46,4 @@ USER_ID=<user id>
 ### Quality
 
 - [Static analysis](https://github.com/mre/awesome-static-analysis#javascript) Javascript tools
-
+- ADD XO linting to tests https://github.com/sindresorhus/xo
