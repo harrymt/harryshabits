@@ -7,46 +7,56 @@
   'use strict';
 
   // Start the chatbot server and run an initial test
-  var bot_server = require('../index');
+  const botServer = require('../index');
 
-      require('./basic')(function (is_error) {
-        if(is_error) { process.exit(1); }
-        test_message_hello(); // should be the first test
-      });
+  require('./basic')(isError => {
+    if (isError) {
+      throw new Error('Test basic failed.');
+    }
+    testMessageHello(); // Should be the first test
+  });
 
-      function test_message_hello() {
-        require('./message-hello')(function (is_error) {
-          if(is_error) { process.exit(1); }
-          test_choose_habit(); // should be the next test
-        });
+  function testMessageHello() {
+    require('./message-hello')(isError => {
+      if (isError) {
+        throw new Error('Test message hello failed.');
       }
+      testChooseHabit(); // Should be the next test
+    });
+  }
 
-      function test_choose_habit() {
-        require('./choose-habit')(function (is_error) {
-          if(is_error) { process.exit(1); }
-          test_choose_time();
-        });
+  function testChooseHabit() {
+    require('./choose-habit')(isError => {
+      if (isError) {
+        throw new Error('Test choose habit failed.');
       }
+      testChooseTime();
+    });
+  }
 
-      function test_choose_time() {
-        require('./choose-time')(function (is_error) {
-          if(is_error) { process.exit(1); }
-          test_choose_modality();
-        });
+  function testChooseTime() {
+    require('./choose-time')(isError => {
+      if (isError) {
+        throw new Error('Test choose time failed.');
       }
+      testChooseModality();
+    });
+  }
 
-      function test_choose_modality() {
-        require('./choose-modality')(function (is_error) {
-          if(is_error) { process.exit(1); }
-          end_tests();
-        });
+  function testChooseModality() {
+    require('./choose-modality')(isError => {
+      if (isError) {
+        throw new Error('Test choose modality failed.');
       }
+      testEnd();
+    });
+  }
 
-      function end_tests() {
-        var test_timeout = 5;
-        console.log('Finished processing tests...waiting ' + test_timeout + 's for promises...');
-        setTimeout(function () {
-          bot_server.shutdown();
-        }, test_timeout * 1000);
-      }
+  function testEnd() {
+    const timeout = 5;
+    console.log('Finished processing tests...waiting ' + timeout + 's for promises...');
+    setTimeout(() => {
+      botServer.shutdown();
+    }, timeout * 1000);
+  }
 })();

@@ -1,47 +1,82 @@
 
-(function() {
+(function () {
   'use strict';
 
   // After config loads
-  require('./config').isReady(function(err) {
-    if(err) { throw new Error('Error getting config' + err); }
+  require('./config').isReady(err => {
+    if (err) {
+      throw new Error('Error getting config' + err);
+    }
     // Can now access variables like process.env.PORT
 
-    var express = require('express');
-    var bodyParser = require('body-parser');
-    // var request = require('request');
+    const express = require('express');
+    const bodyParser = require('body-parser');
 
-    var FB = require('./connectors/facebook');
-    var Bot = require('./bot');
+    const FB = require('./connectors/facebook');
+    const Bot = require('./bot');
 
     // LETS MAKE A SERVER!
-    var app = express();
-    var server_instance = app.listen(process.env.PORT, function () {
+    const app = express();
+    const serverInstance = app.listen(process.env.PORT, () => {
       console.log('> Running on port', process.env.PORT);
     });
 
     // PARSE THE BODY
     app.use(bodyParser.json());
 
-    // index page
-    app.get('/', function (req, res) {
+    // Index page
+    app.get('/', (req, res) => {
       res.send('<p>nodejs server, index page .... hello world i am a chat bot');
     });
 
-    // for facebook to verify
-    app.get('/webhooks', function (req, res) {
+    app.get('/reminders/:time_of_day', (req, res) => {
+      // Validate the time of day
+      let message = 'Wow this is a strange time.'; // Default
+      if (req.params.time_of_day === 'morning') {
+        message = 'Good morning';
+      } else if (req.params.time_of_day === 'afternoon') {
+        message = 'Afternoon';
+      } else if (req.params.time_of_day === 'evening') {
+        message = 'Good evening';
+      } else {
+        res.send('Wow you should not be here. [' + req.params.time_of_day + ']');
+        throw new Error('Reached invalid timeofday call');
+      }
+
+      // Debug Logging!
+      console.log('We got a reminder at time: ' + req.params.time_of_day);
+      res.send('We got a reminder at time: ' + req.params.time_of_day);
+
+      // Const query = datastore.createQuery('User')
+      //   .filter('done', '=', false)
+      //   .filter('priority', '>=', 4)
+      //   .order('priority', {
+      //     descending: true
+      // });
+
+      // datastore.get(key, function(err, entity) {
+      //   console.log(err || entity);
+      // });
+
+      // Get everyone from the morning
+
+      // Send out reminders using the facebook API
+      // Loop around them and send a FB.newMessage(senderID, message);
+    });
+
+    // For facebook to verify
+    app.get('/webhooks', (req, res) => {
       if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
         res.send(req.query['hub.challenge']);
       }
       res.send('> Error, wrong fb verify token'); // Error on this line: Error: Can't set headers after they are sent
     });
 
-    // to send messages to facebook
-    app.post('/webhooks', function (req, res) {
+    // To send messages to facebook
+    app.post('/webhooks', (req, res) => {
       console.log('> Receiving Message');
 
-      var entry = FB.getMessageEntry(req.body);
-      //console.log(entry);
+      const entry = FB.getMessageEntry(req.body);
 
       // IS THE ENTRY A VALID MESSAGE?
       if (entry && entry.message) {
@@ -49,12 +84,12 @@
 
         if (entry.message.attachments) {
           // NOT SMART ENOUGH FOR ATTACHMENTS YET
-          FB.newMessage(entry.sender.id, "Wow an attachment");
+          FB.newMessage(entry.sender.id, 'Wow an attachment');
         } else {
           // SEND TO BOT FOR PROCESSING
-          Bot.read(entry.sender.id, entry.message, function (sender, reply) {
-            //console.log("-- from bot to user vv --");
-            //console.log(reply);
+          Bot.read(entry.sender.id, entry.message, (sender, reply) => {
+            console.log('-- from bot to user vv --');
+            console.log(reply);
             FB.newMessage(sender, reply);
           });
         }
@@ -63,16 +98,11 @@
       res.sendStatus(200);
     });
 
-    var shutdown_server = function () {
-      console.log('Server shutting down');
-      server_instance.close();
-    };
-
-
     module.exports = {
-      shutdown: shutdown_server
+      shutdown: function () {
+        console.log('Server shutting down');
+        serverInstance.close();
+      }
     };
-
   });
-
 })();

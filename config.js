@@ -3,17 +3,17 @@
 
 module.exports = {
 
-  isReady: function(callback) {
+  isReady(callback) {
     process.env.PORT = 5000;
 
-    if(process.env.NODE_ENV === 'production') {
-      var datastore = require('@google-cloud/datastore')();
+    if (process.env.NODE_ENV === 'production') {
+      const datastore = require('@google-cloud/datastore')();
 
-      var key = datastore.key(
+      const key = datastore.key(
         ['Settings', datastore.int('5629499534213120')]
       );
 
-      datastore.get(key, function(err, entity) {
+      datastore.get(key, (err, entity) => {
         // Array of entity objects
         console.log(entity);
         console.log(err);
@@ -25,7 +25,6 @@ module.exports = {
 
         callback(err);
       });
-
     } else {
       // Load the .env file, that sets process.env..
       require('dotenv').load();
@@ -33,5 +32,4 @@ module.exports = {
       callback(false);
     }
   }
-
 };

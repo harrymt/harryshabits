@@ -1,11 +1,14 @@
 
 'use strict';
 
-if (process.env.NODE_ENV === 'production') {
-    var datastore = require('@google-cloud/datastore')();
-} else {
-  var datastore = require('@google-cloud/datastore')(
-    { // Dev only
+function getDatastore() {
+  if (process.env.NODE_ENV === 'production') {
+    return require('@google-cloud/datastore')();
+  }
+
+  // Development
+  return require('@google-cloud/datastore')(
+    {
       credentials: {
         client_email: process.env.GCLOUD_CLIENT_EMAIL,
         private_key:
@@ -18,16 +21,16 @@ if (process.env.NODE_ENV === 'production') {
   );
 }
 
-var findOrCreateUser = function (fbid, callback) {
+const findOrCreateUser = (fbid, callback) => {
+  const datastore = getDatastore();
 
   // Query our datastore for this fbid user
   const query = datastore.createQuery('User').filter('fbid', '=', fbid);
-  datastore.runQuery(query, function(err, entities, info) {
-    if(err) {
+  datastore.runQuery(query, (err, entities, info) => {
+    if (err) {
       console.log(err);
       console.log('Error running query, with User=fbid');
       throw new Error('Error running query with User=' + fbid);
-      return;
     }
 
     console.log(entities.length + ' results found.');
@@ -37,21 +40,21 @@ var findOrCreateUser = function (fbid, callback) {
       console.log('No user found, creating one now...');
 
       // Not user found! Lets create one! Then return the fbid
-      var userData = {
-        fbid: fbid,
+      const userData = {
+        fbid,
         reminder_time: null
       };
 
-      var key = datastore.key('User');
+      const key = datastore.key('User');
 
       datastore.save({
-        key: key,
+        key,
         data: userData
-      }, function(err) {
-          if (!err) {
-            // The user is now published!
-            callback(userData);
-          }
+      }, err => {
+        if (!err) {
+          // The user is now published!
+          callback(userData);
+        }
       });
     } else {
       console.log('User found.');
@@ -62,7 +65,7 @@ var findOrCreateUser = function (fbid, callback) {
     }
   });
 
-  // const user = {
+  // Const user = {
   //   key: datastore.key(['Users', 'User', 'Harry']),
   //   data: {
   //     fbid: 123,
@@ -77,7 +80,6 @@ var findOrCreateUser = function (fbid, callback) {
   //   console.error('ERROR:', err);
   // });
 
-
   // // DOES USER SESSION ALREADY EXIST?
   // Object.keys(sessions).forEach(i => {
   //   if (sessions[i].fbid === fbid) {
@@ -86,7 +88,6 @@ var findOrCreateUser = function (fbid, callback) {
   //     sessionId = i;
   //   }
   // });
-
 
   // // No session so we will create one
   // if (!sessionId) {
@@ -104,99 +105,26 @@ var findOrCreateUser = function (fbid, callback) {
   // return sessionId;
 };
 
-var read = function (sender, message, reply) {
-
+const read = function (sender, message, reply) {
   // Let's find the user object
-  findOrCreateUser(sender, function(user) {
-    if(message.quick_reply !== undefined) {
-
-
-    // STRETCHING
-    if(message.quick_reply.payload === 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_STRETCH') {
-
-        var replies = [
-          {
-            'content_type': 'text',
-            'title': 'Morning',
-            'payload':'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_MORNING'
-          },
-          {
-            'content_type': 'text',
-            'title': 'Afternoon',
-            'payload':'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_AFTERNOON'
-          },
-          {
-            'content_type': 'text',
-            'title': 'Evening',
-            'payload':'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRINK_EVENING'
-          }
-        ];
-
-        var msg = message;
-        message = {
-          text: 'Cool I love to ' + msg.text + '. What time do you want to ' + msg.text + '?',
-          quick_replies: replies
-        };
-
-        reply(sender, message);
-
-    } else if(message.quick_reply.payload === 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_MORNING') {
-
-        var replies = [
-          {
-            'content_type': 'text',
-            'title': 'Visual',
-            'payload':'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_VISUAL'
-          },
-          {
-            'content_type': 'text',
-            'title': 'Sound',
-            'payload':'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_SOUND'
-          },
-          {
-            'content_type': 'text',
-            'title': 'Vibration',
-            'payload':'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_VIBRATION'
-          }
-        ];
-
-        var msg = message;
-        message = {
-          text: 'Nice, I will remind you around that time, what mode of reward would you like?',
-          quick_replies: replies
-        };
-
-        reply(sender, message);
-
-    } else if(message.quick_reply.payload === 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_VISUAL') {
-
-        var msg = message;
-        message = {
-          text: 'Sweet. I will catch you later.'
-        };
-
-        reply(sender, message);
-
-    }
-
-    } else {
-
+  findOrCreateUser(sender, user => {
+    if (message.quick_reply === undefined) {
       // If they are new, then send them the standard reply:
-      var replies = [
+      const replies = [
         {
-          'content_type': 'text',
-          'title': 'Stretch',
-          'payload':'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_STRETCH'
+          content_type: 'text',
+          title: 'Stretch',
+          payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_STRETCH'
         },
         {
-          'content_type': 'text',
-          'title': 'Meditate',
-          'payload':'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_MEDITATE'
+          content_type: 'text',
+          title: 'Meditate',
+          payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_MEDITATE'
         },
         {
-          'content_type': 'text',
-          'title': 'Drink Water',
-          'payload':'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRINK_WATER'
+          content_type: 'text',
+          title: 'Drink Water',
+          payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRINK_WATER'
         }
       ];
 
@@ -206,13 +134,71 @@ var read = function (sender, message, reply) {
       };
 
       reply(sender, message);
-    }
+    } else {
+      // STRETCHING
+      if (message.quick_reply.payload === 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_STRETCH') {
+          const replies = [
+            {
+              content_type: 'text',
+              title: 'Morning',
+              payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_MORNING'
+            },
+            {
+              content_type: 'text',
+              title: 'Afternoon',
+              payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_AFTERNOON'
+            },
+            {
+              content_type: 'text',
+              title: 'Evening',
+              payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_DRINK_EVENING'
+            }
+          ];
 
+          const msg = message;
+          message = {
+            text: 'Cool I love to ' + msg.text + '. What time do you want to ' + msg.text + '?',
+            quick_replies: replies
+          };
+
+          reply(sender, message);
+
+      } else if (message.quick_reply.payload === 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_MORNING') {
+          const replies = [
+            {
+              content_type: 'text',
+              title: 'Visual',
+              payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_VISUAL'
+            },
+            {
+              content_type: 'text',
+              title: 'Sound',
+              payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_SOUND'
+            },
+            {
+              content_type: 'text',
+              title: 'Vibration',
+              payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_VIBRATION'
+            }
+          ];
+
+          message = {
+            text: 'Nice, I will remind you around that time, what mode of reward would you like?',
+            quick_replies: replies
+          };
+
+          reply(sender, message);
+
+      } else if (message.quick_reply.payload === 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_VISUAL') {
+        message = {
+          text: 'Sweet. I will catch you later.'
+        };
+        reply(sender, message);
+      }
+    }
   });
 };
 
-
-
 module.exports = {
-	read: read
+  read
 };
