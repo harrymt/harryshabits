@@ -90,6 +90,7 @@
           Bot.read(entry.sender.id, entry.message, (sender, reply) => {
             console.log('-- from bot to user vv --');
             console.log(reply);
+            // Send message to that user
             FB.newMessage(sender, reply);
           });
         }
@@ -99,7 +100,7 @@
     });
 
     module.exports = {
-      shutdown: function () {
+      shutdown() {
         console.log('Server shutting down');
         serverInstance.close();
       }
