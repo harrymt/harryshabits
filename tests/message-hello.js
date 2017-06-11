@@ -5,7 +5,6 @@
   module.exports = function (callback) {
     console.log('Start of ' + __filename.slice(__dirname.length + 1));
 
-    const request = require('request');
     const msg = 'Hello';
 
     const jsonResponse = {
@@ -30,20 +29,22 @@
       ]
     };
 
-    request.post({
-      url: 'http://localhost:' + process.env.PORT + '/webhooks',
+    const request = require('request-promise');
+    const options = {
+      method: 'POST',
+      uri: 'http://localhost:' + process.env.PORT + '/webhooks',
       body: jsonResponse,
       json: true
-    }, (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        console.log(body);
-        callback(false);
-      } else {
-        console.log(error);
+    };
+
+    request(options)
+      .then(response => {
         console.log(response);
-        console.log(response.statusCode);
+        callback(false);
+      })
+      .catch(err => {
+        console.log(err);
         callback(true);
-      }
-    });
+      });
   };
 })();

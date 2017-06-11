@@ -5,16 +5,20 @@
   module.exports = function (callback) {
     console.log('Start of ' + __filename.slice(__dirname.length + 1));
 
-    require('request')('http://localhost:' + process.env.PORT, (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        console.log(body);
-        callback(false);
-      } else {
-        console.log(error);
+    const request = require('request-promise');
+    const options = {
+      method: 'GET',
+      uri: 'http://localhost:' + process.env.PORT
+    };
+
+    request(options)
+      .then(response => {
         console.log(response);
-        console.log(body);
+        callback(false);
+      })
+      .catch(err => {
+        console.log(err);
         callback(true);
-      }
-    });
+      });
   };
 })();

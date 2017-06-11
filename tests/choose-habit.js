@@ -5,8 +5,6 @@
   module.exports = function (callback) {
     console.log('Start of ' + __filename.slice(__dirname.length + 1));
 
-    const request = require('request');
-
     const jsonResponse = {
       hub: {
         verify_token: process.env.FB_VERIFY_TOKEN
@@ -28,7 +26,7 @@
               seq: 69,
               text: 'Stretch',
               quick_reply: {
-                payload: 'DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_STRETCH'
+                payload: 'PICKED_STRETCH'
               }
             }
           }]
@@ -36,20 +34,22 @@
       ]
     };
 
-    request.post({
-      url: 'http://localhost:' + process.env.PORT + '/webhooks',
+    const request = require('request-promise');
+    const options = {
+      method: 'POST',
+      uri: 'http://localhost:' + process.env.PORT + '/webhooks',
       body: jsonResponse,
       json: true
-    }, (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        console.log(body);
-        callback(false);
-      } else {
-        console.log(error);
+    };
+
+    request(options)
+      .then(response => {
         console.log(response);
-        console.log(response.statusCode);
+        callback(false);
+      })
+      .catch(err => {
+        console.log(err);
         callback(true);
-      }
-    });
+      });
   };
 })();

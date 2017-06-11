@@ -53,10 +53,7 @@
   }
 
   function testEnd() {
-    const timeout = 5;
-    console.log('Finished processing tests...waiting ' + timeout + 's for promises...');
-    setTimeout(() => {
-      botServer.shutdown();
-    }, timeout * 1000);
+    console.log('Finished processing tests...waiting for promises...');
+    botServer.shutdown();
   }
 })();
