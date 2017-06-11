@@ -18,7 +18,7 @@ Tracks habits and gives you rewards from 3 different modalities.
 ### Setup
 
 - Create a `.env` file containing the following environment variables and save it in the root directory:
-- Environment variables in Travis should also have these set
+- Environment variables in Travis should also have these set (Note for GCLOUD_PRIVATE_KEY you need to replace all \n with actual new lines, then copy those newlines into the travis ci settings file (with single quotes))
 
 *.env*
 ```
@@ -28,7 +28,7 @@ FB_VERIFY_TOKEN=<verify token>
 USER_ID=<user id>
 PROJECT_ID=<Google App engine Project id>
 GCLOUD_CLIENT_EMAIL=<Google App engine Service email>
-GCLOUD_PRIVATE_KEY="M....dwc=\n" # All things after -- BEGIN PRIVATE KEY -- and -- END .. KEY -- The Google App engine serivce json private key, private_key value
+GCLOUD_PRIVATE_KEY='M....dwc=' # All things after -- BEGIN PRIVATE KEY -- and -- END .. KEY -- The Google App engine serivce json private key, private_key value
 
 ```
 
