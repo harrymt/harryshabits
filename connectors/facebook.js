@@ -21,11 +21,10 @@ module.exports = {
       form: {
         recipient: {
           id: recipientId
-        }
+        },
+        message: msg
       }
     };
-
-    opts.form.message = msg;
 
     newRequest(opts, (err, resp, data) => {
       if (cb) {

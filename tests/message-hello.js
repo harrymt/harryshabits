@@ -23,7 +23,9 @@
             recipient: {
               id: process.env.FB_PAGE_TOKEN
             },
-            message: msg
+            message: {
+              text: msg
+            }
           }]
         }
       ]
