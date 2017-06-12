@@ -3,24 +3,34 @@
 (function () {
   'use strict';
 
-  // After config loads
-  require('./config').isReady(err => {
-    if (err) {
-      throw new Error('Error getting config' + err);
-    }
-    // Can now access variables like process.env.PORT
+  if (process.env.NODE_ENV !== 'production') {
+    // Load the .env file, that sets process.env.
+    require('dotenv').load();
+  }
+  process.env.PORT = 5000;
 
-    const express = require('express');
-    const bodyParser = require('body-parser');
+  const express = require('express');
+  const bodyParser = require('body-parser');
 
-    const FB = require('./connectors/facebook');
-    const Bot = require('./bot');
+  const FB = require('./connectors/facebook');
+  const Bot = require('./bot');
 
-    // LETS MAKE A SERVER!
-    const app = express();
-    const serverInstance = app.listen(process.env.PORT, () => {
-      console.log('> Running on port', process.env.PORT);
-    });
+  // LETS MAKE A SERVER!
+  const app = express();
+  const serverInstance = app.listen(process.env.PORT, () => {
+    console.log('> Running on port', process.env.PORT);
+  });
+
+  // PARSE THE BODY
+  app.use(bodyParser.json());
+
+  // Index page
+  app.get('/', (req, res) => {
+    res.send(
+      '<h1>Version ' + require('./package.json').version + '</h1>' +
+      '<p>nodejs server, index page .... hello world i am a chat bot'
+    );
+  });
 
     // PARSE THE BODY
     app.use(bodyParser.json());
