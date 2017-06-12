@@ -32,15 +32,15 @@
     );
   });
 
-    // PARSE THE BODY
-    app.use(bodyParser.json());
+  app.get('/reminders/:time_of_day/:secret', (req, res) => {
+    if (req.params.secret === process.env.CRON_SECRET) {
 
-    // Index page
-    app.get('/', (req, res) => {
-      res.send('<p>nodejs server, index page .... hello world i am a chat bot');
-    });
+      let quickReplyActions = [
+        'Completed Habit',
+        'Not Today',
+        'Snooze'
+      ];
 
-    app.get('/reminders/:time_of_day', (req, res) => {
       // Validate the time of day
       let message = 'Wow this is a strange time.'; // Default
       if (req.params.time_of_day === 'morning') {
@@ -49,6 +49,13 @@
         message = 'Afternoon';
       } else if (req.params.time_of_day === 'evening') {
         message = 'Good evening';
+      } else if (req.params.time_of_day === 'night') {
+        message = 'You\'re up late';
+        // Remove snooze if its the night
+        quickReplyActions =  [
+          'Completed Habit',
+          'Not Today'
+        ];
       } else {
         res.send('Wow you should not be here. [' + req.params.time_of_day + ']');
         throw new Error('Reached invalid timeofday call');
@@ -56,65 +63,74 @@
 
       // Debug Logging!
       console.log('We got a reminder at time: ' + req.params.time_of_day);
-      res.send('We got a reminder at time: ' + req.params.time_of_day);
 
-      // Const query = datastore.createQuery('User')
-      //   .filter('done', '=', false)
-      //   .filter('priority', '>=', 4)
-      //   .order('priority', {
-      //     descending: true
-      // });
+      const time = req.params.time_of_day.toUpperCase();
 
-      // datastore.get(key, function(err, entity) {
-      //   console.log(err || entity);
-      // });
+      let i = 0;
+      Object.keys(Bot.sessions).forEach(key => {
+        console.log('Found user ' + Bot.sessions[key].fbid);
+        if (Bot.sessions[key].reminder_time === time) {
+          i++;
+          console.log('Sending message to user ' + Bot.sessions[key].fbid);
+          console.log(Bot.sessions[key]);
 
-      // Get everyone from the morning
-
-      // Send out reminders using the facebook API
-      // Loop around them and send a FB.newMessage(senderID, message);
-    });
-
-    // For facebook to verify
-    app.get('/webhooks', (req, res) => {
-      if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
-        res.send(req.query['hub.challenge']);
-      }
-      res.send('> Error, wrong fb verify token'); // Error on this line: Error: Can't set headers after they are sent
-    });
-
-    // To send messages to facebook
-    app.post('/webhooks', (req, res) => {
-      console.log('> Receiving Message');
-
-      const entry = FB.getMessageEntry(req.body);
-
-      // IS THE ENTRY A VALID MESSAGE?
-      if (entry && entry.message) {
-        console.log('> Valid message');
-
-        if (entry.message.attachments) {
-          // NOT SMART ENOUGH FOR ATTACHMENTS YET
-          FB.newMessage(entry.sender.id, 'Wow an attachment');
-        } else {
-          // SEND TO BOT FOR PROCESSING
-          Bot.read(entry.sender.id, entry.message, (sender, reply) => {
-            console.log('-- from bot to user vv --');
-            console.log(reply);
-            // Send message to that user
-            FB.newMessage(sender, reply);
-          });
+          FB.newMessage(Bot.sessions[key].fbid,
+            Bot.createQuickReply(
+              'Hey, have you completed your daily ' + Bot.convertToFriendlyName(Bot.sessions[key].habit) + '?',
+              quickReplyActions
+            )
+          );
         }
-      }
+      });
 
-      res.sendStatus(200);
-    });
+      res.send('Sent ' + time + ' reminders to ' + i + ' users.');
 
-    module.exports = {
-      shutdown() {
-        console.log('Server shutting down');
-        serverInstance.close();
-      }
-    };
+    } else {
+      res.send('Secret invalid.');
+    }
   });
+
+  // For facebook to verify
+  app.get('/webhooks', (req, res) => {
+    if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
+      res.send(req.query['hub.challenge']);
+    } else {
+      res.send('> Error, wrong fb verify token');
+    }
+  });
+
+  // To send messages to facebook
+  app.post('/webhooks', (req, res) => {
+    console.log('> Receiving Message');
+
+    const entry = FB.getMessageEntry(req.body);
+
+    // IS THE ENTRY A VALID MESSAGE?
+    if (entry && entry.message) {
+      console.log('> Valid message');
+
+      if (entry.message.attachments) {
+        // NOT SMART ENOUGH FOR ATTACHMENTS YET
+        FB.newMessage(entry.sender.id, 'Wow an attachment');
+      } else {
+        // SEND TO BOT FOR PROCESSING
+        Bot.read(entry.sender.id, entry.message, (sender, reply) => {
+          console.log('-- from bot to user vv --');
+          console.log(reply);
+
+          // Send message to that user
+          FB.newMessage(sender, reply);
+        });
+      }
+    }
+
+    res.sendStatus(200);
+  });
+
+  module.exports = {
+    shutdown() {
+      console.log('Server shutting down');
+      serverInstance.close();
+    }
+  };
 })();

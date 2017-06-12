@@ -1,119 +1,29 @@
 
 'use strict';
 
-function getDatastore() {
-  if (process.env.NODE_ENV === 'production') {
-    return require('@google-cloud/datastore')();
-  }
-
-  // Development
-  return require('@google-cloud/datastore')(
-    {
-      credentials: {
-        client_email: process.env.GCLOUD_CLIENT_EMAIL,
-        private_key:
-          '-----BEGIN PRIVATE KEY-----\n' +
-          process.env.GCLOUD_PRIVATE_KEY +
-          '\n-----END PRIVATE KEY-----\n'
-      },
-      projectId: process.env.PROJECT_ID
-    }
-  );
-}
-
 /**
- * Update datastore with new user information
- *
- * @param user
- * @param callback
+ * Save user data in a memory object
  */
-const updateUser = (user, callback) => {
-  const datastore = getDatastore();
-
-  // Query our datastore for this fbid user
-  const query = datastore.createQuery('User').filter('fbid', '=', user.fbid);
-  datastore.runQuery(query, (err, entities, info) => {
-    if (err) {
-      console.log(err);
-      console.log('Error running query, with User=fbid');
-      throw new Error('Error running query with User=' + user.fbid);
-    }
-
-    console.log(entities.length + ' users found.');
-
-    // Check if  more results may exist.
-    if (entities.length === 0 && info.moreResults === datastore.NO_MORE_RESULTS) {
-      console.log('No user found, error!');
-      throw new Error('Error updating User=' + user.fbid + ', no user found!');
-    } else {
-      console.log('User found in datastore.');
-      console.log(entities[0]);
-
-      console.log('Updating with new user info...');
-      console.log(user);
-
-      const key = datastore.key(['User', user.fbid]);
-      datastore.save({
-        key,
-        data: user
-      }, err => {
-        if (!err) {
-          // The user is now published!
-          callback();
-        } else {
-          console.log(err);
-          throw new Error('Error updating User=' + user.fbid + ': err: ' + err);
-        }
-      });
-    }
-  });
-};
+const sessions = {};
 
 const findOrCreateUser = (fbid, callback) => {
-  const datastore = getDatastore();
+  if (sessions[fbid] === undefined) {
+    // User doesn't exist, lets create them
+    const userData = {
+      fbid,
+      modality: null,
+      seen_before: false,
+      reminder_time: null,
+      habit: null,
+      completedHabits: []
+    };
 
-  // Query our datastore for this fbid user
-  const query = datastore.createQuery('User').filter('fbid', '=', fbid);
-  datastore.runQuery(query, (err, entities, info) => {
-    if (err) {
-      console.log(err);
-      console.log('Error running query, with User=fbid');
-      throw new Error('Error running query with User=' + fbid);
-    }
-
-    console.log(entities.length + ' results found.');
-
-    // Check if  more results may exist.
-    if (entities.length === 0 && info.moreResults === datastore.NO_MORE_RESULTS) {
-      console.log('No user found, creating one now...');
-
-      // Not user found! Lets create one! Then return the fbid
-      const userData = {
-        fbid,
-        modality: null,
-        seen_before: false,
-        reminder_time: null
-      };
-
-      const key = datastore.key(['User', fbid]);
-
-      datastore.save({
-        key,
-        data: userData
-      }, err => {
-        if (!err) {
-          // The user is now published!
-          callback(userData);
-        }
-      });
-    } else {
-      console.log('User found.');
-      console.log(entities[0]);
-
-      // Return the actual user object
-      callback(entities[0]);
-    }
-  });
+    sessions[fbid] = userData;
+    callback(userData);
+  } else {
+    // User already exists
+    callback(sessions[fbid]);
+  }
 };
 
 /**
@@ -123,7 +33,7 @@ const findOrCreateUser = (fbid, callback) => {
  * @param options ['reply1', 'reply2'] Array of buttons.
  * @returns {{text: *, quick_replies: Array}}
  */
-function createQuickReply(message, options) {
+const createQuickReply = (message, options) => {
   let replies = [];
 
   options.forEach(function(el) {
@@ -140,7 +50,19 @@ function createQuickReply(message, options) {
     text: message,
     quick_replies: replies
   };
-}
+};
+
+const updateUser = (user, callback) => {
+  if (sessions[user.fbid] === undefined) {
+    // User doesn't exist, throw warning
+    console.log('Warning user doesnt exist in session!');
+    callback(user);
+  } else {
+    // User already exists, so lets update them
+    sessions[user.fbid] = user;
+    callback(user);
+  }
+};
 
 /**
  * Convert to Pascal Case.
@@ -148,10 +70,9 @@ function createQuickReply(message, options) {
  * @param str Unfriendly string.
  * @returns {string}
  */
-function convertToFriendlyName(str) {
-  console.log('Converting... : ' + str);
+const convertToFriendlyName = (str) => {
   return str.replace('_', ' ').split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ');
-}
+};
 
 const read = function (sender, message, reply) {
   // Let's find the user object
@@ -166,12 +87,15 @@ const read = function (sender, message, reply) {
       user.seen_before = true;
       messageStart = 'Hello new person! ';
     }
+    console.log(message);
 
     if (message.quick_reply === undefined) {
-      if (message && (message.toLowerCase() === 'stats' || message.toLowerCase() === 'settings')) {
+      if (message.text && (message.text.toLowerCase() === 'stats' || message.text.toLowerCase() === 'settings')) {
         console.log(user.toString());
         reply(sender,
-          { message: 'Your settings are: ' + JSON.stringify(user) }
+          {
+            text: 'Your settings are: ' + JSON.stringify(user)
+          }
         );
       } else {
         reply(sender,
@@ -238,8 +162,72 @@ const read = function (sender, message, reply) {
         // Save user information to datastore
         updateUser(user, () => {
           reply(sender, {
-            message: modality + ' rewards are the best! See you later!'
+            text: convertToFriendlyName(modality) + ' rewards are the best! I will drop you a message in the ' + convertToFriendlyName(user.reminder_time) + '!'
           });
+        });
+      } else if (message.quick_reply.payload === 'PICKED_SNOOZE') {
+
+        // Set their reminder time to be the next cron job!
+        if (user.reminder_time === 'MORNING') {
+          user.reminder_time = 'AFTERNOON';
+        } else if (user.reminder_time === 'AFTERNOON') {
+          user.reminder_time = 'EVENING';
+        } else if (user.reminder_time === 'EVENING') {
+          user.reminder_time = 'NIGHT';
+        }
+
+        // Save user information to datastore
+        updateUser(user, () => {
+          reply(sender, {
+            text: 'Okay I will remind you this ' + convertToFriendlyName(user.reminder_time) + '!'
+          });
+        });
+      } else if (message.quick_reply.payload === 'PICKED_NOT_TODAY') {
+        // Save the failed habit!
+        user.completedHabits.push({
+          fbid: user.fbid,
+          day: (new Date()).toLocaleString(),
+          reward: user.modality,
+          completed: false,
+          reminder_time: user.reminder_time,
+          habit: user.habit
+        });
+
+        // Save user information to datastore
+        updateUser(user, () => {
+          reply(sender, {
+            text: 'There is always tomorrow.'
+          });
+        });
+
+      } else if (message.quick_reply.payload === 'PICKED_COMPLETED_HABIT') {
+        // Save the completion!
+        user.completedHabits.push({
+          fbid: user.fbid,
+          day: (new Date()).toLocaleString(),
+          reward: user.modality,
+          completed: true,
+          reminder_time: user.reminder_time,
+          habit: user.habit
+        });
+
+        updateUser(user, () => {
+          // Send the modality reward!
+          if (user.modality === 'VISUAL') {
+            reply(sender, {
+              text: 'Awesome! Here is your Visual reward.'
+            });
+
+          } else if (user.modality === 'AUDIO') {
+            reply(sender, {
+              text: 'Awesome! Here is your Audio reward.'
+            });
+
+          } else if (user.modality === 'VIBRATION') {
+            reply(sender, {
+              text: 'Awesome! Here is your Vibration reward.'
+            });
+          }
         });
       }
     }
@@ -248,5 +236,8 @@ const read = function (sender, message, reply) {
 
 module.exports = {
   read,
-  updateUser
+  updateUser,
+  sessions,
+  convertToFriendlyName,
+  createQuickReply
 };
