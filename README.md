@@ -9,6 +9,7 @@ Tracks habits and gives you rewards from 3 different modalities.
 
 [Chat to him](https://m.me/2278578462368010).
 
+### Features
 
 ## Development
 
@@ -19,9 +20,13 @@ Tracks habits and gives you rewards from 3 different modalities.
 - Create a `.env` file with:
 
 ```
+NODE_ENV=development
 FB_PAGE_TOKEN=<your fb page token here>
 FB_VERIFY_TOKEN=<verify token>
 USER_ID=<user id>
+CRON_SECRET=<secret phrase>
+EMAIL_ID=<your email address for data backups and alerts>
+EMAIL_PASS=<your email password>
 ```
 
 - `npm test && npm start`
@@ -36,4 +41,5 @@ USER_ID=<user id>
 
 ## Cron Jobs
 
-- [Online service](https://cron-job.org/en/members/) fires off cron jobs to `/reminders/<timeofday>` at 3 intervals a day
+- [Online service](https://cron-job.org/en/members/) fires off cron jobs to `/reminders/<timeofday>` at 3 intervals a day and also backups user data
+
