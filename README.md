@@ -10,42 +10,30 @@ Tracks habits and gives you rewards from 3 different modalities.
 [Chat to him](https://m.me/2278578462368010).
 
 
-## Run
+## Development
 
-- `npm start`
-- Visit http://localhost:5000/webhooks
+- [Now.Sh](https://zeit.co/docs) URL: https://arthur-messenger-bot.now.sh/
 
-### Setup
+### Local
 
-- Create a `.env` file containing the following environment variables and save it in the root directory:
-- Environment variables in Travis should also have these set (Note for GCLOUD_PRIVATE_KEY you need to replace all \n with actual new lines, then copy those newlines into the travis ci settings file (with single quotes))
+- Create a `.env` file with:
 
-*.env*
 ```
-WIT_TOKEN=<your wit token here>
 FB_PAGE_TOKEN=<your fb page token here>
 FB_VERIFY_TOKEN=<verify token>
 USER_ID=<user id>
-PROJECT_ID=<Google App engine Project id>
-GCLOUD_CLIENT_EMAIL=<Google App engine Service email>
-GCLOUD_PRIVATE_KEY='M....dwc=' # All things after -- BEGIN PRIVATE KEY -- and -- END .. KEY -- The Google App engine serivce json private key, private_key value
-
 ```
 
-## Build
-
-- `git commit -am "message"`
-- `git push`
-- `git push heroku master` to deploy
-- Message Arthur https://m.me/2278578462368010
-
-## Deploy
-
-- `gcloud app deploy`
-- `gcloud app browse` to view
+- `npm test && npm start`
 
 
-### Quality
+### Production
 
-- [Static analysis](https://github.com/mre/awesome-static-analysis#javascript) Javascript tools
-- ADD XO linting to tests https://github.com/sindresorhus/xo
+- Add the variables from `.env` to online Travis-CI
+- `now alias https://arthur-messenger-bot-<id>.now.sh arthur-messenger-bot`
+- `npm run deploy`
+
+
+## Cron Jobs
+
+- [Online service](https://cron-job.org/en/members/) fires off cron jobs to `/reminders/<timeofday>` at 3 intervals a day

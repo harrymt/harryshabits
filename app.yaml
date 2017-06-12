@@ -1,5 +1,0 @@
-env: flex
-runtime: nodejs
-
-manual_scaling:
-  instances: 1

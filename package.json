@@ -1,6 +1,6 @@
 {
   "name": "arthur-messenger-bot",
-  "version": "1.0.0",
+  "version": "1.0.23",
   "description": "",
   "main": "index.js",
   "repository": {
@@ -12,23 +12,22 @@
   },
   "scripts": {
     "test": "node tests/main.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "deploy": "npm --no-git-tag-version version patch && make && now -e FB_PAGE_TOKEN=@fb_page_token -e FB_VERIFY_TOKEN=@fb_verify_token -e USER_ID=@user_id -e CRON_SECRET=@cron_secret --public && now-realias && npm run logs",
+    "logs": "now logs arthur-messenger-bot"
   },
   "homepage": "https://github.com/harrymt/habit-reward-chatbot",
   "bugs": "https://github.com/harrymt/habit-reward-chatbot/issues",
   "author": "Harry Mumford-Turner",
   "license": "MIT",
   "dependencies": {
-    "@google-cloud/datastore": "^1.0.2",
     "body-parser": "^1.15.0",
     "dotenv": "^4.0.0",
     "express": "^4.13.4",
+    "now-logs": "0.0.7",
     "request": "^2.71.0",
     "request-promise": "^4.2.1",
     "sqlite3": "^3.1.8"
-  },
-  "devDependencies": {
-    "request": "^2.81.0"
   },
   "xo": {
     "space": true
