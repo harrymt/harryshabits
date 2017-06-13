@@ -1,29 +1,82 @@
 
 'use strict';
 
-/**
- * Save user data in a memory object
- */
-const sessions = {};
-
 const findOrCreateUser = (fbid, callback) => {
-  if (sessions[fbid] === undefined) {
-    // User doesn't exist, lets create them
-    const userData = {
-      fbid,
-      modality: null,
-      seen_before: false,
-      reminder_time: null,
-      habit: null,
-      completedHabits: []
-    };
 
-    sessions[fbid] = userData;
-    callback(userData);
-  } else {
-    // User already exists
-    callback(sessions[fbid]);
-  }
+  // Setup online database, airtable
+  const base = require('airtable').base('app5u2vOBmkjxLp4M');
+  console.log('Finding user with fbid ' + fbid);
+
+  base('Users').select({
+    filterByFormula: '({fbid} = "' + fbid + '")'
+  }).eachPage(function page(records, fetchNextPage) {
+    if (records !== undefined && records[0] !== undefined) {
+      let userData = records[0].fields;
+      userData.id = records[0].getId();
+      callback(userData);
+    } else {
+      let userData = {
+        fbid,
+        modality: '',
+        seenBefore: false,
+        reminderTime: '',
+        habit: ''
+      };
+
+      // User doesn't exist, so lets create them
+      base('Users').create(userData, (err, record) => {
+        if (err) {
+          console.error(err);
+          throw new Error(err);
+        }
+        console.log('Created user in database fbid: ' + fbid);
+        userData.id = record.getId();
+        callback(userData);
+      });
+    }
+  }, function done(err) {
+    if (err) {
+      console.error(err);
+      throw new Error(err);
+    }
+  });
+
+};
+
+const updateHabit = (habit, callback) => {
+  const base = require('airtable').base('app5u2vOBmkjxLp4M');
+  let callbackHabit = habit;
+  delete habit.id;
+  console.log('Creating a new row in habit table...');
+  base('Habits').create(habit, function(err, record) {
+    if (err) {
+      console.error(err);
+      throw new Error(err);
+    }
+    console.log('Added new habit');
+    callbackHabit.id = record.getId();
+    callback(callbackHabit);
+  });
+};
+
+const updateUser = (user, callback) => {
+  const base = require('airtable').base('app5u2vOBmkjxLp4M');
+
+  let callbackUser = user;
+  const userId = user.id;
+  delete user.id;
+
+  console.log('Updating user...');
+  base('Users').update(userId, user, function(err, record) {
+    if (err) { console.error(err); return; }
+    console.log('Updated user');
+    console.log(record.fields);
+    callbackUser.id = record.getId();
+    callback(callbackUser);
+  });
+
+
+  // }
 };
 
 /**
@@ -52,25 +105,13 @@ const createQuickReply = (message, options) => {
   };
 };
 
-const updateUser = (user, callback) => {
-  if (sessions[user.fbid] === undefined) {
-    // User doesn't exist, throw warning
-    console.log('Warning user doesnt exist in session!');
-    callback(user);
-  } else {
-    // User already exists, so lets update them
-    sessions[user.fbid] = user;
-    callback(user);
-  }
-};
-
 /**
  * Convert to Pascal Case.
  *
  * @param str Unfriendly string.
  * @returns {string}
  */
-const convertToFriendlyName = (str) => {
+const convertToFriendlyName = str => {
   return str.replace('_', ' ').split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ');
 };
 
@@ -81,10 +122,10 @@ const read = function (sender, message, reply) {
     let messageStart = '';
 
     // If we have seen this user before, send them a greeting
-    if (user.seen_before) {
+    if (user.seenBefore) {
       messageStart = 'Welcome back! ';
     } else {
-      user.seen_before = true;
+      user.seenBefore = true;
       messageStart = 'Hello new person! ';
     }
     console.log(message);
@@ -139,7 +180,7 @@ const read = function (sender, message, reply) {
                  message.quick_reply.payload === 'PICKED_EVENING') {
 
         const timeOfDay = message.quick_reply.payload.substring(7);
-        user.reminder_time = timeOfDay;
+        user.reminderTime = timeOfDay;
         // Save user information to datastore
         updateUser(user, () => {
           reply(sender,
@@ -162,63 +203,67 @@ const read = function (sender, message, reply) {
         // Save user information to datastore
         updateUser(user, () => {
           reply(sender, {
-            text: convertToFriendlyName(modality) + ' rewards are the best! I will drop you a message in the ' + convertToFriendlyName(user.reminder_time) + '!'
+            text: convertToFriendlyName(modality) + ' rewards are the best! I will drop you a message in the ' + convertToFriendlyName(user.reminderTime) + '!'
           });
         });
       } else if (message.quick_reply.payload === 'PICKED_SNOOZE') {
 
         // Set their reminder time to be the next cron job!
-        if (user.reminder_time === 'MORNING') {
-          user.reminder_time = 'AFTERNOON';
-        } else if (user.reminder_time === 'AFTERNOON') {
-          user.reminder_time = 'EVENING';
-        } else if (user.reminder_time === 'EVENING') {
-          user.reminder_time = 'NIGHT';
+        if (user.reminderTime === 'MORNING') {
+          user.reminderTime = 'AFTERNOON';
+        } else if (user.reminderTime === 'AFTERNOON') {
+          user.reminderTime = 'EVENING';
+        } else if (user.reminderTime === 'EVENING') {
+          user.reminderTime = 'NIGHT';
         }
 
         // Save user information to datastore
         updateUser(user, () => {
           reply(sender, {
-            text: 'Okay I will remind you this ' + convertToFriendlyName(user.reminder_time) + '!'
+            text: 'Okay I will remind you this ' + convertToFriendlyName(user.reminderTime) + '!'
           });
         });
       } else if (message.quick_reply.payload === 'PICKED_NOT_TODAY') {
+
         // Save the failed habit!
-        user.completedHabits.push({
+        const habit = {
           fbid: user.fbid,
           day: (new Date()).toLocaleString(),
-          reward: user.modality,
           completed: false,
-          reminder_time: user.reminder_time,
-          habit: user.habit
-        });
+          reminderTime: user.reminderTime,
+          numberOfSnoozes: 0, // TODO
+          currentModality: user.modality,
+          currentHabit: user.habit
+        };
 
         // Save user information to datastore
-        updateUser(user, () => {
+        updateHabit(habit, () => {
           reply(sender, {
             text: 'There is always tomorrow.'
           });
         });
 
       } else if (message.quick_reply.payload === 'PICKED_COMPLETED_HABIT') {
+
         // Save the completion!
-        user.completedHabits.push({
+        const habit = {
           fbid: user.fbid,
           day: (new Date()).toLocaleString(),
-          reward: user.modality,
           completed: true,
-          reminder_time: user.reminder_time,
-          habit: user.habit
-        });
+          reminderTime: user.reminderTime,
+          numberOfSnoozes: 0, // TODO
+          currentModality: user.modality,
+          currentHabit: user.habit
+        };
 
-        updateUser(user, () => {
+        updateHabit(habit, () => {
           // Send the modality reward!
           if (user.modality === 'VISUAL') {
             reply(sender, {
               text: 'Awesome! Here is your Visual reward.'
             });
 
-          } else if (user.modality === 'AUDIO') {
+          } else if (user.modality === 'SOUND') {
             reply(sender, {
               text: 'Awesome! Here is your Audio reward.'
             });
@@ -237,7 +282,7 @@ const read = function (sender, message, reply) {
 module.exports = {
   read,
   updateUser,
-  sessions,
+  updateHabit,
   convertToFriendlyName,
   createQuickReply
 };

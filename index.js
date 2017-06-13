@@ -39,30 +39,31 @@
    */
   app.get('/email/backup/:secret', (req, res) => {
     if (req.params.secret === process.env.CRON_SECRET) {
-      const mailOptions = {
-        attachments: [{
-          filename: (new Date()).toDateString().split(' ').join('_') + '.json',
-          content: JSON.stringify(Bot.sessions),
-          contentType: 'application/json'
-        }],
+      // const mailOptions = {
+      //   attachments: [{
+      //     filename: (new Date()).toDateString().split(' ').join('_') + '.json',
+      //     content: JSON.stringify(Bot.sessions),
+      //     contentType: 'application/json'
+      //   }],
 
-        from: process.env.EMAIL_ID,
-        to: process.env.EMAIL_ID,
-        subject: 'BACKUP', // Subject line
-        text: (new Date()).toLocaleString() + '\nChatbot backup of ' + Object.keys(Bot.sessions).length + ' users.\n\n' + JSON.stringify(Bot.sessions)
-      };
+      //   from: process.env.EMAIL_ID,
+      //   to: process.env.EMAIL_ID,
+      //   subject: 'BACKUP', // Subject line
+      //   text: (new Date()).toLocaleString() + '\nChatbot backup of ' + Object.keys(Bot.sessions).length + ' users.\n\n' + JSON.stringify(Bot.sessions)
+      // };
 
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log(error);
-          console.log(error.message);
-          res.json({response: error, message: error.message});
-        } else {
-          console.log('Message sent: ' + info.response);
-          res.json({response: info.response});
-        }
-      });
+      // transporter.sendMail(mailOptions, (error, info) => {
+      //   if (error) {
+      //     console.log(error);
+      //     console.log(error.message);
+      //     res.json({response: error, message: error.message});
+      //   } else {
+      //     console.log('Message sent: ' + info.response);
+      //     res.json({response: info.response});
+      //   }
+      // });
     }
+    res.json({response: 'Not created'});
   });
 
   // Index page
@@ -107,24 +108,37 @@
 
       const time = req.params.time_of_day.toUpperCase();
 
-      let i = 0;
-      Object.keys(Bot.sessions).forEach(key => {
-        console.log('Found user ' + Bot.sessions[key].fbid);
-        if (Bot.sessions[key].reminder_time === time) {
-          i++;
-          console.log('Sending message to user ' + Bot.sessions[key].fbid);
-          console.log(Bot.sessions[key]);
+      // Get all users based on time
+      // Setup online database, airtable
+      const base = require('airtable').base('app5u2vOBmkjxLp4M');
 
-          FB.newMessage(Bot.sessions[key].fbid,
+      let i = 0;
+      base('Users').select({
+        filterByFormula: '({reminderTime} = "' + time + '")'
+      }).eachPage(function page(records, fetchNextPage) {
+
+        records.forEach(record => {
+          console.log('Found user ' + record.get('fbid'));
+
+          FB.newMessage(record.get('fbid'),
             Bot.createQuickReply(
-              'Hey, have you completed your daily ' + Bot.convertToFriendlyName(Bot.sessions[key].habit) + '?',
+              'Hey, have you completed your daily ' + Bot.convertToFriendlyName(record.get('habit')) + '?',
               quickReplyActions
             )
           );
-        }
-      });
+          i++;
+          console.log('Looking for next page');
+          fetchNextPage();
+        });
 
-      res.send('Sent ' + time + ' reminders to ' + i + ' users.');
+      }, function done(err) {
+        if (err) {
+          console.error(err);
+          throw new Error(err);
+        }
+        console.log('Sent ' + time + ' reminders to ' + i + ' users.');
+        res.send('Sent ' + time + ' reminders to ' + i + ' users.');
+      });
 
     } else {
       res.send('Secret invalid.');
