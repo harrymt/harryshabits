@@ -14,7 +14,7 @@ let quickReplyActions = [
 const dayHour = (new Date()).getHours();
 let timeOfDay = '';
 
-if (dayHour === 12) {
+if (dayHour === 10) {
   timeOfDay = 'MORNING';
 } else if (dayHour === 15) {
   timeOfDay = 'AFTERNOON';
