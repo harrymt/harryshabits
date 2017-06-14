@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+'use strict';
+
+console.log('Sending reminders..');
+
+let quickReplyActions = [
+  'Completed Habit',
+  'Not Today',
+  'Snooze'
+];
+
+// Decide what period of the day it is
+const dayHour = (new Date()).getHours();
+let timeOfDay = '';
+
+if (dayHour === 12) {
+  timeOfDay = 'MORNING';
+} else if (dayHour === 15) {
+  timeOfDay = 'AFTERNOON';
+} else if (dayHour === 19) {
+  timeOfDay = 'EVENING';
+} else if (dayHour === 20) {
+  timeOfDay = 'NIGHT';
+  // Remove snooze if its the night
+  quickReplyActions =  [
+    'Completed Habit',
+    'Not Today'
+  ];
+} else {
+  // Not time todo things
+  console.log('Not time to send reminders... time: ' + dayHour);
+  process.exit();
+}
+
+if (process.env.NODE_ENV !== 'production') {
+  // Load the .env file, that sets process.env.
+  require('dotenv').load();
+}
+
+const FB = require('../connectors/facebook');
+const Bot = require('../bot');
+
+// Debug Logging!
+console.log('We got a reminder at time: ' + timeOfDay);
+
+// Get all users based on time
+// Setup online database, airtable
+const base = require('airtable').base('app5u2vOBmkjxLp4M');
+
+let i = 0;
+base('Users').select({
+  filterByFormula: '({reminderTime} = "' + timeOfDay + '")'
+}).eachPage(function page(records, fetchNextPage) {
+
+  records.forEach(record => {
+    console.log('Found user ' + record.get('fbid'));
+
+    if (record.get('habit') === undefined) {
+      console.log('User hasn\'t told us their habit');
+    } else {
+      FB.newMessage(record.get('fbid'),
+        Bot.createQuickReply(
+          'Hey, have you completed your daily ' + Bot.convertToFriendlyName(record.get('habit')) + '?',
+          quickReplyActions
+        )
+      );
+      i++;
+    }
+    console.log('Looking for next page');
+    fetchNextPage();
+  });
+
+}, function done(err) {
+  if (err) {
+    console.error(err);
+    throw new Error(err);
+  }
+  console.log('Sent ' + timeOfDay + ' reminders to ' + i + ' users.');
+  process.exit();
+
+});
+
