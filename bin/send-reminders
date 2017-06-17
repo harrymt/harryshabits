@@ -85,12 +85,19 @@ function sendReminders() {
           Bot.createQuickReply(
             'Hey, have you completed your daily ' + Bot.convertToFriendlyName(record.get('habit')) + '?',
             quickReplyActions
-          )
+          ),
+          (msg, data) => {
+            i++;
+            if (data.error) {
+              console.log('Error sending new fb message');
+              console.log(msg); // Log received info
+              console.log(data); // Log recieved info
+              console.log('Looking for next page');
+            }
+            fetchNextPage();
+          }
         );
-        i++;
       }
-      console.log('Looking for next page');
-      fetchNextPage();
     });
   }, function done(err) {
     if (err) {

@@ -1,9 +1,10 @@
 
 'use strict';
 
+// UTC time
 const reminder_times = {
   morning: 10,
-  afternoon: 15,
+  afternoon: 14,
   evening: 18,
   night: 21
 };
