@@ -2,7 +2,6 @@
 'use strict';
 
 const findOrCreateUser = (fbid, callback) => {
-
   // Setup online database, airtable
   const base = require('airtable').base('app5u2vOBmkjxLp4M');
   console.log('Finding user with fbid ' + fbid);
@@ -11,11 +10,11 @@ const findOrCreateUser = (fbid, callback) => {
     filterByFormula: '({fbid} = "' + fbid + '")'
   }).eachPage(function page(records, fetchNextPage) {
     if (records !== undefined && records[0] !== undefined) {
-      let userData = records[0].fields;
+      const userData = records[0].fields;
       userData.id = records[0].getId();
       callback(userData);
     } else {
-      let userData = {
+      const userData = {
         fbid,
         modality: '',
         seenBefore: false,
@@ -40,12 +39,11 @@ const findOrCreateUser = (fbid, callback) => {
       throw new Error(err);
     }
   });
-
 };
 
 const updateHabit = (habit, callback) => {
   const base = require('airtable').base('app5u2vOBmkjxLp4M');
-  let callbackHabit = habit;
+  const callbackHabit = habit;
   delete habit.id;
   console.log('Creating a new row in habit table...');
   base('Habits').create(habit, function(err, record) {
@@ -62,21 +60,21 @@ const updateHabit = (habit, callback) => {
 const updateUser = (user, callback) => {
   const base = require('airtable').base('app5u2vOBmkjxLp4M');
 
-  let callbackUser = user;
+  const callbackUser = user;
   const userId = user.id;
   delete user.id;
 
   console.log('Updating user...');
-  base('Users').update(userId, user, function(err, record) {
-    if (err) { console.error(err); return; }
+  base('Users').update(userId, user, (err, record) => {
+    if (err) {
+      console.error(err);
+      callback(null);
+    }
     console.log('Updated user');
     console.log(record.fields);
     callbackUser.id = record.getId();
     callback(callbackUser);
   });
-
-
-  // }
 };
 
 /**
@@ -87,9 +85,9 @@ const updateUser = (user, callback) => {
  * @returns {{text: *, quick_replies: Array}}
  */
 const createQuickReply = (message, options) => {
-  let replies = [];
+  const replies = [];
 
-  options.forEach(function(el) {
+  options.forEach(el => {
     replies.push(
       {
         content_type: 'text',
@@ -118,7 +116,6 @@ const convertToFriendlyName = str => {
 const read = function (sender, message, reply) {
   // Let's find the user object
   findOrCreateUser(sender, user => {
-
     let messageStart = '';
 
     // If we have seen this user before, send them a greeting
@@ -228,7 +225,7 @@ const read = function (sender, message, reply) {
         // Save the failed habit!
         const habit = {
           fbid: user.fbid,
-          day: (new Date()).toLocaleString(),
+          day: (new Date()).toUTCString(),
           completed: false,
           reminderTime: user.reminderTime,
           numberOfSnoozes: 0, // TODO
@@ -242,13 +239,11 @@ const read = function (sender, message, reply) {
             text: 'There is always tomorrow.'
           });
         });
-
       } else if (message.quick_reply.payload === 'PICKED_COMPLETED_HABIT') {
-
         // Save the completion!
         const habit = {
           fbid: user.fbid,
-          day: (new Date()).toLocaleString(),
+          day: (new Date()).toUTCString(),
           completed: true,
           reminderTime: user.reminderTime,
           numberOfSnoozes: 0, // TODO
@@ -262,12 +257,10 @@ const read = function (sender, message, reply) {
             reply(sender, {
               text: 'Awesome! Here is your Visual reward.'
             });
-
           } else if (user.modality === 'SOUND') {
             reply(sender, {
               text: 'Awesome! Here is your Audio reward.'
             });
-
           } else if (user.modality === 'VIBRATION') {
             reply(sender, {
               text: 'Awesome! Here is your Vibration reward.'

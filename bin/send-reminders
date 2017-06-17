@@ -6,7 +6,6 @@ console.log('Sending reminders..');
 
 // Send to logging service
 const request = require('request-promise');
-
 const options = {
   method: 'GET',
   uri: 'https://nosnch.in/9e699ea11f'
@@ -14,16 +13,17 @@ const options = {
 request(options)
   .then(response => {
     console.log(response);
-    send_reminders();
+    sendReminders();
   })
   .catch(err => {
     console.log(err);
-    send_reminders();
+    sendReminders();
   });
 
-
-function send_reminders() {
-
+/**
+ * Actually send the reminders
+ */
+function sendReminders() {
   let quickReplyActions = [
     'Completed Habit',
     'Not Today',
@@ -31,7 +31,7 @@ function send_reminders() {
   ];
 
   // Decide what period of the day it is
-  const dayHour = (new Date()).getHours();
+  const dayHour = (new Date()).getUTCHours();
   let timeOfDay = '';
 
   if (dayHour === 10) {
@@ -43,13 +43,13 @@ function send_reminders() {
   } else if (dayHour === 20) {
     timeOfDay = 'NIGHT';
     // Remove snooze if its the night
-    quickReplyActions =  [
+    quickReplyActions = [
       'Completed Habit',
       'Not Today'
     ];
   } else {
     // Not time todo things
-    console.log('Not time to send reminders... time: ' + dayHour);
+    console.log('Not time to send reminders... time: ' + dayHour + ' date: ' + (new Date()).toUTCString());
     process.exit();
   }
 
@@ -90,7 +90,6 @@ function send_reminders() {
       console.log('Looking for next page');
       fetchNextPage();
     });
-
   }, function done(err) {
     if (err) {
       console.error(err);
@@ -98,8 +97,5 @@ function send_reminders() {
     }
     console.log('Sent ' + timeOfDay + ' reminders to ' + i + ' users.');
     process.exit();
-
   });
-
-
 }
