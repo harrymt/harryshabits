@@ -153,29 +153,37 @@
     }
   });
 
-  // To send messages to facebook
+  /**
+   * Facebook Messenger webhook, to receive messages via Messenger.
+   */
   app.post('/webhooks', (req, res) => {
     console.log('> Receiving Message');
 
+    // Extract message content
     const entry = FB.getMessageEntry(req.body);
 
-    // IS THE ENTRY A VALID MESSAGE?
-    if (entry && entry.message) {
-      console.log('> Valid message');
+    // If the message is valid
+    if (entry && entry.message && !entry.message.attachments) {
 
-      if (entry.message.attachments) {
-        // NOT SMART ENOUGH FOR ATTACHMENTS YET
-        FB.newMessage(entry.sender.id, 'Wow an attachment');
+      if(entry.message.quick_reply) {
+        console.log('QR> ' + entry.message.quick_reply.payload);
       } else {
-        // SEND TO BOT FOR PROCESSING
-        Bot.read(entry.sender.id, entry.message, (sender, reply) => {
-          console.log('-- from bot to user vv --');
-          console.log(reply);
-
-          // Send message to that user
-          FB.newMessage(sender, reply);
-        });
+        console.log('MSG> ' + entry.message.text);
       }
+
+      // Process the message and decide on the response
+      Bot.read(entry.sender.id, entry.message, (sender, reply) => {
+        console.log('-- from bot to user vv --');
+        console.log(reply);
+
+        // Send message to that user
+        FB.newMessage(sender, reply, (msg, data) => {
+          console.log(msg); // Log received info
+          console.log(data); // Log recieved info
+        });
+      });
+    } else {
+      console.log('Invalid entry/message or attachment found.')
     }
 
     res.sendStatus(200);

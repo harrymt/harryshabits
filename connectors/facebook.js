@@ -16,7 +16,7 @@ const newRequest = request.defaults({
 });
 
 module.exports = {
-  newMessage(recipientId, msg, atts, cb) {
+  newMessage(recipientId, msg, cb) {
     const opts = {
       form: {
         recipient: {
