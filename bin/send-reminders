@@ -6,6 +6,7 @@ console.log('Sending reminders..');
 
 // Send to logging service
 const request = require('request-promise');
+
 const options = {
   method: 'GET',
   uri: 'https://nosnch.in/9e699ea11f'
@@ -24,6 +25,8 @@ request(options)
  * Actually send the reminders
  */
 function sendReminders() {
+  const Bot = require('../bot');
+
   let quickReplyActions = [
     'Completed Habit',
     'Not Today',
@@ -34,13 +37,13 @@ function sendReminders() {
   const dayHour = (new Date()).getUTCHours();
   let timeOfDay = '';
 
-  if (dayHour === 10) {
+  if (dayHour === Bot.time.morning) {
     timeOfDay = 'MORNING';
-  } else if (dayHour === 15) {
+  } else if (dayHour === Bot.time.afternoon) {
     timeOfDay = 'AFTERNOON';
-  } else if (dayHour === 19) {
+  } else if (dayHour === Bot.time.evening) {
     timeOfDay = 'EVENING';
-  } else if (dayHour === 20) {
+  } else if (dayHour === Bot.time.night) {
     timeOfDay = 'NIGHT';
     // Remove snooze if its the night
     quickReplyActions = [
@@ -59,7 +62,6 @@ function sendReminders() {
   }
 
   const FB = require('../connectors/facebook');
-  const Bot = require('../bot');
 
   // Debug Logging!
   console.log('We got a reminder at time: ' + timeOfDay);

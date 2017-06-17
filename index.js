@@ -25,6 +25,7 @@
 
   // Setup Email
   const nodemailer = require('nodemailer');
+
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -164,22 +165,24 @@
 
     // If the message is valid
     if (entry && entry.message && !entry.message.attachments) {
-
-      if(entry.message.quick_reply) {
+      if (entry.message.quick_reply) {
         console.log('QR> ' + entry.message.quick_reply.payload);
       } else {
         console.log('MSG> ' + entry.message.text);
       }
 
       // Process the message and decide on the response
-      Bot.read(entry.sender.id, entry.message, (sender, reply) => {
+      Bot.read(entry.sender.id, entry.message, (senderFbid, reply) => {
         console.log('-- from bot to user vv --');
         console.log(reply);
 
         // Send message to that user
-        FB.newMessage(sender, reply, (msg, data) => {
-          console.log(msg); // Log received info
-          console.log(data); // Log recieved info
+        FB.newMessage(senderFbid, reply, (msg, data) => {
+          if (data.error) {
+            console.log('Error sending new fb message');
+            console.log(msg); // Log received info
+            console.log(data); // Log recieved info
+          }
         });
       });
     } else {

@@ -1,6 +1,13 @@
 
 'use strict';
 
+const reminder_times = {
+  morning: 10,
+  afternoon: 15,
+  evening: 18,
+  night: 21
+};
+
 const findOrCreateUser = (fbid, callback) => {
   // Setup online database, airtable
   const base = require('airtable').base('app5u2vOBmkjxLp4M');
@@ -132,7 +139,7 @@ const read = function (sender, message, reply) {
         console.log(user.toString());
         reply(sender,
           {
-            text: 'Your settings are: ' + JSON.stringify(user)
+            text: 'Your settings are: ' + JSON.stringify(user) + '\nTimes are ' + JSON.stringify(reminder_times)
           }
         );
       } else {
@@ -277,5 +284,6 @@ module.exports = {
   updateUser,
   updateHabit,
   convertToFriendlyName,
-  createQuickReply
+  createQuickReply,
+  time: reminder_times
 };
