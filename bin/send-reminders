@@ -53,6 +53,7 @@ function sendReminders() {
   } else {
     // Not time todo things
     console.log('Not time to send reminders... time: ' + dayHour + ' date: ' + (new Date()).toUTCString());
+    console.log('Reminder times are: ' + JSON.stringify(Bot.time));
     process.exit();
   }
 
