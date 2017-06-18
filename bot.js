@@ -186,6 +186,8 @@ const read = function (sender, message, reply) {
 
         const timeOfDay = message.quick_reply.payload.substring(7);
         user.reminderTime = timeOfDay;
+        user.snoozedReminderTime = timeOfDay;
+
         // Save user information to datastore
         updateUser(user, () => {
           reply(sender,
@@ -214,18 +216,18 @@ const read = function (sender, message, reply) {
       } else if (message.quick_reply.payload === 'PICKED_SNOOZE') {
 
         // Set their reminder time to be the next cron job!
-        if (user.reminderTime === 'MORNING') {
-          user.reminderTime = 'AFTERNOON';
-        } else if (user.reminderTime === 'AFTERNOON') {
-          user.reminderTime = 'EVENING';
-        } else if (user.reminderTime === 'EVENING') {
-          user.reminderTime = 'NIGHT';
+        if (user.snoozedReminderTime === 'MORNING') {
+          user.snoozedReminderTime = 'AFTERNOON';
+        } else if (user.snoozedReminderTime === 'AFTERNOON') {
+          user.snoozedReminderTime = 'EVENING';
+        } else if (user.snoozedReminderTime === 'EVENING') {
+          user.snoozedReminderTime = 'NIGHT';
         }
 
         // Save user information to datastore
         updateUser(user, () => {
           reply(sender, {
-            text: 'Okay I will remind you this ' + convertToFriendlyName(user.reminderTime) + '!'
+            text: 'Okay I will remind you this ' + convertToFriendlyName(user.snoozedReminderTime) + '!'
           });
         });
       } else if (message.quick_reply.payload === 'PICKED_NOT_TODAY') {
@@ -236,49 +238,86 @@ const read = function (sender, message, reply) {
           day: (new Date()).toUTCString(),
           completed: false,
           reminderTime: user.reminderTime,
-          numberOfSnoozes: 0, // TODO
+          numberOfSnoozes: getDifferenceInTimes(user.reminderTime, user.snoozedReminderTime),
           currentModality: user.modality,
           currentHabit: user.habit
         };
 
+        // Revert back to normal reminder time
+        user.snoozedReminderTime = user.reminderTime;
+
         // Save user information to datastore
         updateHabit(habit, () => {
-          reply(sender, {
-            text: 'There is always tomorrow.'
+          updateUser(user, () => {
+            reply(sender, {
+              text: 'There is always tomorrow.'
+            });
           });
         });
       } else if (message.quick_reply.payload === 'PICKED_COMPLETED_HABIT') {
+
         // Save the completion!
         const habit = {
           fbid: user.fbid,
           day: (new Date()).toUTCString(),
           completed: true,
           reminderTime: user.reminderTime,
-          numberOfSnoozes: 0, // TODO
+          numberOfSnoozes: getDifferenceInTimes(user.reminderTime, user.snoozedReminderTime),
           currentModality: user.modality,
           currentHabit: user.habit
         };
 
+        // Revert back to normal reminder time
+        user.snoozedReminderTime = user.reminderTime;
+
         updateHabit(habit, () => {
-          // Send the modality reward!
-          if (user.modality === 'VISUAL') {
-            reply(sender, {
-              text: 'Awesome! Here is your Visual reward.'
-            });
-          } else if (user.modality === 'SOUND') {
-            reply(sender, {
-              text: 'Awesome! Here is your Audio reward.'
-            });
-          } else if (user.modality === 'VIBRATION') {
-            reply(sender, {
-              text: 'Awesome! Here is your Vibration reward.'
-            });
-          }
+          updateUser(user, () => {
+            // Send the modality reward!
+            if (user.modality === 'VISUAL') {
+              reply(sender, {
+                text: 'Awesome! Here is your Visual reward.'
+              });
+            } else if (user.modality === 'SOUND') {
+              reply(sender, {
+                text: 'Awesome! Here is your Audio reward.'
+              });
+            } else if (user.modality === 'VIBRATION') {
+              reply(sender, {
+                text: 'Awesome! Here is your Vibration reward.'
+              });
+            }
+          });
         });
       }
     }
   });
 };
+
+function getDifferenceInTimes(baseTime, extendedTime) {
+  if (baseTime === 'MORNING' && extendedTime === 'MORNING') {
+    return 0;
+  } else if (baseTime === 'MORNING' && extendedTime === 'AFTERNOON') {
+    return 1;
+  } else if (baseTime === 'MORNING' && extendedTime === 'EVENING') {
+    return 2;
+  } else if (baseTime === 'MORNING' && extendedTime === 'NIGHT') {
+    return 3;
+
+  } else if (baseTime === 'AFTERNOON' && extendedTime === 'AFTERNOON') {
+    return 0;
+  } else if (baseTime === 'AFTERNOON' && extendedTime === 'EVENING') {
+    return 1;
+  } else if (baseTime === 'AFTERNOON' && extendedTime === 'NIGHT') {
+    return 2;
+
+  } else if (baseTime === 'EVENING' && extendedTime === 'EVENING') {
+    return 0;
+  } else if (baseTime === 'EVENING' && extendedTime === 'NIGHT') {
+    return 1;
+  } else {
+    return 0;
+  }
+}
 
 module.exports = {
   read,
