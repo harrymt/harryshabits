@@ -6,7 +6,8 @@ const reminder_times = {
   morning: 10,
   afternoon: 14,
   evening: 18,
-  night: 21
+  night: 21,
+  newDay: 0
 };
 
 const findOrCreateUser = (fbid, callback) => {
@@ -78,7 +79,7 @@ const updateUser = (user, callback) => {
       console.error(err);
       callback(null);
     }
-    console.log('Updated user');
+    console.log('Updated user to:');
     console.log(record.fields);
     callbackUser.id = record.getId();
     callback(callbackUser);
