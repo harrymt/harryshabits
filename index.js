@@ -148,9 +148,10 @@
   // For facebook to verify
   app.get('/webhooks', (req, res) => {
     if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
-      res.send(req.query['hub.challenge']);
+      res.status(200).send(req.query['hub.challenge']);
     } else {
-      res.send('> Error, wrong fb verify token');
+      console.log('Error wrong fb verify token, make sure validation tokens match.');
+      res.status(403).send('> Error, wrong fb verify token');
     }
   });
 
