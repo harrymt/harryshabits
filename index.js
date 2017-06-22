@@ -34,6 +34,23 @@
     }
   });
 
+  app.get('/fitbitauth/:fbid', (req, res) => {
+    if (req.params.secret) {
+      // Authenticate with fitbit and save details in database
+      // TODO send request to fitbit with the headers
+      res.send(
+        '<h1>Work in progress</h1>'
+      );
+      // Save fitbitId and trackerId to user object
+
+    } else {
+      res.send(
+        '<h1>Please specify a Facebook ID</h1>'
+      );
+    }
+
+  });
+
   /**
    * Backup the sessions json object via email attachment.
    */

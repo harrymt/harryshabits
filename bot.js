@@ -10,6 +10,7 @@ const reminder_times = {
   newDay: 0
 };
 
+const fitbit = require('./connectors/fitbit');
 const database = require('./database');
 
 /**
@@ -109,7 +110,8 @@ const read = function (sender, message, reply) {
 
       } else if (message.quick_reply.payload === 'PICKED_MORNING' ||
                  message.quick_reply.payload === 'PICKED_AFTERNOON' ||
-                 message.quick_reply.payload === 'PICKED_EVENING') {
+                 message.quick_reply.payload === 'PICKED_EVENING' ||
+                 message.quick_reply.payload === 'PICKED_BACK_TO_MODALITIES') {
 
         const timeOfDay = message.quick_reply.payload.substring(7);
         user.reminderTime = timeOfDay;
@@ -128,9 +130,34 @@ const read = function (sender, message, reply) {
             )
           );
         });
+
+      } else if (message.quick_reply.payload === 'PICKED_VIBRATION') {
+
+        // Send them the fitbit connect modal
+        const myFitbitURL = 'https://infinite-falls-46264.herokuapp.com/fitbitauth/' + user.fbid;
+
+        reply(sender, {
+          attachment: {
+            type: 'template',
+            payload: {
+              template_type: 'button',
+              text: 'To enable Vibration rewards, you must have a FitBit. Would you like to connect to Fitbit?',
+              buttons: [{
+                type: 'web_url',
+                url: myFitbitURL,
+                title: 'Connect to Fitbit'
+              },
+              {
+                type: 'postback',
+                title: 'Back',
+                payload: 'PICKED_BACK_TO_MODALITIES'
+              }]
+            }
+          }
+        });
+
       } else if (message.quick_reply.payload === 'PICKED_VISUAL' ||
-                 message.quick_reply.payload === 'PICKED_SOUND' ||
-                 message.quick_reply.payload === 'PICKED_VIBRATION') {
+                 message.quick_reply.payload === 'PICKED_SOUND') {
 
         const modality = message.quick_reply.payload.substring(7);
         user.modality = modality;
@@ -210,12 +237,25 @@ const read = function (sender, message, reply) {
                 text: 'Enjoy the tunes. I\'ll see you tomorrow!'
               });
             } else if (user.modality === 'VIBRATION') {
-              // TODO send fitbit vibration
-
-              reply(sender, {
-                text: 'Buzz Buzz Buzz.'
-              }, {
-                text: 'Enjoy your reward. I\'ll see you tomorrow!'
+              console.log('Preparing to send a vibration reward for user:');
+              console.log(JSON.stringify(user));
+              fitbit.sendVibration(user.fitbitId, user.trackerId, err => {
+                if (err) {
+                  console.log('Failed to send vibration reward to user:');
+                  console.log(JSON.stringify(user));
+                  console.log(err);
+                  // TODO remove this reply
+                  reply(sender, {
+                    text: JSON.stringify(err)
+                  });
+                } else {
+                  console.log('Vibration reward sent.');
+                  reply(sender, {
+                    text: 'Buzz Buzz Buzz.'
+                  }, {
+                    text: 'Enjoy your reward. I\'ll see you tomorrow!'
+                  });
+                }
               });
             }
           });
