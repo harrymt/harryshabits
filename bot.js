@@ -204,9 +204,7 @@ const read = function (sender, message, reply) {
             if (user.modality === 'VISUAL') {
               reply(sender, getVisualReward());
             } else if (user.modality === 'SOUND') {
-              reply(sender, {
-                message: getAudioReward()
-              });
+              reply(sender, getAudioReward());
             } else if (user.modality === 'VIBRATION') {
               // TODO send fitbit vibration
 

@@ -58,8 +58,8 @@ function sendReminders() {
     // Not time todo things
     console.log('Not time to send reminders... time: ' + dayHour + ' date: ' + (new Date()).toUTCString());
     console.log('Reminder times are: ' + JSON.stringify(Bot.time));
-    process.exit(); // For forcing reminders comment this line and set timeOfDay = 'MORNING'
-    // timeOfDay = 'MORNING';
+    // process.exit(); // For forcing reminders comment this line and set timeOfDay = 'MORNING'
+    timeOfDay = 'MORNING';
   }
 
   let filter = '';
