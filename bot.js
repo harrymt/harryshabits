@@ -140,7 +140,7 @@ const read = function (sender, message, reply) {
             text: convertToFriendlyName(modality) + ' rewards are the best! I will drop you a message in the ' + convertToFriendlyName(user.reminderTime) + '!'
           });
         });
-      } else if (message.quick_reply.payload === 'PICKED_SNOOZE') {
+      } else if (message.quick_reply.payload === 'PICKED_SNOOZE_REMINDER') {
 
         // Set their reminder time to be the next cron job!
         if (user.snoozedReminderTime === 'MORNING') {
