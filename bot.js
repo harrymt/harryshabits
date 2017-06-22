@@ -224,6 +224,7 @@ const read = function (sender, message, reply) {
         } else if (user.snoozedReminderTime === 'EVENING') {
           user.snoozedReminderTime = 'NIGHT';
         }
+        // Can't snooze if its the night
 
         // Save user information to datastore
         updateUser(user, () => {

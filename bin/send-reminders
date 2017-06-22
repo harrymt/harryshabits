@@ -37,7 +37,6 @@ function sendReminders() {
   const dayHour = (new Date()).getUTCHours();
   let timeOfDay = '';
 
-
   if (dayHour === Bot.time.morning) {
     timeOfDay = 'MORNING';
   } else if (dayHour === Bot.time.afternoon) {
@@ -66,7 +65,7 @@ function sendReminders() {
   let filter = '';
 
   if (timeOfDay !== '') {
-    filter = '({reminderTime} = "' + timeOfDay + '")';
+    filter = '({snoozedReminderTime} = "' + timeOfDay + '")';
   }
 
   if (process.env.NODE_ENV !== 'production') {
