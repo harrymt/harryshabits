@@ -6,8 +6,8 @@ console.log('Sending reminders..');
 
 let debugMode = false;
 
-// Check if debug args have been passed
-process.argv.forEach(function (val, index, array) {
+// Check if debug args are passed into function
+process.argv.forEach((val, index) => {
   if (index === 2 && val === 'debug') {
     debugMode = true;
   }
@@ -45,33 +45,33 @@ function sendReminders() {
   const dayHour = (new Date()).getUTCHours();
   let timeOfDay = '';
 
-  if (dayHour === Bot.time.morning) {
-    timeOfDay = 'MORNING';
-  } else if (dayHour === Bot.time.afternoon) {
-    timeOfDay = 'AFTERNOON';
-  } else if (dayHour === Bot.time.evening) {
-    timeOfDay = 'EVENING';
-  } else if (dayHour === Bot.time.night) {
-    timeOfDay = 'NIGHT';
-    // Remove snooze if its the night
-    quickReplyActions = [
-      'Completed Habit',
-      'Not Today'
-    ];
-  } else if (dayHour === Bot.time.newDay) {
-    console.log('Resetting snooze time');
-    // Reset snooze time
-    quickReplyActions = null;
-    timeOfDay = '';
-  } else {
-    // Not time todo things
-    console.log('Not time to send reminders... time: ' + dayHour + ' date: ' + (new Date()).toUTCString());
-    console.log('Reminder times are: ' + JSON.stringify(Bot.time));
-    process.exit();
-  }
-
   if (debugMode) {
     timeOfDay = 'MORNING';
+  } else {
+    if (dayHour === Bot.time.morning) {
+      timeOfDay = 'MORNING';
+    } else if (dayHour === Bot.time.afternoon) {
+      timeOfDay = 'AFTERNOON';
+    } else if (dayHour === Bot.time.evening) {
+      timeOfDay = 'EVENING';
+    } else if (dayHour === Bot.time.night) {
+      timeOfDay = 'NIGHT';
+      // Remove snooze if its the night
+      quickReplyActions = [
+        'Completed Habit',
+        'Not Today'
+      ];
+    } else if (dayHour === Bot.time.newDay) {
+      console.log('Resetting snooze time');
+      // Reset snooze time
+      quickReplyActions = null;
+      timeOfDay = '';
+    } else {
+      // Not time todo things
+      console.log('Not time to send reminders... time: ' + dayHour + ' date: ' + (new Date()).toUTCString());
+      console.log('Reminder times are: ' + JSON.stringify(Bot.time));
+      process.exit();
+    }
   }
 
   let filter = '';
