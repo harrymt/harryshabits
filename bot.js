@@ -205,7 +205,7 @@ const read = function (sender, message, reply) {
               reply(sender, getVisualReward());
             } else if (user.modality === 'SOUND') {
               reply(sender, {
-                text: getAudioReward()
+                message: getAudioReward()
               });
             } else if (user.modality === 'VIBRATION') {
               // TODO send fitbit vibration
@@ -235,7 +235,17 @@ function getAudioReward() {
   // Choose a random reward
   const chosenReward = Math.floor((Math.random() * (audioRewards.length - 1)) + 1);
 
-  return audioRewards[chosenReward];
+  return {
+    attachment: {
+      type: 'template',
+      payload: {
+        template_type: 'open_graph',
+        elements: [{
+          url: audioRewards[chosenReward]
+        }]
+      }
+    }
+  };
 }
 
 /**
