@@ -2,7 +2,7 @@
 
 const request = require('request');
 
-// SETUP A REQUEST TO FACEBOOK SERVER
+// Prepare request to facebook
 const newRequest = request.defaults({
   uri: 'https://graph.facebook.com/v2.6/me/messages',
   method: 'POST',

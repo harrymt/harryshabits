@@ -13,7 +13,7 @@ Tracks habits and gives you rewards from 3 different modalities.
 
 ## Development
 
-- [Now.Sh](https://zeit.co/docs) URL: https://arthur-messenger-bot.now.sh/
+- Done via heroku instead of [Now.Sh](https://zeit.co/docs)
 
 ### Local
 
@@ -35,11 +35,5 @@ EMAIL_PASS=<your email password>
 ### Production
 
 - Add the variables from `.env` to online Travis-CI
-- `now alias https://arthur-messenger-bot-<id>.now.sh arthur-messenger-bot`
+- `git push heroku master`
 - `npm run deploy`
-
-
-## Cron Jobs
-
-- [Online service](https://cron-job.org/en/members/) fires off cron jobs to `/reminders/<timeofday>` at 3 intervals a day and also backups user data
-

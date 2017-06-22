@@ -183,10 +183,9 @@
             console.log('Error sending new fb message');
             console.log(msg); // Log received info
             console.log(data); // Log recieved info
-
           } else if (typeof anotherReply !== 'undefined' && anotherReply !== null) {
             // Check if we want to double message the user
-            setTimeout(function() {
+            setTimeout(() => {
               FB.newMessage(senderFbid, anotherReply, (msg, data) => {
                 if (data.error) {
                   console.log('Error sending new second reply fb message');

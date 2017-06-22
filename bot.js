@@ -96,14 +96,14 @@ const read = function (sender, message, reply) {
         database.updateUser(user, () => {
           // Then reply
           reply(sender,
-              createQuickReply(
-                  'That\'s a good one, what time would you like a reminder to ' + convertToFriendlyName(habit) + '?',
-                  [
-                      'Morning',
-                      'Afternoon',
-                      'Evening'
-                  ]
-              )
+            createQuickReply(
+              'That\'s a good one, what time would you like a reminder to ' + convertToFriendlyName(habit) + '?',
+              [
+                'Morning',
+                'Afternoon',
+                'Evening'
+              ]
+            )
           );
         });
 
@@ -118,14 +118,14 @@ const read = function (sender, message, reply) {
         // Save user information to datastore
         database.updateUser(user, () => {
           reply(sender,
-              createQuickReply(
-                  'Nice, I will remind you in the ' + convertToFriendlyName(timeOfDay) + ', what mode of reward would you like?',
-                  [
-                      'Visual',
-                      'Sound',
-                      'Vibration'
-                  ]
-              )
+            createQuickReply(
+              'Nice, I will remind you in the ' + convertToFriendlyName(timeOfDay) + ', what mode of reward would you like?',
+              [
+                'Visual',
+                'Sound',
+                'Vibration'
+              ]
+            )
           );
         });
       } else if (message.quick_reply.payload === 'PICKED_VISUAL' ||
