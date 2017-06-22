@@ -49,7 +49,7 @@ const updateHabit = (habit, callback) => {
   const callbackHabit = habit;
   delete habit.id;
   console.log('Creating a new row in habit table...');
-  base('Habits').create(habit, function(err, record) {
+  base('Habits').create(habit, (err, record) => {
     if (err) {
       console.error(err);
       throw new Error(err);

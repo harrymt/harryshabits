@@ -182,7 +182,7 @@
     const entry = FB.getMessageEntry(req.body);
 
     // If the message is valid
-    if (entry && entry.message && !entry.message.attachments) {
+    if (entry && entry.message) {
       if (entry.message.quick_reply) {
         console.log('QR> ' + entry.message.quick_reply.payload);
       } else {

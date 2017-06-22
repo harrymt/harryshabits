@@ -108,10 +108,20 @@ const read = function (sender, message, reply) {
           );
         });
 
+      } else if (message.quick_reply.payload === 'PICKED_BACK_TO_MODALITIES') {
+         reply(sender,
+          createQuickReply(
+            'What mode of reward would you like?',
+            [
+              'Visual',
+              'Sound',
+              'Vibration'
+            ]
+          )
+        );
       } else if (message.quick_reply.payload === 'PICKED_MORNING' ||
                  message.quick_reply.payload === 'PICKED_AFTERNOON' ||
-                 message.quick_reply.payload === 'PICKED_EVENING' ||
-                 message.quick_reply.payload === 'PICKED_BACK_TO_MODALITIES') {
+                 message.quick_reply.payload === 'PICKED_EVENING') {
 
         const timeOfDay = message.quick_reply.payload.substring(7);
         user.reminderTime = timeOfDay;
@@ -149,7 +159,7 @@ const read = function (sender, message, reply) {
               },
               {
                 type: 'postback',
-                title: 'Back',
+                title: 'Different Mode',
                 payload: 'PICKED_BACK_TO_MODALITIES'
               }]
             }
