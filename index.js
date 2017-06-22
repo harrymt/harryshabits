@@ -216,6 +216,8 @@
       });
     } else {
       console.log('Invalid entry/message or attachment found.');
+      console.log(entry);
+      console.log(req.body);
     }
 
     res.sendStatus(200);
