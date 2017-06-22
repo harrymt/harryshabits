@@ -74,6 +74,8 @@ function sendReminders() {
 
   const FB = require('../connectors/facebook');
 
+  const database = require('../database');
+
   // Debug Logging!
   console.log('We got a reminder at time: ' + timeOfDay);
 
@@ -101,7 +103,7 @@ function sendReminders() {
           userData.id = record.getId();
           userData.snoozedReminderTime = record.fields.reminderTime;
 
-          Bot.updateUser(userData, () => {
+          database.updateUser(userData, () => {
             FB.newMessage(record.get('fbid'), {
               text: 'You haven\'t logged any time today. Try again tomorrow.'
             },

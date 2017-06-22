@@ -10,81 +10,7 @@ const reminder_times = {
   newDay: 0
 };
 
-const findOrCreateUser = (fbid, callback) => {
-  // Setup online database, airtable
-  const base = require('airtable').base('app5u2vOBmkjxLp4M');
-  console.log('Finding user with fbid ' + fbid);
-
-  base('Users').select({
-    filterByFormula: '({fbid} = "' + fbid + '")'
-  }).eachPage(function page(records, fetchNextPage) {
-    if (records !== undefined && records[0] !== undefined) {
-      const userData = records[0].fields;
-      userData.id = records[0].getId();
-      callback(userData);
-    } else {
-      const userData = {
-        fbid,
-        modality: '',
-        seenBefore: false,
-        reminderTime: '',
-        habit: ''
-      };
-
-      // User doesn't exist, so lets create them
-      base('Users').create(userData, (err, record) => {
-        if (err) {
-          console.error(err);
-          throw new Error(err);
-        }
-        console.log('Created user in database fbid: ' + fbid);
-        userData.id = record.getId();
-        callback(userData);
-      });
-    }
-  }, function done(err) {
-    if (err) {
-      console.error(err);
-      throw new Error(err);
-    }
-  });
-};
-
-const updateHabit = (habit, callback) => {
-  const base = require('airtable').base('app5u2vOBmkjxLp4M');
-  const callbackHabit = habit;
-  delete habit.id;
-  console.log('Creating a new row in habit table...');
-  base('Habits').create(habit, function(err, record) {
-    if (err) {
-      console.error(err);
-      throw new Error(err);
-    }
-    console.log('Added new habit');
-    callbackHabit.id = record.getId();
-    callback(callbackHabit);
-  });
-};
-
-const updateUser = (user, callback) => {
-  const base = require('airtable').base('app5u2vOBmkjxLp4M');
-
-  const callbackUser = user;
-  const userId = user.id;
-  delete user.id;
-
-  console.log('Updating user...');
-  base('Users').update(userId, user, (err, record) => {
-    if (err) {
-      console.error(err);
-      callback(null);
-    }
-    console.log('Updated user to:');
-    console.log(record.fields);
-    callbackUser.id = record.getId();
-    callback(callbackUser);
-  });
-};
+const database = require('./database');
 
 /**
  * Creates a quick reply.
@@ -124,7 +50,7 @@ const convertToFriendlyName = str => {
 
 const read = function (sender, message, reply) {
   // Let's find the user object
-  findOrCreateUser(sender, user => {
+  database.find(sender, user => {
     let messageStart = '';
 
     // If we have seen this user before, send them a greeting
@@ -167,7 +93,7 @@ const read = function (sender, message, reply) {
         user.habit = habit;
 
         // Save user information to datastore
-        updateUser(user, () => {
+        database.updateUser(user, () => {
           // Then reply
           reply(sender,
               createQuickReply(
@@ -190,7 +116,7 @@ const read = function (sender, message, reply) {
         user.snoozedReminderTime = timeOfDay;
 
         // Save user information to datastore
-        updateUser(user, () => {
+        database.updateUser(user, () => {
           reply(sender,
               createQuickReply(
                   'Nice, I will remind you in the ' + convertToFriendlyName(timeOfDay) + ', what mode of reward would you like?',
@@ -209,7 +135,7 @@ const read = function (sender, message, reply) {
         const modality = message.quick_reply.payload.substring(7);
         user.modality = modality;
         // Save user information to datastore
-        updateUser(user, () => {
+        database.updateUser(user, () => {
           reply(sender, {
             text: convertToFriendlyName(modality) + ' rewards are the best! I will drop you a message in the ' + convertToFriendlyName(user.reminderTime) + '!'
           });
@@ -227,7 +153,7 @@ const read = function (sender, message, reply) {
         // Can't snooze if its the night
 
         // Save user information to datastore
-        updateUser(user, () => {
+        database.updateUser(user, () => {
           reply(sender, {
             text: 'Okay I will remind you this ' + convertToFriendlyName(user.snoozedReminderTime) + '!'
           });
@@ -249,8 +175,8 @@ const read = function (sender, message, reply) {
         user.snoozedReminderTime = user.reminderTime;
 
         // Save user information to datastore
-        updateHabit(habit, () => {
-          updateUser(user, () => {
+        database.updateHabit(habit, () => {
+          database.updateUser(user, () => {
             reply(sender, {
               text: 'There is always tomorrow.'
             });
@@ -272,8 +198,8 @@ const read = function (sender, message, reply) {
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
 
-        updateHabit(habit, () => {
-          updateUser(user, () => {
+        database.updateHabit(habit, () => {
+          database.updateUser(user, () => {
             // Send the modality reward!
             if (user.modality === 'VISUAL') {
               reply(sender, {
@@ -323,8 +249,6 @@ function getDifferenceInTimes(baseTime, extendedTime) {
 
 module.exports = {
   read,
-  updateUser,
-  updateHabit,
   convertToFriendlyName,
   createQuickReply,
   time: reminder_times
