@@ -29,8 +29,7 @@ function sendReminders() {
 
   let quickReplyActions = [
     'Completed Habit',
-    'Not Today',
-    'Snooze'
+    'Snooze Reminder'
   ];
 
   // Decide what period of the day it is
