@@ -203,11 +203,11 @@ const read = function (sender, message, reply) {
             // Send the modality reward!
             if (user.modality === 'VISUAL') {
               reply(sender, getVisualReward(), {
-                text: 'Enjoy your reward and I\'ll see you tomorrow!'
+                text: 'Enjoy your reward. I\'ll see you tomorrow!'
               });
             } else if (user.modality === 'SOUND') {
               reply(sender, getAudioReward(), {
-                 text: 'Enjoy the tunes and I\'ll see you tomorrow!'
+                text: 'Enjoy the tunes. I\'ll see you tomorrow!'
               });
             } else if (user.modality === 'VIBRATION') {
               // TODO send fitbit vibration
@@ -215,7 +215,7 @@ const read = function (sender, message, reply) {
               reply(sender, {
                 text: 'Buzz Buzz Buzz.'
               }, {
-                text: 'Enjoy your reward and I\'ll see you tomorrow!'
+                text: 'Enjoy your reward. I\'ll see you tomorrow!'
               });
             }
           });
@@ -230,7 +230,7 @@ const read = function (sender, message, reply) {
  */
 function getAudioReward() {
   const audioRewards = [
-    'https://open.spotify.com/track/2olVm1lHicpveMAo4AUDRB', // power of love
+    'https://open.spotify.com/track/2olVm1lHicpveMAo4AUDRB', // Power of love
     'https://open.spotify.com/track/3fthfkkvy9av3q3uAGVf7U', // Shake it off
     'https://open.spotify.com/track/6Nf1bklus7o9fpKto13nDc', // OK GO, this shall not pass
     'https://open.spotify.com/track/6Lphpr9Z6H282Sguw0dUWa' // Ahh Freak out
@@ -246,6 +246,11 @@ function getAudioReward() {
         template_type: 'open_graph',
         elements: [{
           url: audioRewards[chosenReward]
+        }],
+        buttons: [{
+          type: 'web_url',
+          url: audioRewards[chosenReward],
+          title: 'View Track'
         }]
       }
     }
