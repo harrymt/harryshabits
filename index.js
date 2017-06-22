@@ -173,9 +173,9 @@
       }
 
       // Process the message and decide on the response
-      Bot.read(entry.sender.id, entry.message, (senderFbid, reply) => {
+      Bot.read(entry.sender.id, entry.message, (senderFbid, reply, anotherReply) => {
         console.log('-- from bot to user vv --');
-        console.log(reply);
+        console.log(JSON.stringify(reply));
 
         // Send message to that user
         FB.newMessage(senderFbid, reply, (msg, data) => {
@@ -183,11 +183,21 @@
             console.log('Error sending new fb message');
             console.log(msg); // Log received info
             console.log(data); // Log recieved info
+
+          } else if (typeof anotherReply !== 'undefined' && anotherReply !== null) {
+            // Check if we want to double message the user
+            FB.newMessage(senderFbid, anotherReply, (msg, data) => {
+              if (data.error) {
+                console.log('Error sending new second reply fb message');
+                console.log(msg); // Log received info
+                console.log(data); // Log recieved info
+              }
+            });
           }
         });
       });
     } else {
-      console.log('Invalid entry/message or attachment found.')
+      console.log('Invalid entry/message or attachment found.');
     }
 
     res.sendStatus(200);

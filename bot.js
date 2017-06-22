@@ -202,14 +202,20 @@ const read = function (sender, message, reply) {
           database.updateUser(user, () => {
             // Send the modality reward!
             if (user.modality === 'VISUAL') {
-              reply(sender, getVisualReward());
+              reply(sender, getVisualReward(), {
+                text: 'Enjoy your reward and I\'ll see you tomorrow!'
+              });
             } else if (user.modality === 'SOUND') {
-              reply(sender, getAudioReward());
+              reply(sender, getAudioReward(), {
+                 text: 'Enjoy the tunes and I\'ll see you tomorrow!'
+              });
             } else if (user.modality === 'VIBRATION') {
               // TODO send fitbit vibration
 
               reply(sender, {
                 text: 'Buzz Buzz Buzz.'
+              }, {
+                text: 'Enjoy your reward and I\'ll see you tomorrow!'
               });
             }
           });
