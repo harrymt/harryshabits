@@ -251,7 +251,7 @@ const read = function (sender, message, reply) {
             } else if (user.modality === 'VIBRATION') {
               console.log('Preparing to send a vibration reward for user:');
               console.log(JSON.stringify(user));
-              fitbit.sendVibration(user.fitbitId, user.trackerId, err => {
+              fitbit.sendVibration(user.fitbitId, user.trackerId, user.fitbit_access_token, err => {
                 if (err) {
                   console.log('Failed to send vibration reward to user:');
                   console.log(JSON.stringify(user));
