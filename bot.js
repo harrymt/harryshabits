@@ -159,7 +159,7 @@ const read = function (sender, message, reply) {
               },
               {
                 type: 'postback',
-                title: 'Different Mode',
+                title: 'Back',
                 payload: 'PICKED_BACK_TO_MODALITIES'
               }]
             }
@@ -296,16 +296,17 @@ function getAudioReward() {
         template_type: 'open_graph',
         elements: [{
           url: audioRewards[chosenReward]
-        }],
-        buttons: [{
-          type: 'web_url',
-          url: audioRewards[chosenReward],
-          title: 'View Track'
         }]
       }
     }
   };
 }
+
+//         buttons: [{
+//           type: 'web_url',
+//           url: audioRewards[chosenReward],
+//           title: 'View Track'
+//         }]
 
 /**
  * Wrap a random gif up in an object.
