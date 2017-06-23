@@ -10,6 +10,7 @@
 
   const express = require('express');
   const bodyParser = require('body-parser');
+  const url = require('url');
 
   const FB = require('./connectors/facebook');
   const Bot = require('./bot');
@@ -35,20 +36,20 @@
   });
 
   app.get('/fitbitauth/:fbid', (req, res) => {
-    if (req.params.secret) {
-      // Authenticate with fitbit and save details in database
-      // TODO send request to fitbit with the headers
-      res.send(
-        '<h1>Work in progress</h1>'
-      );
-      // Save fitbitId and trackerId to user object
-
+    if (req.params.fbid) {
+      res.redirect(url.format({
+        pathname: 'https://www.fitbit.com/oauth2/authorize',
+        query: {
+          response_type: 'code',
+          client_id:  process.env.FITBIT_CLIENT_ID,
+          scope: 'settings'
+        }
+      }));
     } else {
       res.send(
         '<h1>Please specify a Facebook ID</h1>'
       );
     }
-
   });
 
   /**
