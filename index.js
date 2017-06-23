@@ -60,11 +60,18 @@
         }
       };
 
+      const trackersGet = {
+        method: 'GET',
+        uri: 'https://api.fitbit.com/oauth2/token',
+        headers: {
+          Authorization: 'Bearer ' + Buffer.from(process.env.FITBIT_CLIENT_ID + ':' + process.env.FITBIT_CLIENT_SECRET).toString('base64')
+        }
+      };
+
       request(options)
         .then(response => {
           console.log(JSON.parse(response));
           const data = JSON.parse(response);
-          // Access user object, then add access token to user, then update user
 
           // Let's find the user object
           database.find(fbid, user => {
@@ -72,34 +79,54 @@
             user.fitbit_refresh_token = data.refresh_token;
             user.fitbit_user_id = data.user_id;
 
-            // Update user
-            database.updateUser(user, () => {
 
-              // Send them the next flow
-              const msg = {
-                text: 'Vibration rewards are all setup. Thanks for connecting with Fitbit! I will remind you in the ' + Bot.convertToFriendlyName(user.reminderTime) + ' about your ' + Bot.convertToFriendlyName(user.habit) + '!'
-              };
+            // Make an API call to get users devices
+            request(trackersGet).then(trackerResponse => {
+              const trackerData = JSON.parse(trackerResponse);
+              console.log(trackerData);
 
-              // Send them the next message, then close the web view
-              FB.newMessage(fbid, msg, (msg, data) => {
-                if (data.error) {
-                  console.log('Error sending new fb message');
-                  console.log(msg); // Log received info
-                  console.log(data); // Log recieved info
-                } else {
-                  res.send(
-                    '<script>' +
-                    '(function(d, s, id){' +
-                    '  var js, fjs = d.getElementsByTagName(s)[0];' +
-                    '  if (d.getElementById(id)) {return;}' +
-                    '  js = d.createElement(s); js.id = id;' +
-                    '  js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";' +
-                    '  fjs.parentNode.insertBefore(js, fjs);' +
-                    '}(document, "script", "Messenger"));' +
-                    '</script>' +
-                    '<h1>Successfully connected with Fitbit!</h1><script>window.extAsyncInit = function() {MessengerExtensions.requestCloseBrowser();};</script>'
-                  );
-                }
+              if (trackerData.length > 1) {
+                // Need to select a tracker
+                console.log('They have more than 1 tracker :(');
+                // TODO implement multiple tracker selection
+                res.send('<h1>You have more than 1 tracker...this is unsupported</h1>');
+              } else if (trackerData.length == 0) {
+                console.log('They don\'t have a fitbit ...');
+                res.send('<h1>No Fitbit found</h1>');
+              }
+
+              // Set tracker id
+              user.fitbit_tracker_id = trackerData.[0].id;
+
+              // Update user
+              database.updateUser(user, () => {
+
+                // Send them the next flow
+                const msg = {
+                  text: 'Vibration rewards are all setup. Thanks for connecting with Fitbit! I will remind you in the ' + Bot.convertToFriendlyName(user.reminderTime) + ' about your ' + Bot.convertToFriendlyName(user.habit) + '!'
+                };
+
+                // Send them the next message, then close the web view
+                FB.newMessage(fbid, msg, (msg, data) => {
+                  if (data.error) {
+                    console.log('Error sending new fb message');
+                    console.log(msg); // Log received info
+                    console.log(data); // Log recieved info
+                  } else {
+                    res.send(
+                      '<script>' +
+                      '(function(d, s, id){' +
+                      '  var js, fjs = d.getElementsByTagName(s)[0];' +
+                      '  if (d.getElementById(id)) {return;}' +
+                      '  js = d.createElement(s); js.id = id;' +
+                      '  js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";' +
+                      '  fjs.parentNode.insertBefore(js, fjs);' +
+                      '}(document, "script", "Messenger"));' +
+                      '</script>' +
+                      '<h1>Successfully connected with Fitbit!</h1><script>window.extAsyncInit = function() {MessengerExtensions.requestCloseBrowser();};</script>'
+                    );
+                  }
+                });
               });
             });
           });
