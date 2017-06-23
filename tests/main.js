@@ -39,6 +39,15 @@
       if (isError) {
         throw new Error('Test choose time failed.');
       }
+      testChooseButtonBack();
+    });
+  }
+
+  function testChooseButtonBack() {
+    require('./choose-button-back')(isError => {
+      if (isError) {
+        throw new Error('Test choose button back failed.');
+      }
       testChooseModality();
     });
   }
