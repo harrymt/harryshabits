@@ -77,7 +77,7 @@
 
               // Send them the next flow
               const msg = {
-                text: Bot.convertToFriendlyName(modality) + ' rewards are all setup. Thanks for connecting with Fitbit! I will remind you in the ' + Bot.convertToFriendlyName(user.reminderTime) + ' about your ' + convertToFriendlyName(user.habit) + '!'
+                text: 'Vibration rewards are all setup. Thanks for connecting with Fitbit! I will remind you in the ' + Bot.convertToFriendlyName(user.reminderTime) + ' about your ' + Bot.convertToFriendlyName(user.habit) + '!'
               };
 
               // Send them the next message, then close the web view
