@@ -81,27 +81,25 @@
               };
 
               // Send them the next message, then close the web view
-              Bot.read(fbid, msg, (senderFbid, reply) => {
-                FB.newMessage(fbid, reply, (msg, data) => {
-                  if (data.error) {
-                    console.log('Error sending new fb message');
-                    console.log(msg); // Log received info
-                    console.log(data); // Log recieved info
-                  } else {
-                    res.send(
-                      '<script>' +
-                      '(function(d, s, id){' +
-                      '  var js, fjs = d.getElementsByTagName(s)[0];' +
-                      '  if (d.getElementById(id)) {return;}' +
-                      '  js = d.createElement(s); js.id = id;' +
-                      '  js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";' +
-                      '  fjs.parentNode.insertBefore(js, fjs);' +
-                      '}(document, "script", "Messenger"));' +
-                      '</script>' +
-                      '<h1>Successfully connected with Fitbit!</h1><script>window.extAsyncInit = function() {MessengerExtensions.requestCloseBrowser();};</script>'
-                    );
-                  }
-                });
+              FB.newMessage(fbid, msg, (msg, data) => {
+                if (data.error) {
+                  console.log('Error sending new fb message');
+                  console.log(msg); // Log received info
+                  console.log(data); // Log recieved info
+                } else {
+                  res.send(
+                    '<script>' +
+                    '(function(d, s, id){' +
+                    '  var js, fjs = d.getElementsByTagName(s)[0];' +
+                    '  if (d.getElementById(id)) {return;}' +
+                    '  js = d.createElement(s); js.id = id;' +
+                    '  js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";' +
+                    '  fjs.parentNode.insertBefore(js, fjs);' +
+                    '}(document, "script", "Messenger"));' +
+                    '</script>' +
+                    '<h1>Successfully connected with Fitbit!</h1><script>window.extAsyncInit = function() {MessengerExtensions.requestCloseBrowser();};</script>'
+                  );
+                }
               });
             });
           });
