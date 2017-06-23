@@ -180,6 +180,7 @@
 
     // Extract message content
     const entry = FB.getMessageEntry(req.body);
+    console.log(entry);
 
     // If the message is valid
     if (entry && entry.message) {
@@ -218,7 +219,7 @@
       console.log('Invalid entry/message or attachment found.');
       console.log(JSON.stringify(entry));
       console.log(JSON.stringify(req.body));
-      process.exit(1);
+      // process.exit(1);
     }
 
     res.sendStatus(200);
