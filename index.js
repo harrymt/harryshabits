@@ -10,7 +10,7 @@
 
   const express = require('express');
   const bodyParser = require('body-parser');
-  const url = require('url');
+  const database = require('./database');
 
   const FB = require('./connectors/facebook');
   const Bot = require('./bot');
@@ -35,16 +35,67 @@
     }
   });
 
+  /**
+   *
+   */
+  app.get('/fitbit', (req, res) => {
+    if (req.query.state && req.query.code) {
+      // Extract FBID
+      const fbid = req.query.state;
+
+      // Send request to get the access token
+      const request = require('request-promise');
+      const options = {
+        method: 'POST',
+        uri: 'https://api.fitbit.com/oauth2/token',
+        qs: {
+          clientId: process.env.FITBIT_CLIENT_ID,
+          grant_type: 'authorization_code',
+          redirect_uri: 'https%3A%2F%2Finfinite-falls-46264.herokuapp.com%2Ffitbit',
+          code: req.query.code
+        },
+        headers: {
+          Authorization: 'Basic ' + Buffer.from(process.env.FITBIT_CLIENT_ID + ':' + process.env.FITBIT_CLIENT_SECRET).toString('base64'),
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      };
+
+      request(options)
+        .then(response => {
+          console.log(response);
+          // Access user object, then add access token to user, then update user
+
+          // Let's find the user object
+          database.find(fbid, user => {
+            user.fitbit_access_token = response.access_token;
+            user.fitbit_refresh_token = response.refresh_token;
+            user.fitbit_user_id = response.user_id;
+
+            // Update user
+            database.updateUser(user, () => {
+              res.send(
+                '<h1>Successfully connected with Fitbit!</h1>' + '<script>MessengerExtensions.requestCloseBrowser();</script>'
+              );
+            });
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          res.send(JSON.stringify(req) + '\n' + JSON.stringify(res) + '\n' + JSON.stringify(err));
+        });
+    } else {
+      res.send(
+        '<h1>Please verify with Fitbit.</h1>'
+      );
+    }
+  });
+
+  /**
+   * Authenticate user with Fitbit using users facebook id.
+   */
   app.get('/fitbitauth/:fbid', (req, res) => {
     if (req.params.fbid) {
-      res.redirect(url.format({
-        pathname: 'https://www.fitbit.com/oauth2/authorize',
-        query: {
-          response_type: 'code',
-          client_id:  process.env.FITBIT_CLIENT_ID,
-          scope: 'settings'
-        }
-      }));
+      res.redirect('https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=228F68&redirect_uri=https%3A%2F%2Finfinite-falls-46264.herokuapp.com%2Ffitbit&state=' + req.params.fbid + '&scope=settings&expires_in=3196800');
     } else {
       res.send(
         '<h1>Please specify a Facebook ID</h1>'
@@ -220,7 +271,6 @@
       console.log('Invalid entry/message or attachment found.');
       console.log(JSON.stringify(entry));
       console.log(JSON.stringify(req.body));
-      // process.exit(1);
     }
 
     res.sendStatus(200);
