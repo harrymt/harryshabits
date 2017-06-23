@@ -216,7 +216,7 @@
       });
     } else {
       console.log('Invalid entry/message or attachment found.');
-      console.log(entry);
+      console.log(JSON.stringify(entry));
       console.log(JSON.stringify(req.body));
       process.exit(1);
     }
