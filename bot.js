@@ -182,7 +182,8 @@ const read = function (sender, message, reply) {
                   buttons: [{
                     type: 'web_url',
                     url: myFitbitURL,
-                    title: 'Connect to Fitbit'
+                    title: 'Connect to Fitbit',
+                    "messenger_extensions": true
                   },
                   {
                     type: 'postback',
