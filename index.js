@@ -60,7 +60,6 @@
         }
       };
 
-
       request(options)
         .then(response => {
           console.log(JSON.parse(response));
@@ -74,7 +73,7 @@
 
             const trackersGet = {
               method: 'GET',
-              uri: 'https://api.fitbit.com/oauth2/token',
+              uri: 'https://api.fitbit.com/1/user/' + user.fitbit_user_id + '/devices.json',
               headers: {
                 Authorization: 'Bearer ' + user.fitbit_access_token
               }
