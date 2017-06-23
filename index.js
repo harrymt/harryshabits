@@ -60,13 +60,6 @@
         }
       };
 
-      const trackersGet = {
-        method: 'GET',
-        uri: 'https://api.fitbit.com/oauth2/token',
-        headers: {
-          Authorization: 'Bearer ' + Buffer.from(process.env.FITBIT_CLIENT_ID + ':' + process.env.FITBIT_CLIENT_SECRET).toString('base64')
-        }
-      };
 
       request(options)
         .then(response => {
@@ -79,7 +72,13 @@
             user.fitbit_refresh_token = data.refresh_token;
             user.fitbit_user_id = data.user_id;
 
-
+            const trackersGet = {
+              method: 'GET',
+              uri: 'https://api.fitbit.com/oauth2/token',
+              headers: {
+                Authorization: 'Bearer ' + user.fitbit_access_token
+              }
+            };
             // Make an API call to get users devices
             request(trackersGet).then(trackerResponse => {
               const trackerData = JSON.parse(trackerResponse);
