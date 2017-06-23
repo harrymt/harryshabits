@@ -48,10 +48,10 @@
       const options = {
         method: 'POST',
         uri: 'https://api.fitbit.com/oauth2/token',
-        qs: {
+        form: {
           clientId: process.env.FITBIT_CLIENT_ID,
           grant_type: 'authorization_code',
-          redirect_uri: 'https%3A%2F%2Finfinite-falls-46264.herokuapp.com%2Ffitbit',
+          redirect_uri: 'https://infinite-falls-46264.herokuapp.com/fitbit',
           code: req.query.code
         },
         headers: {
