@@ -144,55 +144,27 @@ const read = function (sender, message, reply) {
 
       } else if (message.quick_reply.payload === 'PICKED_VIBRATION') {
 
-        // Whitelist our domain first, so we can auto-close the webview after authentication
-        const newRequest = request.defaults({
-          uri: 'https://graph.facebook.com/v2.6/me/messenger_profile',
-          method: 'POST',
-          json: true,
-          qs: {
-            access_token: process.env.FB_PAGE_TOKEN
-          },
-          form: {
-            whitelisted_domains: [
-              'https://infinite-falls-46264.herokuapp.com'
-            ]
-          },
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
+        // Send them the fitbit connect modal
+        const myFitbitURL = 'https://infinite-falls-46264.herokuapp.com/fitbitauth/' + user.fbid;
 
-        newRequest((err, resp, data) => {
-          if (err) {
-            console.log(data);
-            console.log(resp);
-            console.log(err);
-          } else {
-            console.log('Successfully whitelisted domain!');
-
-            // Send them the fitbit connect modal
-            const myFitbitURL = 'https://infinite-falls-46264.herokuapp.com/fitbitauth/' + user.fbid;
-
-            reply(sender, {
-              attachment: {
-                type: 'template',
-                payload: {
-                  template_type: 'button',
-                  text: 'To enable Vibration rewards, you must have a FitBit. Would you like to connect to Fitbit?',
-                  buttons: [{
-                    type: 'web_url',
-                    url: myFitbitURL,
-                    title: 'Connect to Fitbit',
-                    "messenger_extensions": true
-                  },
-                  {
-                    type: 'postback',
-                    title: 'Back',
-                    payload: 'PICKED_BACK_TO_MODALITIES'
-                  }]
-                }
-              }
-            });
+        reply(sender, {
+          attachment: {
+            type: 'template',
+            payload: {
+              template_type: 'button',
+              text: 'To enable Vibration rewards, you must have a FitBit. Would you like to connect to Fitbit?',
+              buttons: [{
+                type: 'web_url',
+                url: myFitbitURL,
+                title: 'Connect to Fitbit',
+                messenger_extensions: true
+              },
+              {
+                type: 'postback',
+                title: 'Back',
+                payload: 'PICKED_BACK_TO_MODALITIES'
+              }]
+            }
           }
         });
 
