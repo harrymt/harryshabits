@@ -90,13 +90,13 @@
                 console.log('They have more than 1 tracker :(');
                 // TODO implement multiple tracker selection
                 res.send('<h1>You have more than 1 tracker...this is unsupported</h1>');
-              } else if (trackerData.length == 0) {
+              } else if (trackerData.length === 0) {
                 console.log('They don\'t have a fitbit ...');
                 res.send('<h1>No Fitbit found</h1>');
               }
 
               // Set tracker id
-              user.fitbit_tracker_id = trackerData.[0].id;
+              user.fitbit_tracker_id = trackerData[0].id;
 
               // Update user
               database.updateUser(user, () => {
@@ -128,11 +128,15 @@
                   }
                 });
               });
+            }).catch(err => {
+              console.log(err);
+              res.send(err);
             });
           });
         })
         .catch(err => {
           console.log(err);
+          res.send(err);
         });
     } else {
       res.send(
