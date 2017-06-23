@@ -34,6 +34,7 @@ module.exports = {
   },
 
   getMessageEntry(body) {
+    console.log(body);
     const val = body.object === 'page' &&
               body.entry &&
               Array.isArray(body.entry) &&

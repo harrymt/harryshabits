@@ -182,8 +182,8 @@
     const entry = FB.getMessageEntry(req.body);
 
     // If the message is valid
-    if (entry) {
-      if (entry.message.quick_reply) {
+    if (entry && entry.message) {
+      if (entry.message && entry.message.quick_reply) {
         console.log('QR> ' + entry.message.quick_reply.payload);
       } else {
         console.log('MSG> ' + entry.message.text);
