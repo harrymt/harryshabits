@@ -4,8 +4,6 @@ const request = require('request');
 
 module.exports = {
 
-
-
   sendVibration(userId, trackerId, callback) {
     console.log('Sending vibration to user: ' + userId + ' tracker: ' + trackerId);
 

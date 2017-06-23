@@ -182,7 +182,7 @@
     const entry = FB.getMessageEntry(req.body);
 
     // If the message is valid
-    if (entry && entry.message) {
+    if (entry) {
       if (entry.message.quick_reply) {
         console.log('QR> ' + entry.message.quick_reply.payload);
       } else {
@@ -217,7 +217,8 @@
     } else {
       console.log('Invalid entry/message or attachment found.');
       console.log(entry);
-      console.log(req.body);
+      console.log(JSON.stringify(req.body));
+      process.exit(1);
     }
 
     res.sendStatus(200);

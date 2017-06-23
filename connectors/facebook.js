@@ -43,7 +43,14 @@ module.exports = {
               Array.isArray(body.entry[0].messaging) &&
               body.entry[0].messaging.length > 0 &&
               body.entry[0].messaging[0];
-
+    // If its a button postback, make it seem like a quick reply has been chosen for ease
+    if (val.postback) {
+      val.message = {
+        quick_replies: {
+          payload: val.postback.payload
+        }
+      };
+    }
     return val || null;
   }
 };
