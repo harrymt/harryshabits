@@ -62,14 +62,15 @@
 
       request(options)
         .then(response => {
-          console.log(response);
+          console.log(JSON.parse(response));
+          const data = JSON.parse(response);
           // Access user object, then add access token to user, then update user
 
           // Let's find the user object
           database.find(fbid, user => {
-            user.fitbit_access_token = response.access_token;
-            user.fitbit_refresh_token = response.refresh_token;
-            user.fitbit_user_id = response.user_id;
+            user.fitbit_access_token = data.access_token;
+            user.fitbit_refresh_token = data.refresh_token;
+            user.fitbit_user_id = data.user_id;
 
             // Update user
             database.updateUser(user, () => {
