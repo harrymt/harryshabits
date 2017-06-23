@@ -2,6 +2,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dee0a3c7a16a4276b47c27751959c6a6)](https://www.codacy.com/app/harrymt/habit-reward-chatbot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=harrymt/habit-reward-chatbot&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/harrymt/habit-reward-chatbot/badge.svg?branch=master)](https://coveralls.io/github/harrymt/habit-reward-chatbot?branch=master)
 [![Build Status](https://travis-ci.org/harrymt/habit-reward-chatbot.svg?branch=master)](https://travis-ci.org/harrymt/habit-reward-chatbot)
+[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/codeclimate/codeclimate)
 
 ## Arthur - A Messenger Chatbot
 
