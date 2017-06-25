@@ -12,6 +12,7 @@
 
     app.use(function (req, res, next) {
       require('./process-scss').srcToDist('reward-style', 'reward-style');
+      require('./process-scss').srcToDist('main', 'main');
       next();
     });
   }
@@ -37,10 +38,10 @@
 
   // Index page
   app.get('/', (req, res) => {
-    res.send(
-      '<h1>Version ' + require('./package.json').version + '</h1>' +
-      '<p>nodejs server, index page .... hello world i am a chat bot'
-    );
+    res.render('index', {
+      version: require('./package.json').version,
+      name: 'Arthur Bot'
+    });
   });
 
   /**
