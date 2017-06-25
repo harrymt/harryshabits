@@ -13,6 +13,7 @@
     app.use(function (req, res, next) {
       require('./process-scss').srcToDist('reward-style', 'reward-style');
       require('./process-scss').srcToDist('main', 'main');
+      console.log((new Date()).toUTCString() + ' | Processed sass files.');
       next();
     });
   }
