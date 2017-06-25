@@ -253,7 +253,7 @@ const read = function (sender, message, reply) {
                   buttons: [{
                     type: 'web_url',
                     url: rewardURL,
-                    title: 'Reveal Reward',
+                    title: 'Prepare Reward',
                     messenger_extensions: true,
                     webview_height_ratio: 'compact'
                   }]
