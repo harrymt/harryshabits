@@ -37,6 +37,15 @@
   app.use(['/fitbit', '/fitbitauth'], require('./routes/fitbit-auth'));
   app.use('/email', require('./routes/email'));
 
+  app.get(['/reminders/:timeOfDay', '/reminders'], (req, res) => {
+    if (req.params.timeOfDay) {
+      const t = req.params.timeOfDay.toUpperCase();
+      require('./reminders').sendReminders(t);
+    } else {
+      require('./reminders').sendReminders();
+    }
+  });
+
   // Index page
   app.get('/', (req, res) => {
     res.render('index', {
