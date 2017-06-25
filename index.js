@@ -3,28 +3,33 @@
 (function () {
   'use strict';
 
+  const express = require('express');
+  const app = express();
+
   // Load the .env file, that sets process.env.
   if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load();
+
+    app.use(function (req, res, next) {
+      require('./process-scss').srcToDist('reward-style', 'reward-style');
+      next();
+    });
   }
 
-  const express = require('express');
-  const bodyParser = require('body-parser');
+  // Start server
+  const serverInstance = app.listen(process.env.PORT, () => {
+    console.log('> Running on port', process.env.PORT);
+  });
 
   const database = require('./database');
   const FB = require('./connectors/facebook');
   const Bot = require('./bot');
 
-  const app = express();
-  const serverInstance = app.listen(process.env.PORT, () => {
-    console.log('> Running on port', process.env.PORT);
-  });
-
   // View engine setup.
   app.set('views', './views');
   app.set('view engine', 'pug');
 
-  app.use(bodyParser.json());
+  app.use(require('body-parser').json());
   app.use(express.static('./public'));
   app.use('/rewards', require('./routes/rewards'));
   app.use(['/fitbit', '/fitbitauth'], require('./routes/fitbit-auth'));

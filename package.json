@@ -34,5 +34,8 @@
   },
   "xo": {
     "space": true
+  },
+  "devDependencies": {
+    "node-sass": "^4.5.3"
   }
 }
