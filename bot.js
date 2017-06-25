@@ -157,7 +157,8 @@ const read = function (sender, message, reply) {
                 type: 'web_url',
                 url: myFitbitURL,
                 title: 'Connect to Fitbit',
-                messenger_extensions: true
+                messenger_extensions: true,
+                sharable: false
               },
               {
                 type: 'postback',
@@ -239,100 +240,67 @@ const read = function (sender, message, reply) {
 
         database.updateHabit(habit, () => {
           database.updateUser(user, () => {
-            // Send the modality reward!
-            if (user.modality === 'VISUAL') {
-              reply(sender, getVisualReward(), {
-                text: 'Enjoy your reward. I\'ll see you tomorrow!'
-              });
-            } else if (user.modality === 'SOUND') {
-              reply(sender, getAudioReward(), {
-                text: 'Enjoy the tunes. I\'ll see you tomorrow!'
-              });
-            } else if (user.modality === 'VIBRATION') {
-              console.log('Preparing to send a vibration reward for user:');
-              console.log(JSON.stringify(user));
-              fitbit.sendVibration(user.fitbitId, user.trackerId, user.fitbit_access_token, err => {
-                if (err) {
-                  console.log('Failed to send vibration reward to user:');
-                  console.log(JSON.stringify(user));
-                  console.log(err);
-                  // TODO remove this reply
-                  reply(sender, {
-                    text: JSON.stringify(err)
-                  });
-                } else {
-                  console.log('Vibration reward sent.');
-                  reply(sender, {
-                    text: 'Buzz Buzz Buzz.'
-                  }, {
-                    text: 'Enjoy your reward. I\'ll see you tomorrow!'
-                  });
+
+            const rewardURL = 'https://infinite-falls-46264.herokuapp.com/reward/' + String(user.modality).toLowerCase();
+
+            reply(sender, {
+              attachment: {
+                type: 'template',
+                payload: {
+                  template_type: 'button',
+                  text: 'Your ' + convertToFriendlyName(user.modality) + ' is waiting...',
+                  buttons: [{
+                    type: 'web_url',
+                    url: rewardURL,
+                    title: 'Reveal Reward',
+                    messenger_extensions: true,
+                    sharable: false,
+                    webview_height_ratio: 'compact'
+                  }]
                 }
-              });
-            }
+              }
+            }, {
+              text: 'Enjoy your reward. I\'ll see you tomorrow!'
+            });
+
+
+            // // Send the modality reward!
+            // if (user.modality === 'VISUAL') {
+            //   reply(sender, getVisualReward(), {
+            //     text: 'Enjoy your reward. I\'ll see you tomorrow!'
+            //   });
+            // } else if (user.modality === 'SOUND') {
+            //   reply(sender, getAudioReward(), {
+            //     text: 'Enjoy the tunes. I\'ll see you tomorrow!'
+            //   });
+            // } else if (user.modality === 'VIBRATION') {
+            //   console.log('Preparing to send a vibration reward for user:');
+            //   console.log(JSON.stringify(user));
+            //   fitbit.sendVibration(user.fitbitId, user.trackerId, user.fitbit_access_token, err => {
+            //     if (err) {
+            //       console.log('Failed to send vibration reward to user:');
+            //       console.log(JSON.stringify(user));
+            //       console.log(err);
+            //       // TODO remove this reply
+            //       reply(sender, {
+            //         text: JSON.stringify(err)
+            //       });
+            //     } else {
+            //       console.log('Vibration reward sent.');
+            //       reply(sender, {
+            //         text: 'Buzz Buzz Buzz.'
+            //       }, {
+            //         text: 'Enjoy your reward. I\'ll see you tomorrow!'
+            //       });
+            //     }
+            //   });
+            // }
           });
         });
       }
     }
   });
 };
-
-/**
- * Choose a random audio reward and wrap it up into an object ready to send.
- */
-function getAudioReward() {
-  const audioRewards = [
-    'https://open.spotify.com/track/2olVm1lHicpveMAo4AUDRB', // Power of love
-    'https://open.spotify.com/track/3fthfkkvy9av3q3uAGVf7U', // Shake it off
-    'https://open.spotify.com/track/6Nf1bklus7o9fpKto13nDc', // OK GO, this shall not pass
-    'https://open.spotify.com/track/6Lphpr9Z6H282Sguw0dUWa' // Ahh Freak out
-  ];
-
-  // Choose a random reward
-  const chosenReward = Math.floor((Math.random() * (audioRewards.length - 1)) + 1);
-
-  return {
-    attachment: {
-      type: 'template',
-      payload: {
-        template_type: 'open_graph',
-        elements: [{
-          url: audioRewards[chosenReward]
-        }]
-      }
-    }
-  };
-}
-
-//         buttons: [{
-//           type: 'web_url',
-//           url: audioRewards[chosenReward],
-//           title: 'View Track'
-//         }]
-
-/**
- * Wrap a random gif up in an object.
- */
-function getVisualReward() {
-  const visualRewards = [
-    'https://media.giphy.com/media/XreQmk7ETCak0/giphy.gif', // Boy at computer, thumbs up
-    'https://media.giphy.com/media/XreQmk7ETCak0/giphy.gif', // Gameshow host celebrating
-    'https://media.giphy.com/media/oGO1MPNUVbbk4/giphy.gif', // Small boy thumbs up
-    'https://media.giphy.com/media/uudzUtVcsLAoo/giphy.gif' // Baseballer fist success
-  ];
-
-  // Choose a random reward
-  const chosenReward = Math.floor((Math.random() * (visualRewards.length - 1)) + 1);
-
-  return {
-    attachment: {
-      type: 'image',
-      payload: {
-        url: visualRewards[chosenReward]
-      }
-    }
-  };
-}
 
 function getDifferenceInTimes(baseTime, extendedTime) {
   if (baseTime === 'MORNING' && extendedTime === 'MORNING') {

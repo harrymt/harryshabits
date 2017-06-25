@@ -8,7 +8,8 @@ module.exports = {
     console.log('Sending vibration to user: ' + userId + ' tracker: ' + trackerId);
 
     // TODO remove, add another hour for BST
-    const reminderHour = new Date(); reminderHour.setHours(reminderHour.getHours() + 1);
+    const reminderHour = new Date();
+    reminderHour.setHours(reminderHour.getHours() + 1);
     const strReminderTime = reminderHour + ':' + reminderHour.getUTCMinutes();
 
     const anotherReq = request.defaults({
