@@ -20,8 +20,12 @@
     console.log('> Running on port', process.env.PORT);
   });
 
-  app.use(bodyParser.json());
+  // View engine setup.
+  app.set('views', './views');
+  app.set('view engine', 'pug');
 
+  app.use(bodyParser.json());
+  app.use(express.static('./public'));
   app.use('/rewards', require('./routes/rewards'));
   app.use(['/fitbit', '/fitbitauth'], require('./routes/fitbit-auth'));
   app.use('/email', require('./routes/email'));
