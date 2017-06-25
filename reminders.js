@@ -44,7 +44,7 @@ const sendReminders = (timePeriod) => {
       // Not time todo things
       console.log('Not time to send reminders... time: ' + dayHour + ' date: ' + (new Date()).toUTCString());
       console.log('Reminder times are: ' + JSON.stringify(Bot.time));
-      process.exit();
+      return;
     }
   }
 
@@ -131,7 +131,7 @@ const sendReminders = (timePeriod) => {
       throw new Error(err);
     }
     console.log('Sent ' + timeOfDay + ' reminders to ' + i + ' users.');
-    process.exit();
+    return;
   });
 }
 

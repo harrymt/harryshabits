@@ -36,3 +36,5 @@ if (!hasSent) {
   // Actually send the reminders here
   require('../reminders').sendReminders();
 }
+
+process.exit();
