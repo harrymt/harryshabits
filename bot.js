@@ -153,12 +153,12 @@ const read = function (sender, message, reply) {
             payload: {
               template_type: 'button',
               text: 'To enable Vibration rewards, you must have a FitBit. Would you like to connect to Fitbit?',
+              sharable: false,
               buttons: [{
                 type: 'web_url',
                 url: myFitbitURL,
                 title: 'Connect to Fitbit',
-                messenger_extensions: true,
-                sharable: false
+                messenger_extensions: true
               },
               {
                 type: 'postback',
@@ -249,12 +249,12 @@ const read = function (sender, message, reply) {
                 payload: {
                   template_type: 'button',
                   text: 'Your ' + convertToFriendlyName(user.modality) + ' is waiting...',
+                  sharable: false,
                   buttons: [{
                     type: 'web_url',
                     url: rewardURL,
                     title: 'Reveal Reward',
                     messenger_extensions: true,
-                    sharable: false,
                     webview_height_ratio: 'compact'
                   }]
                 }
