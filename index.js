@@ -40,9 +40,13 @@
   app.get(['/reminders/:timeOfDay', '/reminders'], (req, res) => {
     if (req.params.timeOfDay) {
       const t = req.params.timeOfDay.toUpperCase();
-      require('./reminders').sendReminders(t);
+      require('./reminders').sendReminders(t, success => {
+        res.send(success);
+      });
     } else {
-      require('./reminders').sendReminders();
+      require('./reminders').sendReminders(null, success => {
+        res.send(success);
+      });
     }
   });
 

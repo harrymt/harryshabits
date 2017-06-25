@@ -8,7 +8,7 @@ const Bot = require('./bot');
  * Optional parameter to override the time of day.
  * 'MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'
  */
-const sendReminders = (timePeriod) => {
+const sendReminders = (timePeriod, callback) => {
   let quickReplyActions = [
     'Completed Habit',
     'Snooze Reminder'
@@ -44,6 +44,7 @@ const sendReminders = (timePeriod) => {
       // Not time todo things
       console.log('Not time to send reminders... time: ' + dayHour + ' date: ' + (new Date()).toUTCString());
       console.log('Reminder times are: ' + JSON.stringify(Bot.time));
+      callback({ timeToSend: false, sent: 0, time: timeOfDay });
       return;
     }
   }
@@ -81,7 +82,6 @@ const sendReminders = (timePeriod) => {
       if (record.fields.habit === undefined) {
         console.log('User hasn\'t told us their habit');
         console.log('Looking for next user');
-        fetchNextPage();
       } else {
         if (quickReplyActions === null) {
           console.log('Sending final nightime messages');
@@ -102,7 +102,6 @@ const sendReminders = (timePeriod) => {
                 console.log(data); // Log recieved info
               }
               console.log('Looking for next user');
-              fetchNextPage();
             });
           });
         } else {
@@ -119,7 +118,6 @@ const sendReminders = (timePeriod) => {
                 console.log(data); // Log recieved info
               }
               console.log('Looking for next user');
-              fetchNextPage();
             }
           );
         }
@@ -127,11 +125,12 @@ const sendReminders = (timePeriod) => {
     });
   }, function done(err) {
     if (err) {
-      console.error(err);
-      throw new Error(err);
+      console.log(err);
+      callback({ sent: i, time: timeOfDay, failure: true });
+    } else {
+      console.log('Sent ' + timeOfDay + ' reminders to ' + i + ' users.');
+      callback({ sent: i, time: timeOfDay });
     }
-    console.log('Sent ' + timeOfDay + ' reminders to ' + i + ' users.');
-    return;
   });
 }
 

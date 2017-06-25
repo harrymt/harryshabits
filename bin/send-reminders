@@ -21,20 +21,18 @@ request(options)
     sendReminders();
   });
 
-let hasSent = false;
-
 // Check if debug args are passed into function
 process.argv.forEach((val, index) => {
   if (index === 2) {
     // Actually send the reminders here
-    require('../reminders').sendReminders(val);
-    hasSent = true;
+    require('../reminders').sendReminders(val, success => {
+      console.log(success);
+      process.exit();
+    });
   }
 });
 
-if (!hasSent) {
-  // Actually send the reminders here
-  require('../reminders').sendReminders();
-}
-
-process.exit();
+// Actually send the reminders here
+require('../reminders').sendReminders(null, success => {
+  process.exit();
+});
