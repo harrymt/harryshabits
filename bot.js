@@ -241,7 +241,7 @@ const read = function (sender, message, reply) {
         database.updateHabit(habit, () => {
           database.updateUser(user, () => {
 
-            const rewardURL = 'https://infinite-falls-46264.herokuapp.com/reward/' + String(user.modality).toLowerCase();
+            const rewardURL = 'https://infinite-falls-46264.herokuapp.com/rewards/' + String(user.modality).toLowerCase();
 
             reply(sender, {
               attachment: {

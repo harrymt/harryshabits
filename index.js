@@ -77,7 +77,7 @@
                   console.log(data); // Log recieved info
                 }
               });
-            }, 2000); // 2 second gap between messages
+            }, 5000); // 5 second gap between messages
           }
         });
       });
