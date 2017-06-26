@@ -21,3 +21,12 @@ window.onload = function () {
     }
   });
 };
+
+window.onbeforeunload = function (event) {
+  // Sound modality
+  const sound = document.getElementById('reward-audio');
+
+  if (sound !== null) {
+    sound.pause();
+  }
+};
