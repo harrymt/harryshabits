@@ -30,6 +30,7 @@ EMAIL_PASS=<your email password>
 - `npm test && npm start`
 
 - Note you will have to manually send a curl to [whitelist your domain](https://developers.facebook.com/docs/messenger-platform/webview/extensions).
+- Note you will have to manually create a [Get Started Button](https://developers.facebook.com/docs/messenger-platform/messenger-profile/get-started-button)
 
 
 #### Deployment
