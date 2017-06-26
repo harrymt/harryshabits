@@ -2,9 +2,10 @@
 body {
   background-color: #222;
   color: #fefefe;
-  margin: 30px auto;
+  margin: 0 auto;
   padding-left: 30px;
   padding-right: 30px;
+  padding-top: 10px;
 }
 
 .btn {
@@ -21,7 +22,9 @@ body {
 }
 
 img {
-  width: 100%;
+  display: block;
+  margin: 0 auto;
+  width: 90%;
 }
 
 .container {
