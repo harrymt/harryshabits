@@ -96,11 +96,11 @@ const read = function (sender, message, reply) {
           );
         } else {
           // If users are trying to tell us to mark thier habit as completed, then issue the completed dialog
-          if (String(message.text.toLowerCase()).includes('track') ||
+          if (message.text && (String(message.text.toLowerCase()).includes('track') ||
               String(message.text.toLowerCase()).includes('mark') ||
               String(message.text.toLowerCase()).includes('habit') ||
               String(message.text.toLowerCase()).includes('complete') ||
-              String(message.text.toLowerCase()).includes('did it')) {
+              String(message.text.toLowerCase()).includes('did it'))) {
 
               // Check if users have already completd their habit today
             database.hasUserCompletedHabit(user, hasCompleted => {
