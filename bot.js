@@ -92,7 +92,7 @@ const read = function (sender, message, reply) {
                 'Meditate',
                 'Drink Water'
               ]
-            );
+            )
           );
         } else {
           // If users are trying to tell us to mark thier habit as completed, then issue the completed dialog
@@ -114,7 +114,7 @@ const read = function (sender, message, reply) {
                     [
                       'Completed Habit'
                     ]
-                  );
+                  )
                 );
               } else {
                 reply(sender, { text: 'Sorry, I don\'t know how to respond to that.' });
@@ -290,7 +290,6 @@ const read = function (sender, message, reply) {
 
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
-        user.completedHabitToday = true;
 
         database.updateHabit(habit, () => {
           database.updateUser(user, () => {

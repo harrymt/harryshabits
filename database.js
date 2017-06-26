@@ -7,7 +7,7 @@
 const hasUserCompletedHabit = (user, callback) => {
   const base = require('airtable').base('app5u2vOBmkjxLp4M');
 
-  const today = (new Date()).toUTCString().slice(5, -13), // Save date;
+  const today = (new Date()).toUTCString().slice(5, -13); // Save date;
 
   base('Habits').select({
     filterByFormula: 'AND({day} = "' + today + '", {fbid} = "' + user.fbid + '")'
@@ -47,8 +47,7 @@ const findOrCreateUser = (fbid, callback) => {
         modality: '',
         seenBefore: false,
         reminderTime: '',
-        habit: '',
-        completedHabitToday: false
+        habit: ''
       };
 
       // User doesn't exist, so lets create them
