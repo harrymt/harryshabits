@@ -96,11 +96,11 @@ const read = function (sender, message, reply) {
           );
         } else {
           // If users are trying to tell us to mark thier habit as completed, then issue the completed dialog
-          if (message.text.toLowerCase().contains('track') ||
-              message.text.toLowerCase().contains('mark') ||
-              message.text.toLowerCase().contains('habit') ||
-              message.text.toLowerCase().contains('complete') ||
-              message.text.toLowerCase().contains('did it')) {
+          if (String(message.text.toLowerCase()).includes('track') ||
+              String(message.text.toLowerCase()).includes('mark') ||
+              String(message.text.toLowerCase()).includes('habit') ||
+              String(message.text.toLowerCase()).includes('complete') ||
+              String(message.text.toLowerCase()).includes('did it')) {
 
               // Check if users have already completd their habit today
             database.hasUserCompletedHabit(user, hasCompleted => {
@@ -281,6 +281,7 @@ const read = function (sender, message, reply) {
         const habit = {
           fbid: user.fbid,
           day: (new Date()).toUTCString(),
+          fullDay: (new Date()).toUTCString(), // Save date and time
           completed: true,
           reminderTime: user.reminderTime,
           numberOfSnoozes: getDifferenceInTimes(user.reminderTime, user.snoozedReminderTime),
