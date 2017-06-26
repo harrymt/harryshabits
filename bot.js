@@ -74,6 +74,10 @@ const read = function (sender, message, reply) {
         );
       } else {
         reply(sender,
+      }
+    } else {
+      if (message.quick_reply.payload === 'GET_STARTED_PAYLOAD') {
+        reply(sender,
           createQuickReply(
             messageStart + 'I\'m Harry. I\'m not a talkative bot. What habit do you want to track?',
             [
@@ -83,9 +87,7 @@ const read = function (sender, message, reply) {
             ]
           )
         );
-      }
-    } else {
-      if (message.quick_reply.payload === 'PICKED_STRETCH' ||
+      } else if (message.quick_reply.payload === 'PICKED_STRETCH' ||
           message.quick_reply.payload === 'PICKED_MEDITATE' ||
           message.quick_reply.payload === 'PICKED_DRINK_WATER') {
 
