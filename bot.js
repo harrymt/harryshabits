@@ -60,10 +60,15 @@ const read = function (sender, message, reply) {
     if (user.seenBefore) {
       messageStart = 'Welcome back! ';
     } else {
-      firstTime = true;
       user.seenBefore = true;
       messageStart = 'Hello new person! ';
     }
+
+    // If user hasnt finish setting up, don't let them mark as completed.
+    if (!user.habit || !user.modality || !user.reminderTime) {
+      firstTime = true;
+    }
+
     console.log(message);
 
     if (message.quick_reply === undefined) {
@@ -75,30 +80,50 @@ const read = function (sender, message, reply) {
           }
         );
       } else {
-        let r = createQuickReply(
-          messageStart + 'I\'m Harry. I\'m not a talkative bot. What habit do you want to track?',
-          [
-            'Stretch',
-            'Meditate',
-            'Drink Water'
-          ]
-        );
-
-        if (!firstTime) {
-          r = createQuickReply(
-            'Did you want to mark your daily habit ' + convertToFriendlyName(user.habit) + ' as completed?',
-            [
-              'Completed Habit'
-            ]
+        if (firstTime) {
+          reply(sender,
+            {
+              text: 'Sorry, I don\'t know how to respond to that.'
+            },
+            createQuickReply(
+              messageStart + 'I\'m Harry. I\'m not a talkative bot. What habit do you want to track?',
+              [
+                'Stretch',
+                'Meditate',
+                'Drink Water'
+              ]
+            );
           );
-        }
+        } else {
+          // If users are trying to tell us to mark thier habit as completed, then issue the completed dialog
+          if (message.text.toLowerCase().contains('track') ||
+              message.text.toLowerCase().contains('mark') ||
+              message.text.toLowerCase().contains('habit') ||
+              message.text.toLowerCase().contains('complete') ||
+              message.text.toLowerCase().contains('did it')) {
 
-        reply(sender,
-          {
-            text: 'Sorry, I don\'t know how to respond to that.'
-          },
-          r
-        );
+              // Check if users have already completd their habit today
+            database.hasUserCompletedHabit(user, hasCompleted => {
+              if (!hasCompleted) {
+                 reply(sender,
+                  {
+                    text: 'Sorry, I don\'t know how to respond to that.'
+                  },
+                  createQuickReply(
+                    'Did you want to mark your daily habit ' + convertToFriendlyName(user.habit) + ' as completed?',
+                    [
+                      'Completed Habit'
+                    ]
+                  );
+                );
+              } else {
+                reply(sender, { text: 'Sorry, I don\'t know how to respond to that.' });
+              }
+            });
+          } else {
+            reply(sender, { text: 'Sorry, I don\'t know how to respond to that.' });
+          }
+        }
       }
     } else {
       if (message.quick_reply.payload === 'GET_STARTED_PAYLOAD') {
