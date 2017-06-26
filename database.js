@@ -4,6 +4,31 @@
 
 'use strict';
 
+const hasUserCompletedHabit = (user, callback) => {
+  const base = require('airtable').base('app5u2vOBmkjxLp4M');
+
+  const today = (new Date()).toUTCString().slice(5, -13), // Save date;
+
+  base('Habits').select({
+    filterByFormula: 'AND({day} = "' + today + '", {fbid} = "' + user.fbid + '")'
+  }).eachPage(function page(records, fetchNextPage) {
+    if (records !== undefined && records[0] !== undefined) {
+      const habitFound = records[0].fields;
+      console.log('User has completed their habit today:');
+      console.log(habitFound);
+      callback(true);
+    } else {
+      console.log('User has not completed their habit today.')
+      callback(false);
+    }
+  }, function done(err) {
+    if (err) {
+      console.error(err);
+      throw new Error(err);
+    }
+  });
+};
+
 const findOrCreateUser = (fbid, callback) => {
   // Setup online database, airtable
   const base = require('airtable').base('app5u2vOBmkjxLp4M');
@@ -22,7 +47,8 @@ const findOrCreateUser = (fbid, callback) => {
         modality: '',
         seenBefore: false,
         reminderTime: '',
-        habit: ''
+        habit: '',
+        completedHabitToday: false
       };
 
       // User doesn't exist, so lets create them

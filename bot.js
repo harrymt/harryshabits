@@ -230,7 +230,8 @@ const read = function (sender, message, reply) {
         // Save the failed habit!
         const habit = {
           fbid: user.fbid,
-          day: (new Date()).toUTCString(),
+          day: (new Date()).toUTCString().slice(5, -13), // Save date
+          fullDay: (new Date()).toUTCString(), // Save date and time
           completed: false,
           reminderTime: user.reminderTime,
           numberOfSnoozes: getDifferenceInTimes(user.reminderTime, user.snoozedReminderTime),
@@ -264,6 +265,7 @@ const read = function (sender, message, reply) {
 
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
+        user.completedHabitToday = true;
 
         database.updateHabit(habit, () => {
           database.updateUser(user, () => {
