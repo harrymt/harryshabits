@@ -9,13 +9,11 @@ Tracks habits and gives you rewards from 3 different modalities.
 
 [Chat to him](https://m.me/2278578462368010).
 
-### Features
 
-## Development
+#### Development
 
-- Done via heroku instead of [Now.Sh](https://zeit.co/docs)
+*Local*
 
-### Local
 
 - Create a `.env` file with: (also add these variables to Travis-CI and Heroku)
 
@@ -33,10 +31,14 @@ EMAIL_PASS=<your email password>
 
 - Note you will have to manually send a curl to [whitelist your domain](https://developers.facebook.com/docs/messenger-platform/webview/extensions).
 
-### Deploy
+
+*Deploy*
 
 - `npm run deploy`
+- Done via heroku instead of [Now.Sh](https://zeit.co/docs) or Google App Engine.
 
-## mp3s
 
-- https://www.audioblocks.com/stock-audio/
+#### Attribution
+
+- *Audio* from [AudioBlocks](https://www.audioblocks.com/stock-audio/)
+- *Logo* from [the Noun Project by Yu luck](https://thenounproject.com/term/custom/402041/)
