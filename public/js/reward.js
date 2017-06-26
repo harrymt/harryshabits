@@ -8,10 +8,16 @@ window.onload = function () {
   const btn = document.getElementsByClassName('btn')[0];
   const reward = document.getElementsByClassName('container')[0];
 
+  // Sound modality
+  const sound = document.getElementById('reward-audio');
+
   // Show content when users click the button
   btn.addEventListener('click', function() {
     btn.style.display = 'none';
     reward.style.display = 'block';
-  });
 
+    if (sound !== null) {
+      sound.play();
+    }
+  });
 };

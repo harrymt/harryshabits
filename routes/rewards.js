@@ -11,7 +11,7 @@ router.get('/visual', function(req, res, next) {
 
 router.get('/sound', function(req, res, next) {
   // TODO get the content of the reward, then just render the template here
-  res.render('rewards/sound', { url: getAudioReward()});
+  res.render('rewards/sound', { url: getAudioReward(false)});
   // res.send('<h1>Here is your ' +  req.params.modality + ' reward!</h1>');
 });
 
@@ -25,16 +25,23 @@ router.get('/vibration', function(req, res, next) {
 /**
  * Choose a random audio reward and wrap it up into an object ready to send.
  */
-function getAudioReward() {
+function getAudioReward(spotifyRewards) {
   const audioRewards = [
-    'https://open.spotify.com/track/2olVm1lHicpveMAo4AUDRB', // Power of love
-    'https://open.spotify.com/track/3fthfkkvy9av3q3uAGVf7U', // Shake it off
-    'https://open.spotify.com/track/6Nf1bklus7o9fpKto13nDc', // OK GO, this shall not pass
-    'https://open.spotify.com/track/6Lphpr9Z6H282Sguw0dUWa' // Ahh Freak out
+    '/sound/hooray.mp3',
+    '/sound/rock.mp3'
   ];
 
+  if (spotifyRewards) {
+    audioRewards = [
+      'https://open.spotify.com/track/2olVm1lHicpveMAo4AUDRB', // Power of love
+      'https://open.spotify.com/track/3fthfkkvy9av3q3uAGVf7U', // Shake it off
+      'https://open.spotify.com/track/6Nf1bklus7o9fpKto13nDc', // OK GO, this shall not pass
+      'https://open.spotify.com/track/6Lphpr9Z6H282Sguw0dUWa' // Ahh Freak out
+    ];
+  }
+
   // Choose a random reward
-  const chosenReward = Math.floor((Math.random() * (audioRewards.length - 1)) + 1);
+  const chosenReward = Math.floor((Math.random() * (audioRewards.length)) + 1) - 1;
 
   return audioRewards[chosenReward];
 }
@@ -51,7 +58,7 @@ function getVisualReward() {
   ];
 
   // Choose a random reward
-  const chosenReward = Math.floor((Math.random() * (visualRewards.length - 1)) + 1);
+  const chosenReward = Math.floor((Math.random() * (visualRewards.length)) + 1) - 1;
 
   return visualRewards[chosenReward];
 }
