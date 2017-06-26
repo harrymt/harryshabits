@@ -8,12 +8,12 @@
     "url": "git+https://github.com/harrymt/habit-reward-chatbot"
   },
   "engines": {
-    "node": "6.9.4"
+    "node": "8.1.0"
   },
   "scripts": {
     "test": "node tests/main.js",
     "start": "node index.js",
-    "deploy": "npm --no-git-tag-version version patch && make && now -e EMAIL_PASS=@email_pass -e EMAIL_ID=@email_id -e FB_PAGE_TOKEN=@fb_page_token -e FB_VERIFY_TOKEN=@fb_verify_token -e USER_ID=@user_id -e AIRTABLE_API_KEY=@airtable_api_key -e CRON_SECRET=@cron_secret --public && now-realias && npm run logs",
+    "deploy": "npm --no-git-tag-version version patch && git push heroku master",
     "logs": "now logs arthur-messenger-bot"
   },
   "homepage": "https://github.com/harrymt/habit-reward-chatbot",
