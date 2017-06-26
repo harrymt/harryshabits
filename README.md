@@ -38,3 +38,8 @@ EMAIL_PASS=<your email password>
 - Add the variables from `.env` to online Travis-CI
 - `git push heroku master`
 - `npm run deploy`
+
+
+## mp3s
+
+- https://www.audioblocks.com/stock-audio/
