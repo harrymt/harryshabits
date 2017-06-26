@@ -20,15 +20,4 @@ window.onload = function () {
       sound.play();
     }
   });
-
-  if ('onpagehide' in window) {
-    window.addEventListener('pagehide',
-      function () {
-        if (sound !== null) {
-          sound.pause();
-        }
-      },
-      false
-    );
-  }
 };
