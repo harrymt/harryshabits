@@ -38,6 +38,7 @@ router.get('/', (req, res) => {
           user.fitbit_access_token = data.access_token;
           user.fitbit_refresh_token = data.refresh_token;
           user.fitbit_user_id = data.user_id;
+          user.modality = 'VIBRATION';
 
           const trackersGet = {
             method: 'GET',
