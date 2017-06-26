@@ -108,5 +108,6 @@ const updateUser = (user, callback) => {
 module.exports = {
   updateUser,
   updateHabit,
-  find: findOrCreateUser
+  find: findOrCreateUser,
+  hasUserCompletedHabit
 };
