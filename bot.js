@@ -296,8 +296,7 @@ const read = function (sender, message, reply) {
           database.updateUser(user, () => {
 
             const rewardURL = 'https://infinite-falls-46264.herokuapp.com/rewards/' + String(user.modality).toLowerCase();
-
-            reply(sender, {
+            const replyContent = {
               attachment: {
                 type: 'template',
                 payload: {
@@ -313,42 +312,30 @@ const read = function (sender, message, reply) {
                   }]
                 }
               }
-            }, {
-              text: 'Enjoy your reward. I\'ll see you tomorrow!'
-            });
+            };
 
-
-            // // Send the modality reward!
-            // if (user.modality === 'VISUAL') {
-            //   reply(sender, getVisualReward(), {
-            //     text: 'Enjoy your reward. I\'ll see you tomorrow!'
-            //   });
-            // } else if (user.modality === 'SOUND') {
-            //   reply(sender, getAudioReward(), {
-            //     text: 'Enjoy the tunes. I\'ll see you tomorrow!'
-            //   });
-            // } else if (user.modality === 'VIBRATION') {
-            //   console.log('Preparing to send a vibration reward for user:');
-            //   console.log(JSON.stringify(user));
-            //   fitbit.sendVibration(user.fitbitId, user.trackerId, user.fitbit_access_token, err => {
-            //     if (err) {
-            //       console.log('Failed to send vibration reward to user:');
-            //       console.log(JSON.stringify(user));
-            //       console.log(err);
-            //       // TODO remove this reply
-            //       reply(sender, {
-            //         text: JSON.stringify(err)
-            //       });
-            //     } else {
-            //       console.log('Vibration reward sent.');
-            //       reply(sender, {
-            //         text: 'Buzz Buzz Buzz.'
-            //       }, {
-            //         text: 'Enjoy your reward. I\'ll see you tomorrow!'
-            //       });
-            //     }
-            //   });
-            // }
+            if (user.modality === 'VIBRATION') {
+              fitbit.sendVibration(user.fitbitId, user.trackerId, user.fitbit_access_token, err => {
+                if (err) {
+                  console.log('Failed to send vibration reward to user:');
+                  console.log(JSON.stringify(user));
+                  console.log(err);
+                  // TODO remove this reply
+                  reply(sender, {
+                    text: JSON.stringify(err)
+                  });
+                } else {
+                  console.log('Vibration reward sent.');
+                  reply(sender, replyContent, {
+                    text: 'Enjoy your reward. I\'ll see you tomorrow!'
+                  });
+                }
+              });
+            } else {
+              reply(sender, replyContent, {
+                text: 'Enjoy your reward. I\'ll see you tomorrow!'
+              });
+            }
           });
         });
       }

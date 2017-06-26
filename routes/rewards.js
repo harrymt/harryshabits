@@ -16,9 +16,7 @@ router.get('/sound', function(req, res, next) {
 });
 
 router.get('/vibration', function(req, res, next) {
-  // TODO get the content of the reward, then just render the template here
-  res.render('rewards/vibration', { url: '<reward url>'});
-  // res.send('<h1>Here is your ' +  req.params.modality + ' reward!</h1>');
+  res.render('rewards/vibration');
 });
 
 
