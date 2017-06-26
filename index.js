@@ -10,11 +10,12 @@
   if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load();
 
-    app.use(function (req, res, next) {
+    app.get('/sass', function (req, res) {
       require('./process-scss').srcToDist('reward-style', 'reward-style');
       require('./process-scss').srcToDist('main', 'main');
-      console.log((new Date()).toUTCString() + ' | Processed sass files.');
-      next();
+      const r = (new Date()).toUTCString() + ' | Processed sass files.';
+      console.log(r);
+      res.send(`<h1>${r}<h1>`);
     });
   }
 

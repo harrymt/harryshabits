@@ -12,7 +12,7 @@ Tracks habits and gives you rewards from 3 different modalities.
 
 #### Development
 
-*Local*
+#### Local
 
 
 - Create a `.env` file with: (also add these variables to Travis-CI and Heroku)
@@ -32,7 +32,7 @@ EMAIL_PASS=<your email password>
 - Note you will have to manually send a curl to [whitelist your domain](https://developers.facebook.com/docs/messenger-platform/webview/extensions).
 
 
-*Deploy*
+#### Deployment
 
 - `npm run deploy`
 - Done via heroku instead of [Now.Sh](https://zeit.co/docs) or Google App Engine.
