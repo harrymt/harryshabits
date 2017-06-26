@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/harrymt/habit-reward-chatbot.svg?branch=master)](https://travis-ci.org/harrymt/habit-reward-chatbot)
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/codeclimate/codeclimate)
 
-## Arthur - A Messenger Chatbot
+## Harrys Habits - A Messenger Chatbot
 
 Tracks habits and gives you rewards from 3 different modalities.
 
@@ -17,7 +17,7 @@ Tracks habits and gives you rewards from 3 different modalities.
 
 ### Local
 
-- Create a `.env` file with:
+- Create a `.env` file with: (also add these variables to Travis-CI and Heroku)
 
 ```
 NODE_ENV=development
@@ -33,12 +33,9 @@ EMAIL_PASS=<your email password>
 
 - Note you will have to manually send a curl to [whitelist your domain](https://developers.facebook.com/docs/messenger-platform/webview/extensions).
 
-### Production
+### Deploy
 
-- Add the variables from `.env` to online Travis-CI
-- `git push heroku master`
 - `npm run deploy`
-
 
 ## mp3s
 

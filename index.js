@@ -54,7 +54,7 @@
   app.get('/', (req, res) => {
     res.render('index', {
       version: require('./package.json').version,
-      name: 'Arthur Bot'
+      name: require('./package.json').name_friendly
     });
   });
 

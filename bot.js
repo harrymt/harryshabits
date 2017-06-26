@@ -75,7 +75,7 @@ const read = function (sender, message, reply) {
       } else {
         reply(sender,
           createQuickReply(
-            messageStart + 'I\'m Arthur. I\'m not a talkative bot. What habit do you want to track?',
+            messageStart + 'I\'m Harry. I\'m not a talkative bot. What habit do you want to track?',
             [
               'Stretch',
               'Meditate',
