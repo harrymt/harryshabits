@@ -54,11 +54,13 @@ const read = function (sender, message, reply) {
   // Let's find the user object
   database.find(sender, user => {
     let messageStart = '';
+    let firstTime = false;
 
     // If we have seen this user before, send them a greeting
     if (user.seenBefore) {
       messageStart = 'Welcome back! ';
     } else {
+      firstTime = true;
       user.seenBefore = true;
       messageStart = 'Hello new person! ';
     }
@@ -73,16 +75,29 @@ const read = function (sender, message, reply) {
           }
         );
       } else {
-        reply(sender,
-          {
-            text: 'Sorry, I don\'t know how to respond to that.'
-          },
-          createQuickReply(
+        let r = createQuickReply(
+          messageStart + 'I\'m Harry. I\'m not a talkative bot. What habit do you want to track?',
+          [
+            'Stretch',
+            'Meditate',
+            'Drink Water'
+          ]
+        );
+
+        if (!firstTime) {
+          r = createQuickReply(
             'Did you want to mark your daily habit ' + convertToFriendlyName(user.habit) ' as completed?',
             [
               'Completed Habit'
             ]
-          )
+          );
+        }
+
+        reply(sender,
+          {
+            text: 'Sorry, I don\'t know how to respond to that.'
+          },
+          r
         );
       }
     } else {
