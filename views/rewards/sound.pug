@@ -2,4 +2,8 @@ extends ../reward-layout.pug
 
 
 block content
-  audio( id='reward-audio', src=url)
+  .icon-bars
+    .bar
+    .bar
+    .bar
+  audio( loop, id='reward-audio', src=url, onended='this.play();' )
