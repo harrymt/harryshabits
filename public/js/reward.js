@@ -12,7 +12,7 @@ window.onload = function () {
   const sound = document.getElementById('reward-audio');
 
   // Show content when users click the button
-  btn.addEventListener('click', function() {
+  btn.addEventListener('click', function () {
     btn.style.display = 'none';
     reward.style.display = 'block';
 
@@ -20,13 +20,15 @@ window.onload = function () {
       sound.play();
     }
   });
-};
 
-window.onbeforeunload = function (event) {
-  // Sound modality
-  const sound = document.getElementById('reward-audio');
-
-  if (sound !== null) {
-    sound.pause();
+  if ('onpagehide' in window) {
+    window.addEventListener('pagehide',
+      function () {
+        if (sound !== null) {
+          sound.pause();
+        }
+      },
+      false
+    );
   }
 };
