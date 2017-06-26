@@ -74,6 +74,16 @@ const read = function (sender, message, reply) {
         );
       } else {
         reply(sender,
+          {
+            text: 'Sorry, I don\'t know how to respond to that.'
+          },
+          createQuickReply(
+            'Did you want to mark your daily habit ' + convertToFriendlyName(user.habit) ' as completed?',
+            [
+              'Completed Habit'
+            ]
+          )
+        );
       }
     } else {
       if (message.quick_reply.payload === 'GET_STARTED_PAYLOAD') {
