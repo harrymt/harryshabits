@@ -86,7 +86,7 @@ const read = function (sender, message, reply) {
 
         if (!firstTime) {
           r = createQuickReply(
-            'Did you want to mark your daily habit ' + convertToFriendlyName(user.habit) ' as completed?',
+            'Did you want to mark your daily habit ' + convertToFriendlyName(user.habit) + ' as completed?',
             [
               'Completed Habit'
             ]
