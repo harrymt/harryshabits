@@ -1,23 +1,20 @@
 'use strict';
 
-const request = require('request');
-
 module.exports = {
-
   sendVibration(userId, trackerId, accessToken, callback) {
     console.log('Sending vibration to user: ' + userId + ' tracker: ' + trackerId);
 
-    // TODO remove, add another hour for BST
     const reminderHour = new Date();
-    reminderHour.setHours(reminderHour.getHours() + 1);
-    const strReminderTime = reminderHour + ':' + reminderHour.getUTCMinutes();
+    reminderHour.setMinutes(reminderHour.getUTCMinutes() + 1); // 1 m into the future
+    const strReminderTime = reminderHour.getHours() + ':' + reminderHour.getUTCMinutes();
 
-    const anotherReq = request.defaults({
+    const request = require('request-promise');
+    const options = {
       uri: 'https://api.fitbit.com/1/user/' + userId + '/devices/tracker/' + trackerId + '/alarms.json',
       method: 'POST',
       json: true,
-      form: {
-        time: strReminderTime + ':' + strReminderTime,
+      qs: {
+        time: strReminderTime + '+' + "01:00", // BST time // TODO remove
         enabled: true,
         recurring: false,
         weekDays: []
@@ -26,14 +23,18 @@ module.exports = {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + accessToken
       }
-    });
+    };
 
-    anotherReq((err, resp, data) => {
-      if (err) {
-        callback((err || data.error) && data.error.message);
-      } else {
+    request(options)
+      .then(response => {
+        console.log('Finished communicating with fitbit alarms:');
+        console.log(response);
         callback();
-      }
+      })
+      .catch(err => {
+        console.log('Err communicating with Fitbit');
+        console.log(err.message);
+        callback(err);
     });
   }
 };

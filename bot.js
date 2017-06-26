@@ -296,6 +296,7 @@ const read = function (sender, message, reply) {
           database.updateUser(user, () => {
 
             const rewardURL = 'https://infinite-falls-46264.herokuapp.com/rewards/' + String(user.modality).toLowerCase();
+
             const replyContent = {
               attachment: {
                 type: 'template',
@@ -315,7 +316,9 @@ const read = function (sender, message, reply) {
             };
 
             if (user.modality === 'VIBRATION') {
-              fitbit.sendVibration(user.fitbitId, user.trackerId, user.fitbit_access_token, err => {
+              console.log('Modality is vibration...');
+              console.log(JSON.stringify(user));
+              fitbit.sendVibration(user.fitbit_user_id, user.fitbit_tracker_id, user.fitbit_access_token, err => {
                 if (err) {
                   console.log('Failed to send vibration reward to user:');
                   console.log(JSON.stringify(user));
