@@ -10,10 +10,13 @@ Tracks habits and gives you rewards from 3 different modalities.
 **[<img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" width="200">](https://m.me/2278578462368010)**
 
 
-#### Development
+#### Build
 
-#### Local
+- Create a environment variables file called `.env` described below
+- `npm install`
+- `npm start`
 
+#### .env file
 
 - Create a `.env` file with: (also add these variables to Travis-CI and Heroku)
 
@@ -26,8 +29,6 @@ CRON_SECRET=<secret phrase>
 EMAIL_ID=<your email address for data backups and alerts>
 EMAIL_PASS=<your email password>
 ```
-
-- `npm test && npm start`
 
 - Note you will have to manually send a curl to [whitelist your domain](https://developers.facebook.com/docs/messenger-platform/webview/extensions).
 - Note you will have to manually create a [Get Started Button](https://developers.facebook.com/docs/messenger-platform/messenger-profile/get-started-button)
