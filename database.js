@@ -4,9 +4,32 @@
 
 'use strict';
 
-const hasUserCompletedHabit = (user, callback) => {
-  const base = require('airtable').base('app5u2vOBmkjxLp4M');
+// Integrate with airtable
+const base = require('airtable').base('app5u2vOBmkjxLp4M');
 
+const getUsersByStreak = callback => {
+  let users = [];
+  base('Users').select({
+    sort: [{field: "streak", direction: "desc"}]
+  }).eachPage(function page(records, fetchNextPage) {
+    for (let i = 0; i < records.length; i++) {
+      const usr = records[i].fields;
+      usr.index = i;
+      users.push(usr);
+    }
+    console.log('fetching next page')
+    fetchNextPage();
+  }, function done(err) {
+    if (err) {
+      console.log(err);
+      callback(false);
+    } else {
+      callback(users);
+    }
+  });
+};
+
+const hasUserCompletedHabit = (user, callback) => {
   const today = (new Date()).toUTCString().slice(5, -13); // Save date;
 
   base('Habits').select({
@@ -30,8 +53,6 @@ const hasUserCompletedHabit = (user, callback) => {
 };
 
 const findOrCreateUser = (fbid, callback) => {
-  // Setup online database, airtable
-  const base = require('airtable').base('app5u2vOBmkjxLp4M');
   console.log('Finding user with fbid ' + fbid);
 
   base('Users').select({
@@ -48,7 +69,8 @@ const findOrCreateUser = (fbid, callback) => {
         seenBefore: false,
         reminderTime: '',
         habit: '',
-        snoozesToday: 0
+        snoozesToday: 0,
+        streak: 0
       };
 
       // User doesn't exist, so lets create them
@@ -71,7 +93,6 @@ const findOrCreateUser = (fbid, callback) => {
 };
 
 const updateHabit = (habit, callback) => {
-  const base = require('airtable').base('app5u2vOBmkjxLp4M');
   const callbackHabit = habit;
   delete habit.id;
   console.log('Creating a new row in habit table...');
@@ -87,8 +108,6 @@ const updateHabit = (habit, callback) => {
 };
 
 const updateUser = (user, callback) => {
-  const base = require('airtable').base('app5u2vOBmkjxLp4M');
-
   const callbackUser = user;
   const userId = user.id;
   delete user.id;
@@ -107,6 +126,7 @@ const updateUser = (user, callback) => {
 };
 
 module.exports = {
+  getUsersByStreak,
   updateUser,
   updateHabit,
   find: findOrCreateUser,

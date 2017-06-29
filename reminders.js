@@ -94,6 +94,7 @@ const sendReminders = (timePeriod, callback) => {
         console.log('User hasn\'t told us their habit');
         console.log('Looking for next user');
       } else {
+        // If its the end of the day
         if (quickReplyActions === null) {
           console.log('Sending final nightime messages');
           // Reset snooze time
@@ -103,6 +104,9 @@ const sendReminders = (timePeriod, callback) => {
 
           // Reset number of snoozes today
           userData.snoozesToday = 0;
+
+          // Reset users streak
+          userData.streak = 0;
 
           database.updateUser(userData, () => {
             FB.newMessage(records[i].get('fbid'), {

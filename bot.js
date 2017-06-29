@@ -293,8 +293,12 @@ const read = function (sender, message, reply) {
           reminderTime: user.reminderTime,
           numberOfSnoozes: user.snoozesToday,
           currentModality: user.modality,
-          currentHabit: user.habit
+          currentHabit: user.habit,
+          currentStreak: user.streak
         };
+
+        // Reset their streak
+        user.streak = 0;
 
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
@@ -321,8 +325,12 @@ const read = function (sender, message, reply) {
           reminderTime: user.reminderTime,
           numberOfSnoozes: user.snoozesToday,
           currentModality: user.modality,
-          currentHabit: user.habit
+          currentHabit: user.habit,
+          currentStreak: user.streak
         };
+
+        // Increase their streak
+        user.streak = user.streak + 1;
 
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;

@@ -50,6 +50,12 @@
     }
   });
 
+  app.get('/stats', (req, res) => {
+    require('./stats').sendStats(success => {
+      res.send(success);
+    });
+  });
+
   // Index page
   app.get('/', (req, res) => {
     res.render('index', {
