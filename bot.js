@@ -344,6 +344,10 @@ const read = function (sender, message, reply) {
                   });
                 }
               });
+            } else {
+                reply(sender, replyContent, {
+                text: 'Enjoy your reward. I\'ll see you tomorrow!'
+              });
             }
           });
         });
