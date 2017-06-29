@@ -347,6 +347,17 @@ const read = function (sender, message, reply) {
             }
           });
         });
+      } else if (message.quick_reply.payload === 'PICKED_MP3_INLINE_REWARD') {
+        reply(sender, {
+          attachment: {
+            type: 'audio',
+            payload: {
+              url: 'https://infinite-falls-46264.herokuapp.com' + rewards.getAudioReward(false)
+            }
+          }
+        }, {
+          text: 'Enjoy the reward. I\'ll see you tomorrow!'
+        });
       } else if (message.quick_reply.payload === 'PICKED_VISUAL_INLINE_REWARD') {
 
         reply(sender, {

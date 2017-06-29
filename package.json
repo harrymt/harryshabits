@@ -2,7 +2,7 @@
   "name": "harrys-habits-messenger-bot",
   "name_friendly": "Harrys Habits",
   "version": "1.0.42",
-  "description": "",
+  "description": "A Facebook Messenger Chatbot that supports habit formation.",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -26,11 +26,9 @@
     "dotenv": "^4.0.0",
     "express": "^4.13.4",
     "nodemailer": "^4.0.1",
-    "now-logs": "0.0.7",
     "pug": "^2.0.0-rc.2",
     "request": "^2.71.0",
-    "request-promise": "^4.2.1",
-    "sqlite3": "^3.1.8"
+    "request-promise": "^4.2.1"
   },
   "xo": {
     "space": true
