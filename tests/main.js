@@ -48,6 +48,17 @@
         throw new Error('Test choose time failed.');
       }
       setTimeout(() => {
+        testChooseNestedTime();
+      }, waitTime);
+    });
+  }
+
+  function testChooseNestedTime() {
+    require('./choose-nested-time')(isError => {
+      if (isError) {
+        throw new Error('Test choose nested time failed.');
+      }
+      setTimeout(() => {
         testChooseButtonBack();
       }, waitTime);
     });
