@@ -4,8 +4,13 @@
 
 'use strict';
 
+if (process.env.NODE_ENV !== 'production') {
+  // Load the .env file, that sets process.env.
+  require('dotenv').load();
+}
+
 // Integrate with airtable
-const base = require('airtable').base('app5u2vOBmkjxLp4M');
+const base = require('airtable').base(process.env.AIRTABLE_BASE);
 
 const getUsersByStreak = callback => {
   let users = [];

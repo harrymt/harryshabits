@@ -75,6 +75,7 @@ const sendReminders = (timePeriod, callback) => {
     require('dotenv').load();
   }
 
+
   const FB = require('./connectors/facebook');
   const database = require('./database');
 
@@ -83,7 +84,7 @@ const sendReminders = (timePeriod, callback) => {
 
   // Get all users based on time
   // Setup online database, airtable
-  const base = require('airtable').base('app5u2vOBmkjxLp4M');
+  const base = require('airtable').base(process.env.AIRTABLE_BASE);
 
   base('Users').select({
     filterByFormula: filter
