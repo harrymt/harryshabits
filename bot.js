@@ -16,6 +16,9 @@ const reminder_times = {
   newDay: 23
 };
 
+const snoozeAmountReminderTrigger = 5;
+
+
 const fitbit = require('./connectors/fitbit');
 const database = require('./database');
 const rewards = require('./generate-reward');
@@ -261,10 +264,27 @@ const read = function (sender, message, reply) {
             text: convertToFriendlyName(modality) + ' rewards are the best! I will drop you a message in the ' + convertToFriendlyName(user.reminderTime) + '!'
           });
         });
+
+      } else if (message.quick_reply.payload === 'PICKED_NO') {
+        reply(sender, {
+          text: 'No problem.'
+        });
+
+      } else if (message.quick_reply.payload.substring(0, 12) === 'CHANGE_TIME_') {
+        const newTime = message.quick_reply.payload.substring(12);
+        user.reminderTime = newTime;
+
+        // Save user information to datastore
+        database.updateUser(user, () => {
+          reply(sender, {
+            text: 'Changed reminder time to ' + convertToFriendlyName(user.reminderTime) + '.'
+          });
+        });
+
       } else if (message.quick_reply.payload === 'PICKED_SNOOZE_REMINDER') {
         let numberOfSnoozes = user.snoozesToday;
 
-        // Set their reminder time to be the next cron job!
+        // Set their reminder time to be the next time period
         if (String(user.snoozedReminderTime).includes('EARLY')) {
           user.snoozedReminderTime = 'MID' + user.snoozedReminderTime.substring(5);
         } else if (String(user.snoozedReminderTime).includes('MID')) {
@@ -276,11 +296,32 @@ const read = function (sender, message, reply) {
         numberOfSnoozes++;
         user.snoozesToday = numberOfSnoozes;
 
+        let snoozeTimeChange = null;
+        if (user.totalNumberOfSnoozes % snoozeAmountReminderTrigger === 0) {
+          const newReminderTime = getNextReminderTime(user.reminderTime);
+          // Send reminder to user asking them if they want to change their snooze time.
+          snoozeTimeChange = {
+            text: 'I have noticed that you have been snoozing a lot. Would you like me to change your reminder time to ' + convertToFriendlyName(newReminderTime) + ' (from ' + convertToFriendlyName(user.reminderTime) + ')?\nWon\'t affect todays snoozes.',
+            quick_replies: [{
+              content_type: 'text',
+              title: 'Yes',
+              payload: 'CHANGE_TIME_' + newReminderTime
+            },
+            {
+              content_type: 'text',
+              title: 'No',
+              payload: 'PICKED_NO'
+            }]
+          };
+        }
+
         // Save user information to datastore
         database.updateUser(user, () => {
           reply(sender, {
-            text: 'Okay I will remind you this ' + convertToFriendlyName(user.snoozedReminderTime) + '!'
-          });
+            text: 'Okay I will remind you around ' + convertToFriendlyName(user.snoozedReminderTime) + '!'
+          },
+          snoozeTimeChange
+          );
         });
       } else if (message.quick_reply.payload === 'PICKED_NOT_TODAY') {
 
@@ -444,6 +485,18 @@ const read = function (sender, message, reply) {
     }
   });
 };
+
+function getNextReminderTime(reminderTime) {
+  const timePeriod = reminderTime.split('_')[0];
+
+  if (String(reminderTime).includes('MORNING')) {
+    return timePeriod + '_' + 'AFTERNOON';
+  } else if (String(reminderTime).includes('AFTERNOON')) {
+    return timePeriod + '_' + 'EVENING';
+  }
+  // Can't snooze if evening
+  return null;
+}
 
 // Unused
 // function getDifferenceInTimes(baseTime, extendedTime) {
