@@ -12,6 +12,7 @@ const reminder_times = {
 
 const fitbit = require('./connectors/fitbit');
 const database = require('./database');
+const rewards = require('./generate-reward');
 const request = require('request');
 
 /**
@@ -315,6 +316,21 @@ const read = function (sender, message, reply) {
               }
             };
 
+            // For the demo, enable inline rewards
+            if (user.modality === 'VISUAL_INLINE') {
+              replyContent.attachment.payload.buttons = [{
+                type: 'postback',
+                title: 'Reveal Reward',
+                payload: 'PICKED_VISUAL_INLINE_REWARD'
+              }];
+            } else if (user.modality === 'SOUND_INLINE') {
+              replyContent.attachment.payload.buttons = [{
+                type: 'postback',
+                title: 'Reveal Reward',
+                payload: 'PICKED_SOUND_INLINE_REWARD'
+              }];
+            }
+
             if (user.modality === 'VIBRATION') {
               console.log('Modality is vibration...');
               console.log(JSON.stringify(user));
@@ -340,6 +356,34 @@ const read = function (sender, message, reply) {
               });
             }
           });
+        });
+      } else if (message.quick_reply.payload === 'PICKED_VISUAL_INLINE_REWARD') {
+
+        reply(sender, {
+          attachment: {
+            type: 'image',
+            payload: {
+              url: rewards.getVisualReward()
+            }
+          }
+        }, {
+          text: 'Enjoy the reward. I\'ll see you tomorrow!'
+        });
+
+      } else if (message.quick_reply.payload === 'PICKED_SOUND_INLINE_REWARD') {
+        const msg = {
+          attachment: {
+            type: 'template',
+            payload: {
+              template_type: 'open_graph',
+              elements: [{
+                url: rewards.getAudioReward(true)
+              }]
+            }
+          }
+        };
+        reply(sender, msg, {
+          text: 'Enjoy the tunes. I\'ll see you tomorrow!'
         });
       }
     }

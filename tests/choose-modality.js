@@ -26,7 +26,7 @@
               seq: 69,
               text: 'Stretch',
               quick_reply: {
-                payload: 'PICKED_VIBRATION'
+                payload: 'PICKED_SOUND'
               }
             }
           }]
