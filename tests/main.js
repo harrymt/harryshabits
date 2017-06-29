@@ -81,6 +81,17 @@
         throw new Error('Test choose modality failed.');
       }
       setTimeout(() => {
+        testChooseSettings();
+      }, waitTime);
+    });
+  }
+
+  function testChooseSettings() {
+    require('./choose-settings')(isError => {
+      if (isError) {
+        throw new Error('Test choose settings failed.');
+      }
+      setTimeout(() => {
         testEnd();
       }, waitTime);
     });
