@@ -81,9 +81,15 @@ const read = function (sender, message, reply) {
     if (message.quick_reply === undefined) {
       if (message.text && (message.text.toLowerCase() === 'stats' || message.text.toLowerCase() === 'settings')) {
         console.log(user.toString());
+        let usr = user;
+        // Remove some stuff so we arent over the 640 character limit
+        delete usr.fitbit_user_id;
+        delete usr.fitbit_access_token;
+        delete usr.fitbit_tracker_id;
+        delete usr.fitbit_refresh_token;
         reply(sender,
           {
-            text: 'Your settings are: ' + JSON.stringify(user) + '\nTimes are ' + JSON.stringify(reminder_times)
+            text: 'Your settings are: ' + JSON.stringify(usr) + '\nTimes are ' + JSON.stringify(reminder_times)
           }
         );
       } else {

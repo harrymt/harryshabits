@@ -56,7 +56,7 @@ const sendReminders = (timePeriod, callback) => {
     return;
   }
 
-  let filter = '({snoozedReminderTime} = "' + timeOfDay + '")';;
+  let filter = '({snoozedReminderTime} = "' + timeOfDay + '")';
 
   if (timeOfDay === '') {
     // Reset snooze time
