@@ -39,9 +39,8 @@
   app.use('/email', require('./routes/email'));
 
   app.get(['/reminders/:timeOfDay', '/reminders'], (req, res) => {
-    if (req.params.timeOfDay) {
-      const t = req.params.timeOfDay.toUpperCase();
-      require('./reminders').sendReminders(t, success => {
+    if (req.params.timeOfDay && Bot.time[req.params.timeOfDay.toLowerCase()] !== undefined) {
+      require('./reminders').sendReminders(Bot.time[req.params.timeOfDay.toLowerCase()], success => {
         res.send(success);
       });
     } else {
