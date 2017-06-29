@@ -7,7 +7,7 @@ const reminder_times = {
   afternoon: 14,
   evening: 18,
   night: 21,
-  newDay: 0
+  newDay: 23
 };
 
 const fitbit = require('./connectors/fitbit');
