@@ -3,10 +3,16 @@
 
 // UTC time
 const reminder_times = {
-  morning: 10,
-  afternoon: 14,
-  evening: 18,
-  night: 21,
+  early_morning: 7,
+  mid_morning: 9,
+  late_morning: 11,
+  early_afternoon: 12,
+  mid_afternoon: 14,
+  late_afternoon: 16,
+  early_evening: 18,
+  mid_evening: 20,
+  late_evening: 21,
+  night: 22,
   newDay: 23
 };
 
@@ -171,6 +177,28 @@ const read = function (sender, message, reply) {
                  message.quick_reply.payload === 'PICKED_AFTERNOON' ||
                  message.quick_reply.payload === 'PICKED_EVENING') {
 
+        const timePeriod = message.quick_reply.payload.substring(7).toLowerCase();
+        reply(sender,
+          createQuickReply(
+            'What time in the ' + timePeriod + '?',
+            [
+              'Early ' + timePeriod,
+              'Mid ' + timePeriod,
+              'Late ' + timePeriod
+            ]
+          )
+        );
+
+      } else if (message.quick_reply.payload === 'PICKED_EARLY_MORNING' ||
+                 message.quick_reply.payload === 'PICKED_MID_MORNING' ||
+                 message.quick_reply.payload === 'PICKED_LATE_MORNING' ||
+                 message.quick_reply.payload === 'PICKED_EARLY_AFTERNOON' ||
+                 message.quick_reply.payload === 'PICKED_MID_AFTERNOON' ||
+                 message.quick_reply.payload === 'PICKED_LATE_AFTERNOON' ||
+                 message.quick_reply.payload === 'PICKED_EARLY_EVENING' ||
+                 message.quick_reply.payload === 'PICKED_MID_EVENING' ||
+                 message.quick_reply.payload === 'PICKED_LATE_EVENING') {
+
         const timeOfDay = message.quick_reply.payload.substring(7);
         user.reminderTime = timeOfDay;
         user.snoozedReminderTime = timeOfDay;
@@ -231,14 +259,12 @@ const read = function (sender, message, reply) {
         let numberOfSnoozes = user.snoozesToday;
 
         // Set their reminder time to be the next cron job!
-        if (user.snoozedReminderTime === 'MORNING') {
-          user.snoozedReminderTime = 'AFTERNOON';
-        } else if (user.snoozedReminderTime === 'AFTERNOON') {
-          user.snoozedReminderTime = 'EVENING';
-        } else if (user.snoozedReminderTime === 'EVENING') {
-          user.snoozedReminderTime = 'NIGHT';
+        if (String(user.snoozedReminderTime).includes('EARLY')) {
+          user.snoozedReminderTime = 'MID' + user.snoozedReminderTime.substring(5);
+        } else if (String(user.snoozedReminderTime).includes('MID')) {
+          user.snoozedReminderTime = 'LATE' + user.snoozedReminderTime.substring(3);
         }
-        // Can't snooze if its the night
+        // Can't snooze if its the night or if its the late part of their timeslot
 
         // Update number of snoozes counter
         numberOfSnoozes++;
