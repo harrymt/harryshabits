@@ -303,6 +303,9 @@ const read = function (sender, message, reply) {
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
 
+        // Track total number of snoozes
+        user.totalNumberOfSnoozes = user.totalNumberOfSnoozes + user.snoozesToday;
+
         // Reset number of snoozes
         user.snoozesToday = 0;
 
@@ -334,6 +337,9 @@ const read = function (sender, message, reply) {
 
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
+
+        // Keep track of the total number of snoozes
+        user.totalNumberOfSnoozes = user.totalNumberOfSnoozes + user.snoozesToday;
 
         // Reset number of snoozes
         user.snoozesToday = 0;
