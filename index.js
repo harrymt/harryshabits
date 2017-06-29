@@ -39,6 +39,11 @@
   app.use('/email', require('./routes/email'));
 
   app.get(['/reminders/:timeOfDay', '/reminders'], (req, res) => {
+    if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
+      res.send('Invalid secret.');
+      return;
+    }
+
     if (req.params.timeOfDay && Bot.time[req.params.timeOfDay.toLowerCase()] !== undefined) {
       require('./reminders').sendReminders(Bot.time[req.params.timeOfDay.toLowerCase()], success => {
         res.send(success);
@@ -51,6 +56,10 @@
   });
 
   app.get('/stats', (req, res) => {
+    if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
+      res.send('Invalid secret.');
+      return;
+    }
     require('./stats').sendStats(success => {
       res.send(success);
     });
@@ -58,6 +67,10 @@
 
   // Index page
   app.get('/', (req, res) => {
+    if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
+      res.send('Invalid secret.');
+      return;
+    }
     res.render('index', {
       version: require('./package.json').version,
       name: require('./package.json').name_friendly
