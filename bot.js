@@ -309,7 +309,7 @@ const read = function (sender, message, reply) {
         // Save the completion!
         const habit = {
           fbid: user.fbid,
-          day: (new Date()).toUTCString(),
+          day: (new Date()).toUTCString().slice(5, -13),
           fullDay: (new Date()).toUTCString(), // Save date and time
           completed: true,
           reminderTime: user.reminderTime,
