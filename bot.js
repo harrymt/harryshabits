@@ -228,6 +228,7 @@ const read = function (sender, message, reply) {
           });
         });
       } else if (message.quick_reply.payload === 'PICKED_SNOOZE_REMINDER') {
+        let numberOfSnoozes = user.snoozesToday;
 
         // Set their reminder time to be the next cron job!
         if (user.snoozedReminderTime === 'MORNING') {
@@ -238,6 +239,10 @@ const read = function (sender, message, reply) {
           user.snoozedReminderTime = 'NIGHT';
         }
         // Can't snooze if its the night
+
+        // Update number of snoozes counter
+        numberOfSnoozes++;
+        user.snoozesToday = numberOfSnoozes;
 
         // Save user information to datastore
         database.updateUser(user, () => {
@@ -254,13 +259,16 @@ const read = function (sender, message, reply) {
           fullDay: (new Date()).toUTCString(), // Save date and time
           completed: false,
           reminderTime: user.reminderTime,
-          numberOfSnoozes: getDifferenceInTimes(user.reminderTime, user.snoozedReminderTime),
+          numberOfSnoozes: user.snoozesToday,
           currentModality: user.modality,
           currentHabit: user.habit
         };
 
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
+
+        // Reset number of snoozes
+        user.snoozesToday = 0;
 
         // Save user information to datastore
         database.updateHabit(habit, () => {
@@ -279,13 +287,16 @@ const read = function (sender, message, reply) {
           fullDay: (new Date()).toUTCString(), // Save date and time
           completed: true,
           reminderTime: user.reminderTime,
-          numberOfSnoozes: getDifferenceInTimes(user.reminderTime, user.snoozedReminderTime),
+          numberOfSnoozes: user.snoozesToday,
           currentModality: user.modality,
           currentHabit: user.habit
         };
 
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
+
+        // Reset number of snoozes
+        user.snoozesToday = 0;
 
         database.updateHabit(habit, () => {
           database.updateUser(user, () => {
@@ -388,31 +399,32 @@ const read = function (sender, message, reply) {
   });
 };
 
-function getDifferenceInTimes(baseTime, extendedTime) {
-  if (baseTime === 'MORNING' && extendedTime === 'MORNING') {
-    return 0;
-  } else if (baseTime === 'MORNING' && extendedTime === 'AFTERNOON') {
-    return 1;
-  } else if (baseTime === 'MORNING' && extendedTime === 'EVENING') {
-    return 2;
-  } else if (baseTime === 'MORNING' && extendedTime === 'NIGHT') {
-    return 3;
+// Unused
+// function getDifferenceInTimes(baseTime, extendedTime) {
+//   if (baseTime === 'MORNING' && extendedTime === 'MORNING') {
+//     return 0;
+//   } else if (baseTime === 'MORNING' && extendedTime === 'AFTERNOON') {
+//     return 1;
+//   } else if (baseTime === 'MORNING' && extendedTime === 'EVENING') {
+//     return 2;
+//   } else if (baseTime === 'MORNING' && extendedTime === 'NIGHT') {
+//     return 3;
 
-  } else if (baseTime === 'AFTERNOON' && extendedTime === 'AFTERNOON') {
-    return 0;
-  } else if (baseTime === 'AFTERNOON' && extendedTime === 'EVENING') {
-    return 1;
-  } else if (baseTime === 'AFTERNOON' && extendedTime === 'NIGHT') {
-    return 2;
+//   } else if (baseTime === 'AFTERNOON' && extendedTime === 'AFTERNOON') {
+//     return 0;
+//   } else if (baseTime === 'AFTERNOON' && extendedTime === 'EVENING') {
+//     return 1;
+//   } else if (baseTime === 'AFTERNOON' && extendedTime === 'NIGHT') {
+//     return 2;
 
-  } else if (baseTime === 'EVENING' && extendedTime === 'EVENING') {
-    return 0;
-  } else if (baseTime === 'EVENING' && extendedTime === 'NIGHT') {
-    return 1;
-  } else {
-    return 0;
-  }
-}
+//   } else if (baseTime === 'EVENING' && extendedTime === 'EVENING') {
+//     return 0;
+//   } else if (baseTime === 'EVENING' && extendedTime === 'NIGHT') {
+//     return 1;
+//   } else {
+//     return 0;
+//   }
+// }
 
 module.exports = {
   read,

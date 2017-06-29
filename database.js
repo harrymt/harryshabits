@@ -47,7 +47,8 @@ const findOrCreateUser = (fbid, callback) => {
         modality: '',
         seenBefore: false,
         reminderTime: '',
-        habit: ''
+        habit: '',
+        snoozesToday: 0
       };
 
       // User doesn't exist, so lets create them

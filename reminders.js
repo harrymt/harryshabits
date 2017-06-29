@@ -90,6 +90,9 @@ const sendReminders = (timePeriod, callback) => {
           userData.id = record.getId();
           userData.snoozedReminderTime = record.fields.reminderTime;
 
+          // Reset number of snoozes today
+          userData.snoozesToday = 0;
+
           database.updateUser(userData, () => {
             FB.newMessage(record.get('fbid'), {
               text: 'You haven\'t logged any time today. Try again tomorrow.'
