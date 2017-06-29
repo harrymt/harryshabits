@@ -317,15 +317,15 @@ const read = function (sender, message, reply) {
                 title: 'Reveal Reward',
                 payload: 'PICKED_VISUAL_INLINE_REWARD'
               }];
+              reply(sender, replyContent);
             } else if (user.modality === 'SOUND_INLINE') {
               replyContent.attachment.payload.buttons = [{
                 type: 'postback',
                 title: 'Reveal Reward',
                 payload: 'PICKED_SOUND_INLINE_REWARD'
               }];
-            }
-
-            if (user.modality === 'VIBRATION') {
+              reply(sender, replyContent);
+            } else if (user.modality === 'VIBRATION') {
               console.log('Modality is vibration...');
               console.log(JSON.stringify(user));
               fitbit.sendVibration(user.fitbit_user_id, user.fitbit_tracker_id, user.fitbit_access_token, err => {
@@ -343,10 +343,6 @@ const read = function (sender, message, reply) {
                     text: 'Enjoy your reward. I\'ll see you tomorrow!'
                   });
                 }
-              });
-            } else {
-              reply(sender, replyContent, {
-                text: 'Enjoy your reward. I\'ll see you tomorrow!'
               });
             }
           });
