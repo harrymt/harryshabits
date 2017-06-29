@@ -112,7 +112,7 @@ const read = function (sender, message, reply) {
               String(message.text.toLowerCase()).includes('complete') ||
               String(message.text.toLowerCase()).includes('did it'))) {
 
-              // Check if users have already completd their habit today
+            // Check if users have already completed their habit today
             database.hasUserCompletedHabit(user, hasCompleted => {
               if (!hasCompleted) {
                  reply(sender,
@@ -124,7 +124,7 @@ const read = function (sender, message, reply) {
                   )
                 );
               } else {
-                reply(sender, { text: 'Sorry, I don\'t know how to respond to that.' });
+                reply(sender, { text: 'Well done on completing your habit today. I\'ll see you tomorrow!' });
               }
             });
           } else {
