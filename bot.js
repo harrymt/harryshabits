@@ -311,18 +311,11 @@ const read = function (sender, message, reply) {
             };
 
             // For the demo, enable inline rewards
-            if (user.modality === 'VISUAL_INLINE') {
+            if (user.modality === 'VISUAL_INLINE' || user.modality === 'SOUND_INLINE' || user.modality === 'MP3_INLINE') {
               replyContent.attachment.payload.buttons = [{
                 type: 'postback',
                 title: 'Reveal Reward',
-                payload: 'PICKED_VISUAL_INLINE_REWARD'
-              }];
-              reply(sender, replyContent);
-            } else if (user.modality === 'SOUND_INLINE') {
-              replyContent.attachment.payload.buttons = [{
-                type: 'postback',
-                title: 'Reveal Reward',
-                payload: 'PICKED_SOUND_INLINE_REWARD'
+                payload: 'PICKED_' + user.modality + '_REWARD'
               }];
               reply(sender, replyContent);
             } else if (user.modality === 'VIBRATION') {
