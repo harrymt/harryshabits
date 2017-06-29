@@ -9,11 +9,15 @@
   // Start the chatbot server and run an initial test
   const botServer = require('../index');
 
+  const waitTime = 500;
+
   require('./basic')(isError => {
     if (isError) {
       throw new Error('Test basic failed.');
     }
-    testMessageHello(); // Should be the first test
+    setTimeout(() => {
+      testMessageHello(); // Should be the first test
+    }, waitTime);
   });
 
   function testMessageHello() {
@@ -21,7 +25,9 @@
       if (isError) {
         throw new Error('Test message hello failed.');
       }
-      testChooseHabit(); // Should be the next test
+      setTimeout(() => {
+        testChooseHabit(); // Should be the next test
+      }, waitTime);
     });
   }
 
@@ -30,7 +36,9 @@
       if (isError) {
         throw new Error('Test choose habit failed.');
       }
-      testChooseTime();
+      setTimeout(() => {
+        testChooseTime();
+      }, waitTime);
     });
   }
 
@@ -39,7 +47,9 @@
       if (isError) {
         throw new Error('Test choose time failed.');
       }
-      testChooseButtonBack();
+      setTimeout(() => {
+        testChooseButtonBack();
+      }, waitTime);
     });
   }
 
@@ -48,7 +58,9 @@
       if (isError) {
         throw new Error('Test choose button back failed.');
       }
-      testChooseModality();
+      setTimeout(() => {
+        testChooseModality();
+      }, waitTime);
     });
   }
 
@@ -57,7 +69,9 @@
       if (isError) {
         throw new Error('Test choose modality failed.');
       }
-      testEnd();
+      setTimeout(() => {
+        testEnd();
+      }, waitTime);
     });
   }
 
