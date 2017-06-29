@@ -83,9 +83,6 @@ const read = function (sender, message, reply) {
       } else {
         if (firstTime) {
           reply(sender,
-            {
-              text: 'Sorry, I don\'t know how to respond to that.'
-            },
             createQuickReply(
               messageStart + 'I\'m Harry. I\'m not a talkative bot. What habit do you want to track?',
               [
@@ -107,9 +104,6 @@ const read = function (sender, message, reply) {
             database.hasUserCompletedHabit(user, hasCompleted => {
               if (!hasCompleted) {
                  reply(sender,
-                  {
-                    text: 'Sorry, I don\'t know how to respond to that.'
-                  },
                   createQuickReply(
                     'Did you want to mark your daily habit ' + convertToFriendlyName(user.habit) + ' as completed?',
                     [
