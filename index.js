@@ -67,13 +67,14 @@
 
   // Index page
   app.get('/', (req, res) => {
-    if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
-      res.send('Invalid secret.');
-      return;
-    }
     res.render('index', {
       version: require('./package.json').version,
-      name: require('./package.json').name_friendly
+      name: require('./package.json').name_friendly,
+      typeform: process.env.TYPE_FORM,
+      PAGE_URL: 'https://infinite-falls-46264.herokuapp.com',
+      PAGE_ID: process.env.FB_PAGE_ID,
+      APP_ID: process.env.FB_APP_ID,
+      ref: Date.now()
     });
   });
 
