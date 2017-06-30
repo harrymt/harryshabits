@@ -1,11 +1,9 @@
 extends layout.pug
 
 block content
-  h1 Get started with Harrys Habits
-  p Complete the below form.
   div( class="fb-messenger-checkbox", origin=PAGE_URL, page_id=PAGE_ID, messenger_app_id=APP_ID, user_ref=ref, prechecked="true", allow_login="true", size="large" )
   iframe( id='the_typeform', src=typeform )
-  p #{version} #{name}!
+  p( style='display:none;' ) #{version} #{name}!
   script.
     window.fbAsyncInit = function() {
       FB.init({
