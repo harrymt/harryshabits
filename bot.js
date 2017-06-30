@@ -296,6 +296,9 @@ const read = function (sender, message, reply) {
         numberOfSnoozes++;
         user.snoozesToday = numberOfSnoozes;
 
+        // Track total number of snoozes
+        user.totalNumberOfSnoozes++;
+
         let snoozeTimeChange = null;
         if (user.totalNumberOfSnoozes % snoozeAmountReminderTrigger === 0) {
           const newReminderTime = getNextReminderTime(user.reminderTime);
@@ -344,9 +347,6 @@ const read = function (sender, message, reply) {
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
 
-        // Track total number of snoozes
-        user.totalNumberOfSnoozes = user.totalNumberOfSnoozes + user.snoozesToday;
-
         // Reset number of snoozes
         user.snoozesToday = 0;
 
@@ -378,9 +378,6 @@ const read = function (sender, message, reply) {
 
         // Revert back to normal reminder time
         user.snoozedReminderTime = user.reminderTime;
-
-        // Keep track of the total number of snoozes
-        user.totalNumberOfSnoozes = user.totalNumberOfSnoozes + user.snoozesToday;
 
         // Reset number of snoozes
         user.snoozesToday = 0;
