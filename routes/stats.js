@@ -1,8 +1,8 @@
 
 'use strict';
 
-const database = require('./database');
-const FB = require('./connectors/facebook');
+const database = require('../connectors/database');
+const FB = require('../connectors/facebook');
 
 function fbMessageUsers(users, globalStats, callback) {
   for (let i = 0; i < users.length; i++) {

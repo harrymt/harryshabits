@@ -2,7 +2,7 @@
 
 const router = require('express').Router();
 
-const database = require('../database');
+const database = require('../connectors/database');
 const FB = require('../connectors/facebook');
 const Bot = require('../bot');
 

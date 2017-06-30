@@ -20,7 +20,7 @@ const snoozeAmountReminderTrigger = 5;
 
 
 const fitbit = require('./connectors/fitbit');
-const database = require('./database');
+const database = require('./connectors/database');
 const rewards = require('./generate-reward');
 const request = require('request');
 

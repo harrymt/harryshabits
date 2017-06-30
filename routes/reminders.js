@@ -1,7 +1,7 @@
 
 'use strict';
 
-const Bot = require('./bot');
+const Bot = require('../bot');
 
 /**
  * Send a reminder for everyone.
@@ -76,8 +76,8 @@ const sendReminders = (timePeriod, callback) => {
   }
 
 
-  const FB = require('./connectors/facebook');
-  const database = require('./database');
+  const FB = require('../connectors/facebook');
+  const database = require('../connectors/database');
 
   // Debug Logging!
   console.log('We got a reminder at time: ' + timeOfDay);

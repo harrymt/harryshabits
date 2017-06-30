@@ -11,8 +11,8 @@
     require('dotenv').load();
 
     app.get('/sass', function (req, res) {
-      require('./process-scss').srcToDist('reward-style', 'reward-style');
-      require('./process-scss').srcToDist('main', 'main');
+      require('./routes/process-sass').srcToDist('reward-style', 'reward-style');
+      require('./routes/process-sass').srcToDist('main', 'main');
       const r = (new Date()).toUTCString() + ' | Processed sass files.';
       console.log(r);
       res.send(`<h1>${r}<h1>`);
@@ -24,7 +24,7 @@
     console.log('> Running on port', process.env.PORT);
   });
 
-  const database = require('./database');
+  const database = require('./connectors/database');
   const FB = require('./connectors/facebook');
   const Bot = require('./bot');
 
@@ -45,11 +45,11 @@
     }
 
     if (req.params.timeOfDay && Bot.time[req.params.timeOfDay.toLowerCase()] !== undefined) {
-      require('./reminders').sendReminders(Bot.time[req.params.timeOfDay.toLowerCase()], success => {
+      require('./routes/reminders').sendReminders(Bot.time[req.params.timeOfDay.toLowerCase()], success => {
         res.send(success);
       });
     } else {
-      require('./reminders').sendReminders(null, success => {
+      require('./routes/reminders').sendReminders(null, success => {
         res.send(success);
       });
     }
@@ -60,7 +60,7 @@
       res.send('Invalid secret.');
       return;
     }
-    require('./stats').sendStats(success => {
+    require('./routes/stats').sendStats(success => {
       res.send(success);
     });
   });
