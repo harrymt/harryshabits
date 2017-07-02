@@ -220,6 +220,7 @@ const read = function (sender, message, reply) {
               [
                 'Visual',
                 'Sound',
+                'Visual and sound',
                 'Vibration'
               ]
             )
@@ -254,7 +255,8 @@ const read = function (sender, message, reply) {
         });
 
       } else if (message.quick_reply.payload === 'PICKED_VISUAL' ||
-                 message.quick_reply.payload === 'PICKED_SOUND') {
+                 message.quick_reply.payload === 'PICKED_SOUND' ||
+                 message.quick_reply.payload === 'PICKED_VISUAL_AND_SOUND') {
 
         const modality = message.quick_reply.payload.substring(7);
         user.modality = modality;

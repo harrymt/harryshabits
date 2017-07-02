@@ -19,4 +19,12 @@ router.get('/vibration', (req, res, next) => {
   res.render('rewards/vibration');
 });
 
+router.get('/visual_and_sound', (req, res, next) => {
+  const r = rewards.getVisualAudioReward();
+  res.render('rewards/visual_and_sound', {
+    img_url: r.gif,
+    audio_url: r.audio
+  });
+});
+
 module.exports = router;

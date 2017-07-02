@@ -1,48 +1,71 @@
 'use strict';
 
+const audioSpotify = [
+  'https://open.spotify.com/track/2olVm1lHicpveMAo4AUDRB', // Power of love
+  'https://open.spotify.com/track/3fthfkkvy9av3q3uAGVf7U', // Shake it off
+  'https://open.spotify.com/track/6Nf1bklus7o9fpKto13nDc', // OK GO, this shall not pass
+  'https://open.spotify.com/track/6Lphpr9Z6H282Sguw0dUWa' // Ahh Freak out
+];
+
+const audioMP3 = [
+  '/sound/hands-up.mp3',
+  '/sound/snow.mp3',
+  '/sound/thumbs-up.mp3',
+  '/sound/we-are-the-campions.mp3'
+];
+
+const visualRewards = [
+  'https://media.giphy.com/media/XreQmk7ETCak0/giphy.gif', // Boy at computer, thumbs up
+  'https://media.giphy.com/media/XreQmk7ETCak0/giphy.gif', // Gameshow host celebrating
+  'https://media.giphy.com/media/oGO1MPNUVbbk4/giphy.gif', // Small boy thumbs up
+  'https://media.giphy.com/media/uudzUtVcsLAoo/giphy.gif' // Baseballer fist success
+];
+
+const audioVisualRewards = [
+  'hands-up',
+  'snow',
+  'we-are-the-campions',
+  'thumbs-up'
+];
+
 /**
  * Choose a random audio reward and wrap it up into an object ready to send.
  */
 const getAudioReward = spotifyRewards => {
-  let audioRewards = [
-    '/sound/hooray.mp3',
-    '/sound/rock.mp3'
-  ];
-
   if (spotifyRewards) {
-    audioRewards = [
-      'https://open.spotify.com/track/2olVm1lHicpveMAo4AUDRB', // Power of love
-      'https://open.spotify.com/track/3fthfkkvy9av3q3uAGVf7U', // Shake it off
-      'https://open.spotify.com/track/6Nf1bklus7o9fpKto13nDc', // OK GO, this shall not pass
-      'https://open.spotify.com/track/6Lphpr9Z6H282Sguw0dUWa' // Ahh Freak out
-    ];
+    return getRandom(audioSpotify);
   }
 
-  // Choose a random reward
-  const chosenReward = Math.floor((Math.random() * (audioRewards.length)) + 1) - 1;
-
-  return audioRewards[chosenReward];
-}
+  return getRandom(audioMP3);
+};
 
 /**
  * Wrap a random gif up in an object.
  */
-const getVisualReward = function() {
-  const visualRewards = [
-    'https://media.giphy.com/media/XreQmk7ETCak0/giphy.gif', // Boy at computer, thumbs up
-    'https://media.giphy.com/media/XreQmk7ETCak0/giphy.gif', // Gameshow host celebrating
-    'https://media.giphy.com/media/oGO1MPNUVbbk4/giphy.gif', // Small boy thumbs up
-    'https://media.giphy.com/media/uudzUtVcsLAoo/giphy.gif' // Baseballer fist success
-  ];
+const getVisualReward = online => {
+  if (online) {
+    return getRandom(visualRewards);
+  }
+  return '/gif/' + getRandom(audioVisualRewards) + '.gif';
+};
 
-  // Choose a random reward
-  const chosenReward = Math.floor((Math.random() * (visualRewards.length)) + 1) - 1;
+/**
+ * Get a combined audio visual reward
+ */
+const getVisualAudioReward = function () {
+  const reward = getRandom(audioVisualRewards);
+  return {
+    audio: '/sound/' + reward + '.mp3',
+    gif: '/gif/' + reward + '.gif'
+  };
+};
 
-  return visualRewards[chosenReward];
+function getRandom(arr) {
+  return arr[Math.floor((Math.random() * (arr.length)) + 1) - 1];
 }
-
 
 module.exports = {
   getVisualReward,
+  getVisualAudioReward,
   getAudioReward
 };
