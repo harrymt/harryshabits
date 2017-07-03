@@ -11,10 +11,30 @@ body {
 .btn {
   border: 1px solid #666;
   border-radius: 1px;
+  display: block;
   padding: 15px;
   font-size: 2em;
   text-align: center;
   font-family: sans-serif;
+}
+
+#reward-btn {
+  display: none;
+}
+
+// If button isnt checked hide reward
+#reward-btn:not(:checked) ~ .container {
+  display: none;
+}
+
+// If button is checked, hide button
+#reward-btn:checked ~ .btn {
+  display: none;
+}
+
+// If button is checked, show reward
+#reward-btn:checked ~ .container {
+  display: block;
 }
 
 .btn:hover {
@@ -25,10 +45,6 @@ img {
   display: block;
   margin: 0 auto;
   width: 90%;
-}
-
-.container {
-  display: none;
 }
 
 $size: 50px;

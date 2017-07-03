@@ -2,7 +2,8 @@ doctype html
 html( lang='en-gb' )
   include includes/head-reward.pug
   body
-    .btn Reveal reward
+    input( type='checkbox', id='reward-btn' )
+    label.btn( for='reward-btn' ) Reveal reward
     .container
       block content
     script( src='/js/reward.js' )
