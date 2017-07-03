@@ -1,5 +1,7 @@
 'use strict';
 
+const cdn = 'https://cdn.rawgit.com/harrymt/habit-reward-chatbot/master/public';
+
 const audioSpotify = [
   'https://open.spotify.com/track/2olVm1lHicpveMAo4AUDRB', // Power of love
   'https://open.spotify.com/track/3fthfkkvy9av3q3uAGVf7U', // Shake it off
@@ -36,7 +38,7 @@ const getAudioReward = spotifyRewards => {
     return getRandom(audioSpotify);
   }
 
-  return getRandom(audioMP3);
+  return cdn + getRandom(audioMP3);
 };
 
 /**
@@ -46,7 +48,7 @@ const getVisualReward = online => {
   if (online) {
     return getRandom(visualRewards);
   }
-  return '/gif/' + getRandom(audioVisualRewards) + '.gif';
+  return cdn + '/gif/' + getRandom(audioVisualRewards) + '.gif';
 };
 
 /**
@@ -54,7 +56,6 @@ const getVisualReward = online => {
  */
 const getVisualAudioReward = function () {
   const reward = getRandom(audioVisualRewards);
-  const cdn = 'https://cdn.rawgit.com/harrymt/habit-reward-chatbot/master/public';
   return {
     audio: cdn + '/sound/' + reward + '.mp3',
     gif: cdn + '/gif/' + reward + '.gif'
