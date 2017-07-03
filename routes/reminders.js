@@ -14,7 +14,11 @@ const sendReminders = (timePeriod, callback) => {
   ];
 
   // Decide what period of the day it is
-  let dayHour = (new Date()).getUTCHours();
+  // Gets time in GMT BST
+  var now = new Date();
+  now.setUTCHours(now.getUTCHours() + 1); // TODO hardcoded BST time
+
+  let dayHour = now.getUTCHours();
   let timeOfDay = '';
 
   if (timePeriod) {
