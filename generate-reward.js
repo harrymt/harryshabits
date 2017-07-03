@@ -54,9 +54,10 @@ const getVisualReward = online => {
  */
 const getVisualAudioReward = function () {
   const reward = getRandom(audioVisualRewards);
+  const cdn = 'https://cdn.rawgit.com/harrymt/habit-reward-chatbot/master/public';
   return {
-    audio: '/sound/' + reward + '.mp3',
-    gif: '/gif/' + reward + '.gif'
+    audio: cdn + '/sound/' + reward + '.mp3',
+    gif: cdn + '/gif/' + reward + '.gif'
   };
 };
 
