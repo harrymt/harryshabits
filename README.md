@@ -47,3 +47,4 @@ EMAIL_PASS=<your email password>
 
 - *Audio* from [AudioBlocks](https://www.audioblocks.com/stock-audio/)
 - *Logo* from [the Noun Project by Yu luck](https://thenounproject.com/term/custom/402041/)
+- *Gifs* from [Gif Sound](gifsound.com) [A](https://gifsound.com/?gif=i.imgur.com/DWGKg.gif&v=hwhvByj8YG8&s=10), [B](https://gifsound.com/?gif=s.pikabu.ru/images/previews_comm/2012-09_3/13476044801789.gif&v=E-WHW-QNswE&s=25), [C](https://gifsound.com/?gif=i.imgur.com/1Asrg.gif&v=M11SvDtPBhA&s=45) and [D](https://gifsound.com/?gif=i.imgur.com/SXoCvIw.gif&v=Jmd4OLzhQw0&s=33)
