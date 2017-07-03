@@ -60,9 +60,10 @@
       res.send('Invalid secret.');
       return;
     }
-    require('./routes/stats').sendStats(success => {
-      res.send(success);
-    });
+    res.send('deprecated');
+    // require('./routes/stats').sendStats(success => {
+      // res.send(success);
+    // });
   });
 
   // Index page
