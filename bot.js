@@ -18,7 +18,6 @@ const reminder_times = {
 
 const snoozeAmountReminderTrigger = 5;
 
-
 const fitbit = require('./connectors/fitbit');
 const database = require('./connectors/database');
 const rewards = require('./generate-reward');
@@ -60,6 +59,48 @@ const convertToFriendlyName = str => {
   return str.replace('_', ' ').split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ');
 };
 
+function displaySettings(user, sender, reply, debug) {
+  let usr = user;
+  // Remove some stuff so we arent over the 640 character limit
+  delete usr.fitbit_user_id;
+  delete usr.fitbit_access_token;
+  delete usr.fitbit_tracker_id;
+  delete usr.fitbit_refresh_token;
+
+  if (debug) {
+    reply(sender,
+      {
+        text: JSON.stringify(usr) + '\nTimes are ' + JSON.stringify(reminder_times)
+      }
+    );
+  } else {
+    reply(sender,
+      {
+        text: 'Your reminder time is set to ' + convertToFriendlyName(user.reminderTime) + ' and your rewards will be ' + convertToFriendlyName(user.modality) + ' rewards.'
+      }
+    );
+  }
+}
+
+function displayHelp(sender, reply) {
+
+  database.getGlobals(globals => {
+    reply(sender,
+      {
+        text: 'There are ' + globals.remainingDays + ' days remaining of the trial.'
+      },
+      createQuickReply(
+       'Here are the list of commands you can give me.',
+        [
+          'About',
+          'Settings',
+          'Help'
+        ]
+      )
+    );
+  });
+}
+
 const read = function (sender, message, reply) {
   // Let's find the user object
   database.find(sender, user => {
@@ -83,18 +124,10 @@ const read = function (sender, message, reply) {
 
     if (message.quick_reply === undefined) {
       if (message.text && (message.text.toLowerCase() === 'stats' || message.text.toLowerCase() === 'settings')) {
-        console.log(user.toString());
-        let usr = user;
-        // Remove some stuff so we arent over the 640 character limit
-        delete usr.fitbit_user_id;
-        delete usr.fitbit_access_token;
-        delete usr.fitbit_tracker_id;
-        delete usr.fitbit_refresh_token;
-        reply(sender,
-          {
-            text: 'Your settings are: ' + JSON.stringify(usr) + '\nTimes are ' + JSON.stringify(reminder_times)
-          }
-        );
+        displaySettings(user, sender, reply, true);
+
+      } else if (message.text && (message.text.toLowerCase() === 'help')) {
+        displayHelp(sender, reply);
       } else {
         if (firstTime) {
           reply(sender,
@@ -147,6 +180,11 @@ const read = function (sender, message, reply) {
             ]
           )
         );
+      } else if (message.quick_reply.payload === 'PICKED_ABOUT') {
+      } else if (message.quick_reply.payload === 'PICKED_SETTINGS') {
+        displaySettings(user, sender, reply);
+      } else if (message.quick_reply.payload === 'PICKED_HELP') {
+        displayHelp(sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_STRETCH' ||
           message.quick_reply.payload === 'PICKED_MEDITATE' ||
           message.quick_reply.payload === 'PICKED_DRINK_WATER') {
