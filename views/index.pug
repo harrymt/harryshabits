@@ -1,18 +1,4 @@
 extends layout.pug
 
-//- https://github.com/TypeformIO/form-submit-demo USE THIS
 block content
-  div( class="fb-messenger-checkbox", origin=PAGE_URL, page_id=PAGE_ID, messenger_app_id=APP_ID, user_ref=ref, prechecked="true", allow_login="true", size="large" )
-  iframe( id='the_typeform', src=typeform )
-  p( style='display:none;' ) #{version} #{name}!
-  script.
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId      : "#{APP_ID}",
-        xfbml      : true,
-        version    : 'v2.6'
-      });
-
-    };
-
-  script( src='/js/fb-sdk.js' )
+  p #{version} #{name}
