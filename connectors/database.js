@@ -34,6 +34,36 @@ const getUsersByStreak = callback => {
   });
 };
 
+const getGlobals = callback => {
+  base('Globals').select().firstPage((err, records) => {
+    if (err) {
+      console.error(err);
+      callback(err);
+    }
+    records.forEach(record => {
+      const g = record.fields;
+      g.id = record.getId();
+      console.log('Getting globals: ' + JSON.stringify(g));
+      callback(g);
+    });
+  });
+};
+
+const updateGlobals = (globals, callback) => {
+  console.log('Updating globals ' + JSON.stringify(globals));
+  const callbackGlobals = globals;
+  const id = callbackGlobals.id;
+  delete globals.id;
+  base('Globals').update(id, globals, (err, record) => {
+    if (err) {
+      console.error(err);
+      throw new Error(err);
+    }
+    callbackGlobals.id = record.getId();
+    callback(callbackGlobals);
+  });
+};
+
 const hasUserCompletedHabit = (user, callback) => {
   const today = (new Date()).toUTCString().slice(5, -13); // Save date;
 
@@ -136,5 +166,7 @@ module.exports = {
   updateUser,
   updateHabit,
   find: findOrCreateUser,
-  hasUserCompletedHabit
+  hasUserCompletedHabit,
+  getGlobals,
+  updateGlobals
 };
