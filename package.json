@@ -1,7 +1,7 @@
 {
   "name": "harrys-habits-messenger-bot",
   "name_friendly": "Harrys Habits",
-  "version": "1.0.63",
+  "version": "1.0.64",
   "description": "A Facebook Messenger Chatbot that supports habit formation.",
   "main": "index.js",
   "repository": {
@@ -14,7 +14,7 @@
   "scripts": {
     "test": "node tests/main.js",
     "start": "node index.js",
-    "deploy": "standard-version && git push && git push heroku master"
+    "deploy": "standard-version --silent && git push && git push heroku master"
   },
   "homepage": "https://github.com/harrymt/habit-reward-chatbot",
   "bugs": "https://github.com/harrymt/habit-reward-chatbot/issues",
