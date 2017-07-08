@@ -14,8 +14,7 @@
   "scripts": {
     "test": "node tests/main.js",
     "start": "node index.js",
-    "deploy": "standard-version && git push heroku master",
-    "release": "standard-version"
+    "deploy": "standard-version && git push && git push heroku master"
   },
   "homepage": "https://github.com/harrymt/habit-reward-chatbot",
   "bugs": "https://github.com/harrymt/habit-reward-chatbot/issues",

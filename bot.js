@@ -82,15 +82,29 @@ function displaySettings(user, sender, reply, debug) {
   }
 }
 
+function displayAbout(sender, reply) {
+
+  database.getGlobals(globals => {
+    reply(sender,
+      {
+        text: 'Information about the trial.'
+      },
+      {
+        text: 'TODO'
+      }
+    );
+  });
+}
+
 function displayHelp(sender, reply) {
 
   database.getGlobals(globals => {
     reply(sender,
       {
-        text: 'There are ' + globals.remainingDays + ' days remaining of the trial.'
+        text: 'There are ' + globals.remainingDays + ' days remaining in the trial.'
       },
       createQuickReply(
-       'Here are the list of commands you can give me.',
+       'Here are the list of commands you can message me.',
         [
           'About',
           'Settings',
@@ -123,11 +137,14 @@ const read = function (sender, message, reply) {
     console.log(message);
 
     if (message.quick_reply === undefined) {
-      if (message.text && (message.text.toLowerCase() === 'stats' || message.text.toLowerCase() === 'settings')) {
-        displaySettings(user, sender, reply, true);
-
+      if (message.text && message.text.toLowerCase() === 'settings') {
+        displaySettings(user, sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'help')) {
         displayHelp(sender, reply);
+      } else if (message.text && (message.text.toLowerCase() === 'about')) {
+        displayAbout(sender, reply);
+      } else if (message.text && (message.text.toLowerCase() === 'harrymt'))
+        displaySettings(user, sedner, reply, true);
       } else {
         if (firstTime) {
           reply(sender,
@@ -181,6 +198,7 @@ const read = function (sender, message, reply) {
           )
         );
       } else if (message.quick_reply.payload === 'PICKED_ABOUT') {
+        displayAbout(sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_SETTINGS') {
         displaySettings(user, sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_HELP') {
