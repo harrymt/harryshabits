@@ -143,7 +143,7 @@ const read = function (sender, message, reply) {
         displayHelp(sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'about')) {
         displayAbout(sender, reply);
-      } else if (message.text && (message.text.toLowerCase() === 'harrymt'))
+      } else if (message.text && (message.text.toLowerCase() === 'harrymt')) {
         displaySettings(user, sedner, reply, true);
       } else {
         if (firstTime) {
