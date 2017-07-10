@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.72"></a>
+## [1.0.72](https://github.com/harrymt/harryshabits/compare/v1.0.71...v1.0.72) (2017-07-10)
+
+
+
 <a name="1.0.71"></a>
 ## [1.0.71](https://github.com/harrymt/harryshabits/compare/v1.0.70...v1.0.71) (2017-07-10)
 
