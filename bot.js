@@ -76,7 +76,7 @@ function displaySettings(user, sender, reply, debug) {
   } else {
     reply(sender,
       {
-        text: 'Your reminder time is set to ' + convertToFriendlyName(user.reminderTime) + ' and your rewards will be ' + convertToFriendlyName(user.modality) + ' rewards.'
+        text: 'Your reminder time is set to ' + convertToFriendlyName(user.reminderTime) + ' and your rewards are ' + convertToFriendlyName(user.modality) + ' rewards.'
       }
     );
   }
