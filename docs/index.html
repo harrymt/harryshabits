@@ -2,11 +2,70 @@
 <html>
 <head>
   <title>Harry's Habits</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    img {
+      margin: 0 auto;
+      max-width: 350px;
+      display: block;
+      width: 70%;
+    }
+
+    footer {
+      text-align: center;
+      display: block;
+      line-height: 1.2em;
+      padding-top: 10px;
+    }
+
+    .facebook {
+      width: 200px;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: normal;
+    }
+
+    a {
+      display: block;
+    }
+
+    .container {
+      margin: auto 10%;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: auto 5%;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+    }
+
+    @media (min-width: 650px) {
+      .container {
+        margin: auto 25%;
+      }
+    }
+  </style>
 </head>
 <body>
-  <img src="img/logo.png">
-  <h1>Harry's Habits, the habit tracking chatbot!</h1>
-  <a href='//github.com/harrymt/habit-reward-chatbot'>See the Github repo for more.</a>
-  <a href='/privacy-policy.html'>Privacy Policy</a>
+  <div class='container'>
+    <img class='logo' src="img/logo.png">
+    <h1><b>Harry's Habits</b> - the habit tracking chatbot</h1>
+    <a href='https://m.me/2278578462368010'>
+      <img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" class='facebook'>
+    </a>
+    <footer>
+      <a href='//github.com/harrymt/habit-reward-chatbot'>GitHub</a>
+      <a href='/privacy-policy.html'>Privacy Policy</a>
+    </footer>
+  </div>
 </body>
 </html>
