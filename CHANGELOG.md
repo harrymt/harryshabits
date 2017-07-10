@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.66"></a>
+## [1.0.66](https://github.com/harrymt/habit-reward-chatbot/compare/v1.0.65...v1.0.66) (2017-07-10)
+
+
+
 <a name="1.0.65"></a>
 ## [1.0.65](https://github.com/harrymt/habit-reward-chatbot/compare/v1.0.63...v1.0.65) (2017-07-08)
 
