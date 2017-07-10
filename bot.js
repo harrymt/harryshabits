@@ -257,58 +257,17 @@ const read = function (sender, message, reply) {
         user.reminderTime = timeOfDay;
         user.snoozedReminderTime = timeOfDay;
 
-        // Save user information to datastore
-        database.updateUser(user, () => {
-          reply(sender,
-            createQuickReply(
-              'Nice, I will remind you in the ' + convertToFriendlyName(timeOfDay) + ', what mode of reward would you like?',
-              [
-                'Visual',
-                'Sound',
-                'Visual and sound',
-                'Vibration'
-              ]
-            )
-          );
-        });
+        // Auto assign users a modality.
+        autoAssignModality(user.hasAndroid, mode => {
+          user.modality = mode;
 
-      } else if (message.quick_reply.payload === 'PICKED_VIBRATION') {
-
-        // Send them the fitbit connect modal
-        const myFitbitURL = 'https://infinite-falls-46264.herokuapp.com/fitbitauth/' + user.fbid;
-
-        reply(sender, {
-          attachment: {
-            type: 'template',
-            payload: {
-              template_type: 'button',
-              text: 'To enable Vibration rewards, you must have a FitBit. Would you like to connect to Fitbit?',
-              sharable: false,
-              buttons: [{
-                type: 'web_url',
-                url: myFitbitURL,
-                title: 'Connect to Fitbit',
-                messenger_extensions: true
-              },
-              {
-                type: 'postback',
-                title: 'Back',
-                payload: 'PICKED_BACK_TO_MODALITIES'
-              }]
+          // Save user information to datastore
+          database.updateUser(user, () => {
+            reply(sender,
+            {
+              text: 'All set up, I will remind you around ' + convertToFriendlyName(timeOfDay) + '.'
             }
-          }
-        });
-
-      } else if (message.quick_reply.payload === 'PICKED_VISUAL' ||
-                 message.quick_reply.payload === 'PICKED_SOUND' ||
-                 message.quick_reply.payload === 'PICKED_VISUAL_AND_SOUND') {
-
-        const modality = message.quick_reply.payload.substring(7);
-        user.modality = modality;
-        // Save user information to datastore
-        database.updateUser(user, () => {
-          reply(sender, {
-            text: convertToFriendlyName(modality) + ' rewards are the best! I will drop you a message in the ' + convertToFriendlyName(user.reminderTime) + '!'
+            );
           });
         });
 
@@ -578,6 +537,53 @@ function getNextReminderTime(reminderTime) {
 //     return 0;
 //   }
 // }
+
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
+
+/**
+ * Returns:
+ * VISUAL
+ * SOUND
+ * VIBRATION
+ * VISUAL_AND_SOUND
+ * VISUAL_AND_SOUND_AND_VIBRATION
+ * Based on the number of currently assigned users.
+ *
+ */
+function autoAssignModality(vibration, callback) {
+  database.getAllModalities(modalities => {
+    if (vibration) {
+      if (getRandomInt(0, 10) === 0) {
+        // 1 in 10 chance of automatically removing vibration and picking something else
+        delete modalities.VIBRATION;
+        delete modalities.VISUAL_AND_SOUND_AND_VIBRATION;
+      }
+    } else {
+      delete modalities.VIBRATION;
+      delete modalities.VISUAL_AND_SOUND_AND_VIBRATION;
+    }
+
+    console.log(modalities);
+    const lowest = {
+      amount: 999999999,
+      mode: ''
+    };
+
+    for (const mode in modalities) {
+      if (modalities[mode] < lowest.amount) {
+        lowest.amount = modalities[mode];
+        lowest.mode = mode;
+      }
+    }
+    console.log(lowest);
+    callback(lowest.mode);
+  });
+}
 
 module.exports = {
   read,

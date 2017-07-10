@@ -107,7 +107,8 @@ const findOrCreateUser = (fbid, callback) => {
         snoozesToday: 0,
         streak: 0,
         totalNumberOfSnoozes: 0,
-        totalNumberOfFailedSnoozes: 0
+        totalNumberOfFailedSnoozes: 0,
+        hasAndroid: false
       };
 
       // User doesn't exist, so lets create them
@@ -162,6 +163,38 @@ const updateUser = (user, callback) => {
   });
 };
 
+const getAllModalities = callback => {
+  const modalities = {
+    VISUAL: 0,
+    SOUND: 0,
+    VIBRATION: 0,
+    VISUAL_AND_SOUND: 0,
+    VISUAL_AND_SOUND_AND_VIBRATION: 0
+  };
+  base('Users').select({
+    fields: ['modality'],
+    sort: [{field: 'modality', direction: 'desc'}]
+  }).eachPage(function page(records, fetchNextPage) {
+    for (let i = 0; i < records.length; i++) {
+      if (records[i].fields && records[i].fields.modality) {
+        if (modalities[records[i].fields.modality] === undefined) {
+          modalities[records[i].fields.modality] = 0;
+        }
+        modalities[records[i].fields.modality]++;
+      }
+    }
+    console.log('fetching next page');
+    fetchNextPage();
+  }, function done(err) {
+    if (err) {
+      console.log(err);
+      callback(false);
+    } else {
+      callback(modalities);
+    }
+  });
+};
+
 module.exports = {
   getUsersByStreak,
   updateUser,
@@ -169,5 +202,6 @@ module.exports = {
   find: findOrCreateUser,
   hasUserCompletedHabit,
   getGlobals,
-  updateGlobals
+  updateGlobals,
+  getAllModalities
 };
