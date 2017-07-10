@@ -57,12 +57,17 @@ function createQRItem(text, payload) {
  * @returns {string}
  */
 const convertToFriendlyName = str => {
-  if (str.split('_').length === 1) { return str.toLowerCase(); }
+  if (str === undefined) {
+    return '';
+  }
+  if (str.split('_').length === 1) {
+    return str.toLowerCase();
+  }
   return str.replace('_', ' ').split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ');
 };
 
 function displaySettings(user, sender, reply, debug) {
-  let usr = user;
+  const usr = user;
   // Remove some stuff so we arent over the 640 character limit
   delete usr.fitbit_user_id;
   delete usr.fitbit_access_token;
