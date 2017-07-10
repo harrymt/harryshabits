@@ -57,6 +57,7 @@ function createQRItem(text, payload) {
  * @returns {string}
  */
 const convertToFriendlyName = str => {
+  if (str.split('_').length === 1) { return str.toLowerCase(); }
   return str.replace('_', ' ').split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ');
 };
 
