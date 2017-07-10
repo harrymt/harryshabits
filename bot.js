@@ -97,11 +97,14 @@ function displayAbout(sender, reply) {
 }
 
 function displayHelp(sender, reply) {
-
   database.getGlobals(globals => {
+    let firstMsg = 'There are ' + globals.remainingDays + ' days remaining in the trial.';
+    if (globals.remainingDays <= 0) {
+      firstMsg = 'The trail has ended.';
+    }
     reply(sender,
       {
-        text: 'There are ' + globals.remainingDays + ' days remaining in the trial.'
+        text: firstMsg
       },
       createQuickReply(
        'Here are the list of commands you can message me.',
