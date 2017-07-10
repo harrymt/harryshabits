@@ -93,7 +93,7 @@
       }
 
       // Process the message and decide on the response
-      Bot.read(entry.sender.id, entry.message, (senderFbid, reply, anotherReply) => {
+      Bot.read(entry.sender.id, entry.message, (senderFbid, reply, anotherReply, thirdReply, fourthReply) => {
         console.log('-- from bot to user vv --');
         console.log(JSON.stringify(reply));
 
@@ -111,9 +111,30 @@
                   console.log('Error sending new second reply fb message');
                   console.log(msg); // Log received info
                   console.log(data); // Log recieved info
+                  // TODO there is definitely a better way todo this
+                } else if (typeof thirdReply !== 'undefined' && thirdReply !== null) {
+                  setTimeout(() => {
+                    FB.newMessage(senderFbid, thirdReply, (msg, data) => {
+                      if (data.error) {
+                        console.log('Error sending new third reply fb message');
+                        console.log(msg); // Log received info
+                        console.log(data); // Log recieved info
+                      } else if (typeof fourthReply !== 'undefined' && fourthReply !== null) {
+                        setTimeout(() => {
+                          FB.newMessage(senderFbid, fourthReply, (msg, data) => {
+                            if (data.error) {
+                              console.log('Error sending new third reply fb message');
+                              console.log(msg); // Log received info
+                              console.log(data); // Log recieved info
+                            }
+                          });
+                        }, 2000);
+                      }
+                    });
+                  }, 2000);
                 }
               });
-            }, 5000); // 5 second gap between messages
+            }, 4000); // 4 second gap between messages
           }
         });
       });
@@ -126,7 +147,6 @@
     res.sendStatus(200);
   });
 
-
   // For facebook to verify
   app.get('/webhooks', (req, res) => {
     if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
@@ -136,7 +156,6 @@
       res.status(403).send('> Error, wrong fb verify token');
     }
   });
-
 
   module.exports = {
     shutdown() {

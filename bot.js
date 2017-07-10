@@ -21,11 +21,10 @@ const createQuickReply = (message, options) => {
 
   options.forEach(el => {
     replies.push(
-      {
-        content_type: 'text',
-        title: el,
-        payload: 'PICKED_' + el.replace(' ', '_').toUpperCase()
-      }
+      createQRItem(
+        el,
+        'PICKED_' + el.replace(' ', '_').toUpperCase()
+        )
     );
   });
 
@@ -34,6 +33,22 @@ const createQuickReply = (message, options) => {
     quick_replies: replies
   };
 };
+
+/**
+{
+  text: 'Choose these options',
+  quick_replies: [
+    createQRItem('Hi', 'PICKED_GREETING_MESSAGE')
+  ]
+}
+*/
+function createQRItem(text, payload) {
+  return {
+    content_type: 'text',
+    title: text,
+    payload: 'PICKED_' + payload
+  };
+}
 
 /**
  * Convert to Pascal Case.
@@ -104,18 +119,95 @@ function displayHelp(sender, reply) {
   });
 }
 
+function displayGetStarted(sender, reply) {
+  reply(sender,
+    {
+      text: 'Welcome to Harry\'s Habits! I am a chatbot designed to help you form a new healthy habit during a 30-day trial.'
+    },
+    {
+      text: 'The trial looks at forming new habits and has been approved by the University of Bristol ethics committee.'
+    },
+    {
+      text: 'If you would like to quit at any time, press the manage button to block all communication.'
+    },
+    {
+      text: 'Before we start, can you tell me a bit more about yourself? (This data cannot be used to identify you and will not be shared). What is your gender?',
+      quick_replies: [
+        createQRItem('Male', 'PICKED_GENDER_MALE'),
+        createQRItem('Female', 'PICKED_GENDER_FEMALE'),
+        createQRItem('Trans*', 'PICKED_GENDER_TRANS'),
+        createQRItem('Don\'t Say', 'PICKED_GENDER_DONT_SAY')
+      ]
+    }
+  );
+}
+
+function displayHowOld(user, sender, reply) {
+  user.expectingAge = true;
+  database.updateUser(user, () => {
+    reply(sender,
+      {
+        text: 'Thank you. How old are you?'
+      }
+    );
+  });
+}
+
+function displayUsedHabitAppsBefore(sender, reply) {
+  reply(sender,
+    {
+      text: 'Thanks, have you used any habit tracking apps or systems before?',
+      quick_replies: [
+        createQRItem('Yes', 'PICKED_HABIT_APPS_YES'),
+        createQRItem('No', 'PICKED_HABIT_APPS_NO')
+      ]
+    }
+  );
+}
+
+function displayWhatHabitsToDevelop(user, sender, reply) {
+  user.expectingPreviousHabits = true;
+  database.updateUser(user, () => {
+    reply(sender,
+      {
+        text: 'Cool, what were the habits you wanted to develop?'
+      }
+    );
+  });
+}
+
+function displayDidTheyWork(sender, reply) {
+  reply(sender,
+    {
+      text: 'Okay, did they work?',
+      quick_replies: [
+        createQRItem('Yes', 'PICKED_PREVIOUS_HABIT_APPS_DID_WORK_YES'),
+        createQRItem('No', 'PICKED_PREVIOUS_HABIT_APPS_DID_WORK_NO')
+      ]
+    }
+  );
+}
+
+function displayPickHabit(sender, reply) {
+  reply(sender,
+    {
+      text: 'Okay, what new daily habit would you like to complete?',
+      quick_replies: [
+        createQRItem('Physical Habit', 'PICKED_HABIT_CATEGORY_PHYSICAL'),
+        createQRItem('Relaxing Habit', 'PICKED_HABIT_CATEGORY_RELAXATION')
+      ]
+    }
+  );
+}
+
 const read = function (sender, message, reply) {
   // Let's find the user object
   database.find(sender, user => {
-    let messageStart = '';
     let firstTime = false;
 
-    // If we have seen this user before, send them a greeting
-    if (user.seenBefore) {
-      messageStart = 'Welcome back! ';
-    } else {
+    // If we have seen this user before, marked them as seen
+    if (!user.seenBefore) {
       user.seenBefore = true;
-      messageStart = 'Hello new person! ';
     }
 
     // If user hasnt finish setting up, don't let them mark as completed.
@@ -126,26 +218,33 @@ const read = function (sender, message, reply) {
     console.log(message);
 
     if (message.quick_reply === undefined) {
-      if (message.text && message.text.toLowerCase() === 'settings') {
+      if (message.text && user.expectingAge) {
+        user.expectingAge = false;
+        user.age = message.text;
+
+        // Save user information to datastore
+        database.updateUser(user, () => {
+          displayUsedHabitAppsBefore(sender, reply);
+        });
+      } else if (message.text && user.expectingPreviousHabits) {
+        user.expectingPreviousHabits = false;
+        user.previousHabits = message.text;
+
+        // Save user information to datastore
+        database.updateUser(user, () => {
+          displayDidTheyWork(sender, reply);
+        });
+      } else if (message.text && message.text.toLowerCase() === 'settings') {
         displaySettings(user, sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'help')) {
         displayHelp(sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'about')) {
         displayAbout(sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'harrymt')) {
-        displaySettings(user, sedner, reply, true);
+        displaySettings(user, sender, reply, true);
       } else {
         if (firstTime) {
-          reply(sender,
-            createQuickReply(
-              messageStart + 'I\'m Harry. I\'m not a talkative bot. What habit do you want to track?',
-              [
-                'Stretch',
-                'Meditate',
-                'Drink Water'
-              ]
-            )
-          );
+          displayGetStarted(sender, reply);
         } else {
           // If users are trying to tell us to mark thier habit as completed, then issue the completed dialog
           if (message.text && (String(message.text.toLowerCase()).includes('track') ||
@@ -176,22 +275,38 @@ const read = function (sender, message, reply) {
       }
     } else {
       if (message.quick_reply.payload === 'GET_STARTED_PAYLOAD') {
-        reply(sender,
-          createQuickReply(
-            messageStart + 'I\'m Harry. I\'m not a talkative bot. What habit do you want to track?',
-            [
-              'Stretch',
-              'Meditate',
-              'Drink Water'
-            ]
-          )
-        );
+        displayGetStarted(sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_ABOUT') {
         displayAbout(sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_SETTINGS') {
         displaySettings(user, sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_HELP') {
         displayHelp(sender, reply);
+      } else if (message.quick_reply.payload === 'PICKED_GENDER_MALE' ||
+        message.quick_reply.payload === 'PICKED_GENDER_FEMALE' ||
+        message.quick_reply.payload === 'PICKED_GENDER_TRANS' ||
+        message.quick_reply.payload === 'PICKED_GENDER_DONT_SAY') {
+        displayHowOld(user, sender, reply);
+      } else if (message.quick_reply.payload === 'PICKED_HABIT_APPS_YES') {
+        user.hasUsedHabitAppsBefore = true;
+        database.updateUser(user, () => {
+          displayWhatHabitsToDevelop(user, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'PICKED_HABIT_APPS_NO') {
+        user.hasUsedHabitAppsBefore = false;
+        database.updateUser(user, () => {
+          displayPickHabit(sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'PICKED_PREVIOUS_HABIT_APPS_DID_WORK_YES') {
+        user.hasUsedHabitAppsBeforeWorked = true;
+        database.updateUser(user, () => {
+          displayPickHabit(sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'PICKED_PREVIOUS_HABIT_APPS_DID_WORK_NO') {
+        user.hasUsedHabitAppsBeforeWorked = false;
+        database.updateUser(user, () => {
+          displayPickHabit(sender, reply);
+        });
       } else if (message.quick_reply.payload === 'PICKED_STRETCH' ||
           message.quick_reply.payload === 'PICKED_MEDITATE' ||
           message.quick_reply.payload === 'PICKED_DRINK_WATER') {

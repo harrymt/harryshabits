@@ -108,7 +108,13 @@ const findOrCreateUser = (fbid, callback) => {
         streak: 0,
         totalNumberOfSnoozes: 0,
         totalNumberOfFailedSnoozes: 0,
-        hasAndroid: false
+        hasAndroid: false,
+        expectingAge: false,
+        age: '',
+        hasUsedHabitAppsBefore: false,
+        expectingPreviousHabits: false,
+        previousHabits: '',
+        hasUsedHabitAppsBeforeWorked: false
       };
 
       // User doesn't exist, so lets create them
