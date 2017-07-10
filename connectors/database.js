@@ -104,6 +104,7 @@ const findOrCreateUser = (fbid, callback) => {
         seenBefore: false,
         reminderTime: '',
         habit: '',
+        habitCategory: '',
         snoozesToday: 0,
         streak: 0,
         totalNumberOfSnoozes: 0,
@@ -114,7 +115,13 @@ const findOrCreateUser = (fbid, callback) => {
         hasUsedHabitAppsBefore: false,
         expectingPreviousHabits: false,
         previousHabits: '',
-        hasUsedHabitAppsBeforeWorked: false
+        hasUsedHabitAppsBeforeWorked: false,
+        expectingHabitContext: false,
+        habitContext: '',
+        phone: '',
+        email: '',
+        interview: false,
+        expectingContactDetails: false
       };
 
       // User doesn't exist, so lets create them

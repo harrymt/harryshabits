@@ -200,6 +200,158 @@ function displayPickHabit(sender, reply) {
   );
 }
 
+function displayPhysicalHabits(sender, reply) {
+  reply(sender,
+    {
+      text: 'Nice. Physical habits are best done for about 20 seconds (feel free to spend longer).'
+    },
+    {
+      text: 'What specific habit would you like to pick?',
+      quick_replies: [
+        createQRItem('Stretching', 'PICKED_HABIT_STRETCH'),
+        createQRItem('Press Ups', 'PICKED_HABIT_PRESS_UPS'),
+        createQRItem('Plank', 'PICKED_HABIT_PLANK')
+      ]
+    }
+  );
+}
+
+function displayRelaxationHabits(sender, reply) {
+  reply(sender,
+    {
+      text: 'Nice. Relaxation habits are best done for about 5 minutes (feel free to spend longer).'
+    },
+    {
+      text: 'What specific habit would you like to pick?',
+      quick_replies: [
+        createQRItem('Reading', 'PICKED_HABIT_READING'),
+        createQRItem('Writing', 'PICKED_HABIT_WRITING'),
+        createQRItem('Meditation', 'PICKED_HABIT_MEDITATION')
+      ]
+    }
+  );
+}
+
+function displayReminderTime(habit, sender, reply) {
+  reply(sender,
+    {
+      text: 'That\'s a good one! I will remind you every day to check if you have completed your ' + convertToFriendlyName(habit) + '.'
+    },
+    createQuickReply(
+      'What time would you like this reminder?',
+      [
+        'Morning',
+        'Afternoon',
+        'Evening'
+      ]
+    )
+  );
+}
+
+function displayNestedTime(timePeriod, sender, reply) {
+  reply(sender,
+    createQuickReply(
+      'What time in the ' + timePeriod + '?',
+      [
+        'Early ' + timePeriod,
+        'Mid ' + timePeriod,
+        'Late ' + timePeriod
+      ]
+    )
+  );
+}
+
+function displayExistingRoutine(time, user, sender, reply) {
+
+  let existingRoutines = [];
+  if (time === 'MORNING') {
+    existingRoutines = [
+      'Waking up',
+      'Eating breakfast',
+      'Arriving at work'
+    ];
+  } else if (time === 'AFTERNOON') {
+    existingRoutines = [
+      'Eating lunch',
+      'Leaving work'
+    ];
+  } else {
+    existingRoutines = [
+      'Leaving work',
+      'Eating dinner',
+      'Getting ready for bed'
+    ];
+  }
+
+  let message = 'Habits are better formed when part of an existing routine. For example ';
+  for (let i = 0; i < existingRoutines.length; i++) {
+    if ((i + 1) === existingRoutines.length) {
+      message += 'or ' + existingRoutines[i] + '. ';
+    } else {
+      message += existingRoutines[i] + ', ';
+    }
+  }
+
+  message += 'What would be a good routine for you?';
+
+  user.expectingHabitContext = true;
+  database.updateUser(user, () => {
+    reply(sender,
+      {
+        text: message
+      }
+    );
+  });
+}
+
+function displayWhatPhone(sender, reply) {
+  reply(sender,
+    {
+      text: 'One last thing, what phone do you have?',
+      quick_replies: [
+        createQRItem('iPhone', 'PICKED_PHONE_IPHONE'),
+        createQRItem('Android', 'PICKED_PHONE_ANDROID'),
+        createQRItem('Don\'t know', 'PICKED_PHONE_DONTKNOW'),
+        createQRItem('Other', 'PICKED_PHONE_OTHER')
+      ]
+    }
+  );
+}
+
+function displayInterview(sender, reply) {
+  reply(sender,
+    {
+      text: 'At the end of the 30-day trail, I will want to interview you to see how you got on. Would you be available for this?',
+      quick_replies: [
+        createQRItem('Yes', 'PICKED_INTERVIEW_YES'),
+        createQRItem('No', 'PICKED_INTERVIEW_NO')
+      ]
+    }
+  );
+}
+
+function displayContactDetails(user, sender, reply) {
+  user.expectingContactDetails = true;
+  database.updateUser(user, () => {
+    reply(sender,
+      {
+        text: 'Thanks! What is your email?'
+      }
+    );
+  });
+}
+
+function displayFinalStage(habit, time, sender, reply) {
+  reply(sender,
+    {
+      text: 'All set up! I will remind you about your ' + convertToFriendlyName(habit) + ' tomorrow around ' + convertToFriendlyName(time) + '!'
+    },
+    {
+      text: 'Catch you tomorrow!'
+    }
+  );
+}
+
 const read = function (sender, message, reply) {
   // Let's find the user object
   database.find(sender, user => {
@@ -234,6 +386,23 @@ const read = function (sender, message, reply) {
         database.updateUser(user, () => {
           displayDidTheyWork(sender, reply);
         });
+      } else if (message.text && user.expectingHabitContext) {
+        user.expectingHabitContext = false;
+        user.habitContext = message.text;
+
+        // Save user information to datastore
+        database.updateUser(user, () => {
+          displayWhatPhone(sender, reply);
+        });
+      } else if (message.text && user.expectingContactDetails) {
+        user.expectingContactDetails = false;
+        user.email = message.text;
+
+        // Save user information to datastore
+        database.updateUser(user, () => {
+          displayFinalStage(user.habit, user.reminderTime, sender, reply);
+        });
+
       } else if (message.text && message.text.toLowerCase() === 'settings') {
         displaySettings(user, sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'help')) {
@@ -307,32 +476,33 @@ const read = function (sender, message, reply) {
         database.updateUser(user, () => {
           displayPickHabit(sender, reply);
         });
-      } else if (message.quick_reply.payload === 'PICKED_STRETCH' ||
-          message.quick_reply.payload === 'PICKED_MEDITATE' ||
-          message.quick_reply.payload === 'PICKED_DRINK_WATER') {
+      } else if (message.quick_reply.payload === 'PICKED_HABIT_CATEGORY_PHYSICAL') {
+        displayPhysicalHabits(sender, reply);
+      } else if (message.quick_reply.payload === 'PICKED_HABIT_CATEGORY_RELAXATION') {
+        displayRelaxationHabits(sender, reply);
+      } else if (message.quick_reply.payload === 'PICKED_HABIT_STRETCH' ||
+        message.quick_reply.payload === 'PICKED_HABIT_PRESS_UPS' ||
+        message.quick_reply.payload === 'PICKED_HABIT_PLANK') {
 
-        const habit = message.quick_reply.payload.substring(7);
+        user.habit = message.quick_reply.payload.substring(13);
+        user.habitCategory = 'PHYSICAL';
 
-        // Save habit against user
-        user.habit = habit;
-
-        // Save user information to datastore
         database.updateUser(user, () => {
-          // Then reply
-          reply(sender,
-            createQuickReply(
-              'That\'s a good one, what time would you like a reminder to ' + convertToFriendlyName(habit) + '?',
-              [
-                'Morning',
-                'Afternoon',
-                'Evening'
-              ]
-            )
-          );
+          displayReminderTime(user.habit, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'PICKED_HABIT_READING' ||
+        message.quick_reply.payload === 'PICKED_HABIT_WRITING' ||
+        message.quick_reply.payload === 'PICKED_HABIT_MEDITATION') {
+
+        user.habit = message.quick_reply.payload.substring(13);
+        user.habitCategory = 'RELAXATION';
+
+        database.updateUser(user, () => {
+          displayReminderTime(user.habit, sender, reply);
         });
 
       } else if (message.quick_reply.payload === 'PICKED_BACK_TO_MODALITIES') {
-         reply(sender,
+        reply(sender,
           createQuickReply(
             'What mode of reward would you like?',
             [
@@ -346,17 +516,7 @@ const read = function (sender, message, reply) {
                  message.quick_reply.payload === 'PICKED_AFTERNOON' ||
                  message.quick_reply.payload === 'PICKED_EVENING') {
 
-        const timePeriod = message.quick_reply.payload.substring(7).toLowerCase();
-        reply(sender,
-          createQuickReply(
-            'What time in the ' + timePeriod + '?',
-            [
-              'Early ' + timePeriod,
-              'Mid ' + timePeriod,
-              'Late ' + timePeriod
-            ]
-          )
-        );
+        displayNestedTime(message.quick_reply.payload.substring(7).toLowerCase(), sender, reply);
 
       } else if (message.quick_reply.payload === 'PICKED_EARLY_MORNING' ||
                  message.quick_reply.payload === 'PICKED_MID_MORNING' ||
@@ -368,23 +528,33 @@ const read = function (sender, message, reply) {
                  message.quick_reply.payload === 'PICKED_MID_EVENING' ||
                  message.quick_reply.payload === 'PICKED_LATE_EVENING') {
 
-        const timeOfDay = message.quick_reply.payload.substring(7);
-        user.reminderTime = timeOfDay;
-        user.snoozedReminderTime = timeOfDay;
+        displayExistingRoutine(message.quick_reply.payload.split('_').pop(), user, sender, reply);
+
+      } else if (message.quick_reply.payload === 'PICKED_PHONE_IPHONE' ||
+        message.quick_reply.payload === 'PICKED_PHONE_ANDROID' ||
+        message.quick_reply.payload === 'PICKED_PHONE_DONTKNOW' ||
+        message.quick_reply.payload === 'PICKED_PHONE_OTHER') {
+
+        user.hasAndroid = (message.quick_reply.payload === 'PICKED_PHONE_ANDROID');
+        user.phone = message.quick_reply.payload.split('_').pop();
 
         // Auto assign users a modality.
         autoAssignModality(user.hasAndroid, mode => {
           user.modality = mode;
 
-          // Save user information to datastore
           database.updateUser(user, () => {
-            reply(sender,
-            {
-              text: 'All set up, I will remind you around ' + convertToFriendlyName(timeOfDay) + '.'
-            }
-            );
+            displayInterview(sender, reply);
           });
         });
+
+      } else if (message.quick_reply.payload === 'PICKED_INTERVIEW_NO' || message.quick_reply.payload === 'PICKED_INTERVIEW_YES') {
+        user.interview = (message.quick_reply.payload.split('_').pop() === 'YES');
+
+        if (user.interview) {
+          displayContactDetails(user, sender, reply);
+        } else {
+          displayFinalStage(user.habit, user.reminderTime, sender, reply);
+        }
 
       } else if (message.quick_reply.payload === 'PICKED_NO') {
         reply(sender, {
