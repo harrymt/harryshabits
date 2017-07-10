@@ -46,7 +46,7 @@ function createQRItem(text, payload) {
   return {
     content_type: 'text',
     title: text,
-    payload: 'PICKED_' + payload
+    payload: payload
   };
 }
 
