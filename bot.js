@@ -1,27 +1,13 @@
 
 'use strict';
 
-// UTC time
-const reminder_times = {
-  early_morning: 7,
-  mid_morning: 9,
-  late_morning: 11,
-  early_afternoon: 12,
-  mid_afternoon: 14,
-  late_afternoon: 16,
-  early_evening: 18,
-  mid_evening: 20,
-  late_evening: 21,
-  night: 22,
-  newDay: 23
-};
-
 const snoozeAmountReminderTrigger = 5;
 
 const fitbit = require('./connectors/fitbit');
 const database = require('./connectors/database');
 const rewards = require('./generate-reward');
 const request = require('request');
+const Time = require('./time');
 
 /**
  * Creates a quick reply.
@@ -70,7 +56,7 @@ function displaySettings(user, sender, reply, debug) {
   if (debug) {
     reply(sender,
       {
-        text: JSON.stringify(usr) + '\nTimes are ' + JSON.stringify(reminder_times)
+        text: JSON.stringify(usr) + '\nTimes are ' + JSON.stringify(Time.reminderTimes)
       }
     );
   } else {
@@ -345,20 +331,30 @@ const read = function (sender, message, reply) {
       } else if (message.quick_reply.payload === 'PICKED_SNOOZE_REMINDER') {
         let numberOfSnoozes = user.snoozesToday;
 
+        let theReturnMessage = '';
+
+        // Get current time and decide what next time period to snooze them to
+        const Time = require('./time');
+
         // Set their reminder time to be the next time period
-        if (String(user.snoozedReminderTime).includes('EARLY')) {
-          user.snoozedReminderTime = 'MID' + user.snoozedReminderTime.substring(5);
-        } else if (String(user.snoozedReminderTime).includes('MID')) {
-          user.snoozedReminderTime = 'LATE' + user.snoozedReminderTime.substring(3);
+        const nextPeriod = Time.nextPeriodFromNow();
+        if (nextPeriod) {
+          user.snoozedReminderTime = nextPeriod;
+
+          // Update number of snoozes counter
+          numberOfSnoozes++;
+          user.snoozesToday = numberOfSnoozes;
+
+          // Track total number of snoozes
+          user.totalNumberOfSnoozes++;
+
+          theReturnMessage = 'Okay I will remind you around ' + convertToFriendlyName(nextPeriod) + '!';
+        } else {
+          // No next available period, so reset their snooze time
+          user.snoozedReminderTime = user.reminderTime;
+          user.totalNumberOfFailedSnoozes++;
+          theReturnMessage = 'Sorry we can\'t snooze anymore today, try again tomorrow!';
         }
-        // Can't snooze if its the night or if its the late part of their timeslot
-
-        // Update number of snoozes counter
-        numberOfSnoozes++;
-        user.snoozesToday = numberOfSnoozes;
-
-        // Track total number of snoozes
-        user.totalNumberOfSnoozes++;
 
         let snoozeTimeChange = null;
         if (user.totalNumberOfSnoozes % snoozeAmountReminderTrigger === 0) {
@@ -382,7 +378,7 @@ const read = function (sender, message, reply) {
         // Save user information to datastore
         database.updateUser(user, () => {
           reply(sender, {
-            text: 'Okay I will remind you around ' + convertToFriendlyName(user.snoozedReminderTime) + '!'
+            text: theReturnMessage
           },
           snoozeTimeChange
           );
@@ -586,6 +582,5 @@ function getNextReminderTime(reminderTime) {
 module.exports = {
   read,
   convertToFriendlyName,
-  createQuickReply,
-  time: reminder_times
+  createQuickReply
 };

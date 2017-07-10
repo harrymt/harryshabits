@@ -24,9 +24,9 @@
     console.log('> Running on port', process.env.PORT);
   });
 
-  const database = require('./connectors/database');
   const FB = require('./connectors/facebook');
   const Bot = require('./bot');
+  const Time = require('./time');
 
   // View engine setup.
   app.set('views', './views');
@@ -44,8 +44,8 @@
       return;
     }
 
-    if (req.params.timeOfDay && Bot.time[req.params.timeOfDay.toLowerCase()] !== undefined) {
-      require('./routes/reminders').sendReminders(Bot.time[req.params.timeOfDay.toLowerCase()], success => {
+    if (req.params.timeOfDay && Time.period(req.params.timeOfDay) !== null) {
+      require('./routes/reminders').sendReminders(Time.period(req.params.timeOfDay), success => {
         res.send(success);
       });
     } else {

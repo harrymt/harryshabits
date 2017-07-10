@@ -106,7 +106,8 @@ const findOrCreateUser = (fbid, callback) => {
         habit: '',
         snoozesToday: 0,
         streak: 0,
-        totalNumberOfSnoozes: 0
+        totalNumberOfSnoozes: 0,
+        totalNumberOfFailedSnoozes: 0
       };
 
       // User doesn't exist, so lets create them
