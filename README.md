@@ -4,7 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/codeclimate/codeclimate)
 [![Known Vulnerabilities](https://snyk.io/test/github/harrymt/habit-reward-chatbot/badge.svg)](https://snyk.io/test/github/harrymt/habit-reward-chatbot)
 
-## Harrys Habits - A Messenger Chatbot
+## Harry's Habits - A Messenger Chatbot
 
 Tracks habits and gives you rewards from 3 different modalities.
 
