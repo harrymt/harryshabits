@@ -21,7 +21,7 @@ const createQuickReply = (message, options) => {
     replies.push(
       createQRItem(
         el,
-        'PICKED_' +  el.toUpperCase().split(' ').join('_')
+        'PICKED_' + el.toUpperCase().split(' ').join('_')
         )
     );
   });
