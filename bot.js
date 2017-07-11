@@ -106,10 +106,16 @@ function displayAbout(sender, reply) {
 function displayHelp(sender, reply) {
   database.getGlobals(globals => {
     let firstMsg = 'There are ' + globals.remainingDays + ' days remaining in the trial.';
-    if (globals.remainingDays <= 0) {
+    if (globals.remainingDays === 0) {
+      firstMsg = 'This is the last day of the trail.';
+    }
+    if (globals.remainingDays < 0) {
       firstMsg = 'The trail has ended.';
     }
     reply(sender,
+      {
+        text: 'Sorry, I don\'t know how to respond to that. This is everything I have...'
+      },
       {
         text: firstMsg
       },
