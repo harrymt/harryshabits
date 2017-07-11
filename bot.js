@@ -534,7 +534,11 @@ const read = function (sender, message, reply) {
                  message.quick_reply.payload === 'PICKED_MID_EVENING' ||
                  message.quick_reply.payload === 'PICKED_LATE_EVENING') {
 
-        displayExistingRoutine(message.quick_reply.payload.split('_').pop(), user, sender, reply);
+        user.reminderTime = message.quick_reply.payload.substring(7);
+
+        database.updateUser(user, () => {
+          displayExistingRoutine(user.reminderTime, user, sender, reply);
+        });
 
       } else if (message.quick_reply.payload === 'PICKED_PHONE_IPHONE' ||
         message.quick_reply.payload === 'PICKED_PHONE_ANDROID' ||
