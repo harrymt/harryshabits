@@ -75,7 +75,10 @@ function displaySettings(user, sender, reply, debug) {
   if (debug) {
     reply(sender,
       {
-        text: JSON.stringify(usr) + '\nTimes are ' + JSON.stringify(Time.reminderTimes)
+        text: JSON.stringify(usr)
+      },
+      {
+        text: '\nTimes are ' + JSON.stringify(Time.reminderTimes)
       }
     );
   } else {
@@ -596,8 +599,10 @@ const read = function (sender, message, reply) {
 
         // Set their reminder time to be the next time period
         const nextPeriod = Time.nextPeriodFromNow();
-        if (nextPeriod) {
+        if (nextPeriod !== null) {
           user.snoozedReminderTime = nextPeriod;
+
+          console.log(nextPeriod);
 
           // Update number of snoozes counter
           numberOfSnoozes++;
