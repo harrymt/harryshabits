@@ -541,7 +541,7 @@ const read = function (sender, message, reply) {
                  message.quick_reply.payload === 'PICKED_LATE_EVENING') {
 
         user.reminderTime = message.quick_reply.payload.substring(7);
-
+        user.snoozedReminderTime = user.reminderTime;
         database.updateUser(user, () => {
           displayExistingRoutine(user.reminderTime, user, sender, reply);
         });
@@ -588,7 +588,7 @@ const read = function (sender, message, reply) {
           });
         });
 
-      } else if (message.quick_reply.payload === 'PICKED_SNOOZE_REMINDER') {
+      } else if (message.quick_reply.payload === 'PICKED_REMIND_ME_LATER') {
         let numberOfSnoozes = user.snoozesToday;
 
         let theReturnMessage = '';

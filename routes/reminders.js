@@ -10,11 +10,13 @@ const decideOnReminder = (override, callback) => {
 
   let quickReplyActions = [
     'Completed Habit',
-    'Snooze Reminder'
+    'Remind me later'
   ];
 
   // Decide what period of the day it is
   const timeOfDay = Time.period(override);
+
+  console.log(timeOfDay, override);
 
   if (timeOfDay === 'NIGHT') {
     // Remove snooze if its in th night time
