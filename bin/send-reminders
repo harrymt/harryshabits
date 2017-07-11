@@ -30,7 +30,7 @@ function start() {
     // Check if debug args are passed into function
     process.argv.forEach((val, index) => {
       if (index === 2) {
-        require('../routes/reminders').sendReminders(val, success => {
+        require('../routes/reminders').sendReminders(parseInt(val), success => {
           console.log(success);
           process.exit();
         });
