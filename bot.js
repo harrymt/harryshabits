@@ -55,7 +55,7 @@ function createQRItem(text, payload) {
  * @returns {string}
  */
 const convertToFriendlyName = str => {
-  if (str === undefined) {
+  if (str === undefined || str === null) {
     return '';
   }
   if (str.split('_').length === 1) {
