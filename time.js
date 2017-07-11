@@ -71,9 +71,11 @@ const roundHourUp = hour => {
  * Gets the next period from now.
  */
 const nextPeriodFromNow = () => {
-  const t = roundHourUp(hour()); // Always will be a vaild hour or null
-  if (!t) {
-    return null;
+  let t = hour();
+  if (value(t) === null) {
+    // Rounds up to the next period
+    t = roundHourUp(t); // Always will be a vaild hour or null
+    return t;
   }
 
   // No next period if we reach these two
