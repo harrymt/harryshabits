@@ -1,4 +1,3 @@
-
 'use strict';
 
 const snoozeAmountReminderTrigger = 5;
@@ -6,7 +5,6 @@ const snoozeAmountReminderTrigger = 5;
 const fitbit = require('./connectors/fitbit');
 const database = require('./connectors/database');
 const rewards = require('./generate-reward');
-const request = require('request');
 const Time = require('./time');
 
 /**
@@ -23,7 +21,7 @@ const createQuickReply = (message, options) => {
     replies.push(
       createQRItem(
         el,
-        'PICKED_' + el.replace(' ', '_').toUpperCase()
+        'PICKED_' +  el.toUpperCase().split(' ').join('_')
         )
     );
   });

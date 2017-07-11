@@ -156,7 +156,7 @@ const sendReminders = (timePeriod, callback) => {
                 console.log('Looking for next user');
                 if ((i + 1) >= records.length) {
                   // last record, fetch next page
-                  console.log('fetching next page')
+                  console.log('fetching next page');
                   fetchNextPage();
                 }
               });
