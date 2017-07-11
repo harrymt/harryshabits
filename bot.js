@@ -428,30 +428,30 @@ const read = function (sender, message, reply) {
           displayGetStarted(sender, reply);
         } else {
           // If users are trying to tell us to mark thier habit as completed, then issue the completed dialog
-          if (message.text && (String(message.text.toLowerCase()).includes('track') ||
-              String(message.text.toLowerCase()).includes('mark') ||
-              String(message.text.toLowerCase()).includes('habit') ||
-              String(message.text.toLowerCase()).includes('complete') ||
-              String(message.text.toLowerCase()).includes('did it'))) {
+          // if (message.text && (String(message.text.toLowerCase()).includes('track') ||
+          //     String(message.text.toLowerCase()).includes('mark') ||
+          //     String(message.text.toLowerCase()).includes('habit') ||
+          //     String(message.text.toLowerCase()).includes('complete') ||
+          //     String(message.text.toLowerCase()).includes('did it'))) {
 
-            // Check if users have already completed their habit today
-            database.hasUserCompletedHabit(user, hasCompleted => {
-              if (!hasCompleted) {
-                 reply(sender,
-                  createQuickReply(
-                    'Did you want to mark your daily habit ' + convertToFriendlyName(user.habit) + ' as completed?',
-                    [
-                      'Completed Habit'
-                    ]
-                  )
-                );
-              } else {
-                reply(sender, { text: 'Well done on completing your habit today. I\'ll see you tomorrow!' });
-              }
-            });
-          } else {
-            reply(sender, { text: 'Sorry, I don\'t know how to respond to that.' });
-          }
+          //   // Check if users have already completed their habit today
+          //   database.hasUserCompletedHabit(user, hasCompleted => {
+          //     if (!hasCompleted) {
+          //        reply(sender,
+          //         createQuickReply(
+          //           'Did you want to mark your daily habit ' + convertToFriendlyName(user.habit) + ' as completed?',
+          //           [
+          //             'Completed Habit'
+          //           ]
+          //         )
+          //       );
+          //     } else {
+          //       reply(sender, { text: 'Well done on completing your habit today. I\'ll see you tomorrow!' });
+          //     }
+          //   });
+          // } else {
+          displayHelp(sender, reply);
+          // }
         }
       }
     } else {
