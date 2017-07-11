@@ -27,9 +27,12 @@ const decideOnReminder = (override, callback) => {
   }
 
   if (timeOfDay === 'NEW_DAY') {
+    console.log('Time is new day');
+
     // Reset snooze time
     database.getGlobals(g => {
       g.remainingDays--;
+      console.log('Decrementing remaining days to ' + g.remainingDays);
       if (g.remainingDays < 0) {
         // Send out end of study messages
         sendEndOfStudyMessages(result => {
