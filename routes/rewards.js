@@ -27,4 +27,12 @@ router.get('/visual_and_sound', (req, res, next) => {
   });
 });
 
+router.get('/visual_and_sound_and_vibration', (req, res, next) => {
+  const r = rewards.getVisualAudioReward();
+  res.render('rewards/visual_and_sound_and_vibration', {
+    img_url: r.gif,
+    audio_url: r.audio
+  });
+});
+
 module.exports = router;
