@@ -165,7 +165,7 @@ const sendReminders = (timePeriod, callback) => {
             console.log('Sending ' + timeOfDay + ' reminder to user ' + records[i].get('fbid'));
             FB.newMessage(records[i].get('fbid'),
               Bot.createQuickReply(
-                'Hey, have you completed your daily ' + Bot.convertToFriendlyName(records[i].get('habit')) + '?',
+                'Hey, after ' + Bot.convertToFriendlyName(records[i].get('habitContext')) + ' have you completed your daily ' + Bot.convertToFriendlyName(records[i].get('habit')) + '?',
                 quickReplyActions
               ),
               (msg, data) => {
@@ -177,7 +177,7 @@ const sendReminders = (timePeriod, callback) => {
                 console.log('Looking for next user');
                 if ((i + 1) >= records.length) {
                   // last record, fetch next page
-                  console.log('fetching next page')
+                  console.log('fetching next page');
                   fetchNextPage();
                 }
               }
