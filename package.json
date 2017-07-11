@@ -1,7 +1,7 @@
 {
   "name": "harrys-habits-messenger-bot",
   "name_friendly": "Harry's Habits",
-  "version": "1.0.73",
+  "version": "1.0.74",
   "description": "A Facebook Messenger Chatbot that supports habit formation.",
   "main": "index.js",
   "repository": {
