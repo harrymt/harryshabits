@@ -88,7 +88,7 @@ const nextPeriodFromNow = () => {
     // If we found our time, choose the next one
     if (theTimes[i] === t) {
       if ((i + 1) < theTimes.length) {
-        return theTimes[i + 1];
+        return value(theTimes[i + 1]);
       }
 
       return null;
