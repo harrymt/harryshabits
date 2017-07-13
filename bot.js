@@ -586,7 +586,7 @@ const read = function (sender, message, reply) {
           });
         });
 
-      } else if (message.quick_reply.payload === 'PICKED_REMIND_ME_LATER') {
+      } else if (message.quick_reply.payload === 'PICKED_NOT_YET') {
         let numberOfSnoozes = user.snoozesToday;
 
         let theReturnMessage = '';
