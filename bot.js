@@ -331,7 +331,7 @@ function displayWhatPhone(sender, reply) {
 function displayInterview(sender, reply) {
   reply(sender,
     {
-      text: 'At the end of the 30-day trail, I will want to interview you to see how you got on. Would you be available for this?',
+      text: 'At the end of the 30-day trail, I\'d like to interview you to see how you got on. Would you be available for this?',
       quick_replies: [
         createQRItem('Yes', 'PICKED_INTERVIEW_YES'),
         createQRItem('No', 'PICKED_INTERVIEW_NO')
