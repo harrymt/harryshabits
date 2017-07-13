@@ -180,7 +180,7 @@ function displayWhatHabitsToDevelop(user, sender, reply) {
   database.updateUser(user, () => {
     reply(sender,
       {
-        text: 'Cool, what were the habits you wanted to develop?'
+        text: 'Cool, what did you track before?'
       }
     );
   });
