@@ -239,7 +239,7 @@ function displayRelaxationHabits(sender, reply) {
 function displayReminderTime(habit, sender, reply) {
   reply(sender,
     {
-      text: 'That\'s a good one! I will remind you every day to check if you have completed your ' + convertToFriendlyName(habit) + '.'
+      text: 'That\'s a good one! I will check your progress every day.'
     },
     createQuickReply(
       'What time would you like this reminder?',
