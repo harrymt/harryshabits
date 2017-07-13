@@ -345,7 +345,7 @@ function displayContactDetails(user, sender, reply) {
   database.updateUser(user, () => {
     reply(sender,
       {
-        text: 'Thanks! What is your email?'
+        text: 'Thanks! What\'s your email? I\'ll use it to contact you to arrange the interview [nothing else]'
       }
     );
   });
