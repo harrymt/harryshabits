@@ -58,10 +58,7 @@ const convertToFriendlyName = str => {
   if (str === undefined || str === null) {
     return '';
   }
-  if (str.split('_').length === 1) {
-    return str.toLowerCase();
-  }
-  return str.replace('_', ' ').split(' ').map(w => w[0].toUpperCase() + w.substr(1).toLowerCase()).join(' ');
+  return str.split('_').join(' ').toLowerCase();
 };
 
 function displaySettings(user, sender, reply, debug) {
