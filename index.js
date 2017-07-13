@@ -129,10 +129,10 @@
                               console.log(data); // Log recieved info
                             }
                           });
-                        }, 2000);
+                        }, 4000);
                       }
                     });
-                  }, 2000);
+                  }, 3000);
                 }
               });
             }, 4000); // 4 second gap between messages
