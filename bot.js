@@ -270,20 +270,20 @@ function displayExistingRoutine(time, user, sender, reply) {
   let existingRoutines = [];
   if (time === 'MORNING') {
     existingRoutines = [
-      'Waking up',
-      'Eating breakfast',
-      'Arriving at work'
+      'waking up',
+      'eating breakfast',
+      'arriving at work'
     ];
   } else if (time === 'AFTERNOON') {
     existingRoutines = [
-      'Eating lunch',
-      'Leaving work'
+      'eating lunch',
+      'leaving work'
     ];
   } else {
     existingRoutines = [
-      'Leaving work',
-      'Eating dinner',
-      'Getting ready for bed'
+      'leaving work',
+      'eating dinner',
+      'getting ready for bed'
     ];
   }
 
