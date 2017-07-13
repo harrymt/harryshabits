@@ -608,7 +608,7 @@ const read = function (sender, message, reply) {
           // Track total number of snoozes
           user.totalNumberOfSnoozes++;
 
-          theReturnMessage = 'Okay I will remind you around ' + convertToFriendlyName(nextPeriod) + '!';
+          theReturnMessage = 'Okay I will check on you later!';
         } else {
           // No next available period, so reset their snooze time
           user.snoozedReminderTime = user.reminderTime;
