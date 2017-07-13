@@ -145,7 +145,7 @@ function displayGetStarted(sender, reply) {
       quick_replies: [
         createQRItem('Male', 'PICKED_GENDER_MALE'),
         createQRItem('Female', 'PICKED_GENDER_FEMALE'),
-        createQRItem('Trans*', 'PICKED_GENDER_TRANS'),
+        createQRItem('Non-Binary', 'PICKED_GENDER_NON_BINARY'),
         createQRItem('Don\'t Say', 'PICKED_GENDER_DONT_SAY')
       ]
     }
@@ -463,7 +463,7 @@ const read = function (sender, message, reply) {
         displayHelp(sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_GENDER_MALE' ||
         message.quick_reply.payload === 'PICKED_GENDER_FEMALE' ||
-        message.quick_reply.payload === 'PICKED_GENDER_TRANS' ||
+        message.quick_reply.payload === 'PICKED_GENDER_NON_BINARY' ||
         message.quick_reply.payload === 'PICKED_GENDER_DONT_SAY') {
 
         user.gender = message.quick_reply.payload.substring(14);
