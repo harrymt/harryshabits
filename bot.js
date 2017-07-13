@@ -296,7 +296,7 @@ function displayExistingRoutine(time, user, sender, reply) {
     }
   }
 
-  message += 'What would be a good routine for you?';
+  message += 'Think of 1 existing routine you want to use?';
 
   user.expectingHabitContext = true;
   database.updateUser(user, () => {
