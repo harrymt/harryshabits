@@ -465,7 +465,11 @@ const read = function (sender, message, reply) {
         message.quick_reply.payload === 'PICKED_GENDER_FEMALE' ||
         message.quick_reply.payload === 'PICKED_GENDER_TRANS' ||
         message.quick_reply.payload === 'PICKED_GENDER_DONT_SAY') {
-        displayHowOld(user, sender, reply);
+
+        user.gender = message.quick_reply.payload.substring(14);
+        database.updateUser(user, () => {
+          displayHowOld(user, sender, reply);
+        });
       } else if (message.quick_reply.payload === 'PICKED_HABIT_APPS_YES') {
         user.hasUsedHabitAppsBefore = true;
         database.updateUser(user, () => {

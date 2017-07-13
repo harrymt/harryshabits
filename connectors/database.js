@@ -121,7 +121,8 @@ const findOrCreateUser = (fbid, callback) => {
         phone: '',
         email: '',
         interview: false,
-        expectingContactDetails: false
+        expectingContactDetails: false,
+        gender: ''
       };
 
       // User doesn't exist, so lets create them
