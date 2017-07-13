@@ -135,7 +135,7 @@ function displayGetStarted(sender, reply) {
       text: 'Welcome to Harry\'s Habits! I am a chatbot designed to help you form a new healthy habit during a 30-day trial.'
     },
     {
-      text: 'The trial looks at forming new habits and has been approved by the University of Bristol ethics committee.'
+      text: 'The trial looks at forming new habits and has been approved by the University of Bristol ethics committee (ref id: 54701).'
     },
     {
       text: 'If you would like to quit at any time, press the Manage button at the top of the screen, then Manage Messages to block all communication.'
