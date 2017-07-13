@@ -1,6 +1,6 @@
 'use strict';
 
-const cdn = 'https://cdn.rawgit.com/harrymt/habit-reward-chatbot/master/public';
+const cdn = 'https://cdn.rawgit.com/harrymt/harryshabits/e7fea8e6/public';
 
 const audioSpotify = [
   'https://open.spotify.com/track/2olVm1lHicpveMAo4AUDRB', // Power of love

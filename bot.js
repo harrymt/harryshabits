@@ -624,7 +624,7 @@ const read = function (sender, message, reply) {
           const newReminderTime = getNextReminderTime(user.reminderTime);
           // Send reminder to user asking them if they want to change their snooze time.
           snoozeTimeChange = {
-            text: 'I have noticed that you have been snoozing a lot. Would you like me to change your reminder time to ' + convertToFriendlyName(newReminderTime) + ' (from ' + convertToFriendlyName(user.reminderTime) + ')?\nWon\'t affect todays snoozes.',
+            text: 'I have noticed that you have been snoozing a lot. Would you like me to change your reminder time to ' + convertToFriendlyName(newReminderTime) + ' (from ' + convertToFriendlyName(user.reminderTime) + ')?\nWon\'t affect today\'s snoozes.',
             quick_replies: [{
               content_type: 'text',
               title: 'Yes',
