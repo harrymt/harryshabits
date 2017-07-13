@@ -138,7 +138,7 @@ function displayGetStarted(sender, reply) {
       text: 'The trial looks at forming new habits and has been approved by the University of Bristol ethics committee.'
     },
     {
-      text: 'If you would like to quit at any time, press the manage button to block all communication.'
+      text: 'If you would like to quit at any time, press the Manage button at the top of the screen, then Manage Messages to block all communication.'
     },
     {
       text: 'Before we start, can you tell me a bit more about yourself? (This data cannot be used to identify you and will not be shared). What is your gender?',
