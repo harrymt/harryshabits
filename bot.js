@@ -213,9 +213,6 @@ function displayPickHabit(sender, reply) {
 function displayPhysicalHabits(sender, reply) {
   reply(sender,
     {
-      text: 'Nice. Physical habits are best done for about 20 seconds (feel free to spend longer).'
-    },
-    {
       text: 'What specific habit would you like to pick?',
       quick_replies: [
         createQRItem('Stretching', 'PICKED_HABIT_STRETCH'),
@@ -228,9 +225,6 @@ function displayPhysicalHabits(sender, reply) {
 
 function displayRelaxationHabits(sender, reply) {
   reply(sender,
-    {
-      text: 'Nice. Relaxation habits are best done for about 5 minutes (feel free to spend longer).'
-    },
     {
       text: 'What specific habit would you like to pick?',
       quick_replies: [
