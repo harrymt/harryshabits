@@ -81,8 +81,14 @@ const sendEndOfStudyMessages = callback => {
   };
 
   const base = require('airtable').base(process.env.AIRTABLE_BASE);
-  base('Users').select().eachPage(function page(records, fetchNextPage) {
+  base('Users').select({
+      filterByFormula: '({finished} != "' + true + '")'
+    }).eachPage(function page(records, fetchNextPage) {
     for (let i = 0; i < records.length; i++) {
+      if (finished) {
+        console.log('Users finished, so not sending reminder.');
+        continue;
+      }
       console.log('Sending end of study message to user ' + records[i].get('fbid'));
 
       FB.newMessage(records[i].get('fbid'), message,
