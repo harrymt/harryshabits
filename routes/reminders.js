@@ -92,7 +92,7 @@ const sendEndOfStudyMessages = callback => {
             console.log(msg);
             console.log(data);
           } else {
-            startQR.text = records[i].get('habit') + ' after ' + records[i].get('habitContext') + ' ' + startQR.text;
+            startQR.text = Bot.convertToFriendlyName(records[i].get('habit')) + ' after ' + Bot.convertToFriendlyName(records[i].get('habitContext')) + ' ' + startQR.text;
             FB.newMessage(records[i].get('fbid'), startQR,
               (msg, data) => {
               if (data.error) {

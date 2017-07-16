@@ -359,7 +359,7 @@ function displayFinalStage(habit, time, sender, reply) {
 function displaySurvey1b(habit, context, sender, reply) {
   reply(sender,
     {
-      text: 'Okay. ' + habit + ' after ' + context + ' is something I do without having to consciously remember.',
+      text: habit + ' after ' + context + ' is something I do without having to consciously remember.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_B_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_B_AGREE'),
@@ -374,7 +374,7 @@ function displaySurvey1b(habit, context, sender, reply) {
 function displaySurvey1c(habit, context, sender, reply) {
   reply(sender,
     {
-      text: 'Okay. ' + habit + ' after ' + context + ' is something I do without thinking.',
+      text: habit + ' after ' + context + ' is something I do without thinking.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_C_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_C_AGREE'),
@@ -389,7 +389,7 @@ function displaySurvey1c(habit, context, sender, reply) {
 function displaySurvey1d(habit, context, sender, reply) {
   reply(sender,
     {
-      text: 'Okay. ' + habit + ' after ' + context + ' is something I start doing before I realise I\'m doing it.',
+      text: habit + ' after ' + context + ' is something I start doing before I realise I\'m doing it.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_D_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_D_AGREE'),
@@ -404,7 +404,7 @@ function displaySurvey1d(habit, context, sender, reply) {
 function displayModalityQuestion1a(sender, reply) {
   reply(sender,
     {
-      text: 'I found the rewards annoying.',
+      text: 'I found my rewards annoying.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_MODALITY_A_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_MODALITY_A_AGREE'),
@@ -419,7 +419,7 @@ function displayModalityQuestion1a(sender, reply) {
 function displayModalityQuestion1b(sender, reply) {
   reply(sender,
     {
-      text: 'I enjoyed the rewards.',
+      text: 'I enjoyed my rewards.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_MODALITY_B_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_MODALITY_B_AGREE'),
@@ -461,25 +461,43 @@ function displayModalityQuestion1d(sender, reply) {
   );
 }
 
-function displayAnyMoreFeedback(sender, reply) {
+function displayAnyMoreFeedback(user, sender, reply) {
   user.expectingMoreFeedback = true;
   database.updateUser(user, () => {
     reply(sender,
       {
-        text: 'Message me anymore feedback now:'
+        text: 'Thank you! Message me anymore feedback you have now:'
       }
     );
   });
 }
 
-function displayEndOfBotPeriod(sender, reply) {
+function displayEndOfBotPeriod(user, sender, reply) {
+  const msgA = 'Thank you for your time! You will be unable to use me to track habits anymore.';
+  const msgB = 'If you have any further questions about the study, please contact me at hm16679@my.bristol.ac.uk.';
+  let msgB1 = '';
+  const msgC = 'Goodbye!';
+  const msgD = '👋';
+
+  if (user.interview) {
+    msgB1 = ' I will contact you in about a week to see how you\'re getting on with your habit.';
+  }
+
   reply(sender,
     {
-      text: 'TODO'
+      text: msgA
+    },
+    {
+      text: msgB + msgB1
+    },
+    {
+      text: msgC
+    },
+    {
+      text: msgD
     }
   );
 }
-
 
 const read = function (sender, message, reply) {
   // Let's find the user object
@@ -532,13 +550,13 @@ const read = function (sender, message, reply) {
           displayFinalStage(user.habit, user.reminderTime, sender, reply);
         });
 
-       } else if (message.text && user.expectingMoreFeedback) {
+      } else if (message.text && user.expectingMoreFeedback) {
         user.expectingMoreFeedback = false;
         user.moreFeedback = message.text;
 
         // Save user information to datastore
         database.updateUser(user, () => {
-          displayEndOfBotPeriod(sender, reply);
+          displayEndOfBotPeriod(user, sender, reply);
         });
       } else if (message.text && message.text.toLowerCase() === 'settings') {
         displaySettings(user, sender, reply);
@@ -1012,7 +1030,7 @@ const read = function (sender, message, reply) {
         user.surveyModality1d = s1md;
 
         database.updateUser(user, () => {
-          displayAnyMoreFeedback(sender, reply);
+          displayAnyMoreFeedback(user, sender, reply);
         });
       }
     }
