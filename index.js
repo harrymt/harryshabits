@@ -105,7 +105,7 @@
           }
 
           // Process the message and decide on the response
-          Bot.read(entry.sender.id, entry.message, (senderFbid, reply, anotherReply, thirdReply, fourthReply) => {
+          Bot.read(entry.sender.id, entry.message, (senderFbid, reply, anotherReply, thirdReply, fourthReply, fifthReply) => {
             console.log('-- from bot to user vv --');
             console.log(JSON.stringify(reply));
 
@@ -138,6 +138,16 @@
                                   console.log('Error sending new third reply fb message');
                                   console.log(msg); // Log received info
                                   console.log(data); // Log recieved info
+                                } else if (typeof fifthReply !== 'undefined' && fifthReply !== null) {
+                                  setTimeout(() => {
+                                    FB.newMessage(senderFbid, fifthReply, (msg, data) => {
+                                      if (data.error) {
+                                        console.log('Error sending new third reply fb message');
+                                        console.log(msg); // Log received info
+                                        console.log(data); // Log recieved info
+                                      }
+                                    });
+                                  }, 4000);
                                 }
                               });
                             }, 4000);

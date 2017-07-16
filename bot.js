@@ -121,6 +121,9 @@ function displayAbout(sender, reply) {
       },
       {
         text: 'If you would like to quit at any time, press the Manage button at the top of the screen, then Manage Messages to block all communication.'
+      },
+      {
+        text: 'For more information visit www.harrymt.com/harryshabits'
       }
     );
   });
