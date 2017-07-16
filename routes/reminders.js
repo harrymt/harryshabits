@@ -70,20 +70,20 @@ const sendEndOfStudyMessages = callback => {
   const startQR = {
     text: ' is something I do automatically.',
     quick_replies: [
-      createQRItem('Strongly agree', 'SURVEY1_A_STRONGLY_AGREE'),
-      createQRItem('Agree', 'SURVEY1_A_AGREE'),
-      createQRItem('Neither', 'SURVEY1_A_NEITHER'),
-      createQRItem('Disagree', 'SURVEY1_A_DISAGREE'),
-      createQRItem('Strongly disagree', 'SURVEY1_A_STRONGLY_DISAGREE')
+      Bot.createQRItem('Strongly agree', 'SURVEY1_A_STRONGLY_AGREE'),
+      Bot.createQRItem('Agree', 'SURVEY1_A_AGREE'),
+      Bot.createQRItem('Neither', 'SURVEY1_A_NEITHER'),
+      Bot.createQRItem('Disagree', 'SURVEY1_A_DISAGREE'),
+      Bot.createQRItem('Strongly disagree', 'SURVEY1_A_STRONGLY_DISAGREE')
     ]
   };
 
   const base = require('airtable').base(process.env.AIRTABLE_BASE);
   base('Users').select({
       filterByFormula: '({finished} != "' + true + '")'
-    }).eachPage(function page(records, fetchNextPage) {
+  }).eachPage(function page(records, fetchNextPage) {
     for (let i = 0; i < records.length; i++) {
-      if (finished) {
+      if (records[i].get('finished')) {
         console.log('Users finished, so not sending reminder.');
         continue;
       }
