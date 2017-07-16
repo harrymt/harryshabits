@@ -359,7 +359,7 @@ function displayFinalStage(habit, time, sender, reply) {
 function displaySurvey1b(habit, context, sender, reply) {
   reply(sender,
     {
-      text: Bot.convertToFriendlyName(habit) + ' after ' + Bot.convertToFriendlyName(context) + ' is something I do without having to consciously remember.',
+      text: '1b, ' + convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without having to consciously remember.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_B_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_B_AGREE'),
@@ -374,7 +374,7 @@ function displaySurvey1b(habit, context, sender, reply) {
 function displaySurvey1c(habit, context, sender, reply) {
   reply(sender,
     {
-      text: Bot.convertToFriendlyName(habit) + ' after ' + Bot.convertToFriendlyName(context) + ' is something I do without thinking.',
+      text: '1c, ' + convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without thinking.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_C_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_C_AGREE'),
@@ -389,7 +389,7 @@ function displaySurvey1c(habit, context, sender, reply) {
 function displaySurvey1d(habit, context, sender, reply) {
   reply(sender,
     {
-      text: Bot.convertToFriendlyName(habit) + ' after ' + Bot.convertToFriendlyName(context) + ' is something I start doing before I realise I\'m doing it.',
+      text: '1d, ' + convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I start doing before I realise I\'m doing it.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_D_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_D_AGREE'),
