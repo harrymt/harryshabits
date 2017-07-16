@@ -311,7 +311,7 @@ function displayExistingRoutine(time, user, sender, reply) {
 function displayWhatPhone(sender, reply) {
   reply(sender,
     {
-      text: 'One last thing, what phone do you have?',
+      text: 'What phone do you have?',
       quick_replies: [
         createQRItem('iPhone', 'PICKED_PHONE_IPHONE'),
         createQRItem('Android', 'PICKED_PHONE_ANDROID'),
