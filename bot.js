@@ -988,12 +988,12 @@ const read = function (sender, message, reply) {
         database.updateUser(user, () => {
           displayModalityQuestion1a(sender, reply);
         });
-       } else if (message.quick_reply.payload === 'SURVEY1_MODALITY_A_STRONGLY_AGREE' ||
+      } else if (message.quick_reply.payload === 'SURVEY1_MODALITY_A_STRONGLY_AGREE' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_A_AGREE' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_A_NEITHER' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_A_DISAGREE' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_A_STRONGLY_DISAGREE') {
-        const dm1a = message.quick_reply.payload.substring(10);
+        const dm1a = message.quick_reply.payload.substring(19);
         user.surveyModality1a = dm1a;
 
         database.updateUser(user, () => {
@@ -1004,7 +1004,7 @@ const read = function (sender, message, reply) {
           message.quick_reply.payload === 'SURVEY1_MODALITY_B_NEITHER' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_B_DISAGREE' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_B_STRONGLY_DISAGREE') {
-        const dm1b = message.quick_reply.payload.substring(10);
+        const dm1b = message.quick_reply.payload.substring(19);
         user.surveyModality1b = dm1b;
 
         database.updateUser(user, () => {
@@ -1015,7 +1015,7 @@ const read = function (sender, message, reply) {
           message.quick_reply.payload === 'SURVEY1_MODALITY_C_NEITHER' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_C_DISAGREE' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_C_STRONGLY_DISAGREE') {
-        const s1mc = message.quick_reply.payload.substring(10);
+        const s1mc = message.quick_reply.payload.substring(19);
         user.surveyModality1c = s1mc;
 
         database.updateUser(user, () => {
@@ -1026,7 +1026,7 @@ const read = function (sender, message, reply) {
           message.quick_reply.payload === 'SURVEY1_MODALITY_D_NEITHER' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_D_DISAGREE' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_D_STRONGLY_DISAGREE') {
-        const s1md = message.quick_reply.payload.substring(10);
+        const s1md = message.quick_reply.payload.substring(19);
         user.surveyModality1d = s1md;
 
         database.updateUser(user, () => {
