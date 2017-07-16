@@ -12,6 +12,73 @@ if (process.env.NODE_ENV !== 'production') {
 // Integrate with airtable
 const base = require('airtable').base(process.env.AIRTABLE_BASE);
 
+
+const findOrCreateUser = (fbid, callback) => {
+  console.log('Finding user with fbid ' + fbid);
+
+  base('Users').select({
+    filterByFormula: '({fbid} = "' + fbid + '")'
+  }).eachPage(function page(records, fetchNextPage) {
+    if (records !== undefined && records[0] !== undefined) {
+      const userData = records[0].fields;
+      userData.id = records[0].getId();
+      callback(userData);
+    } else {
+      const userData = {
+        fbid,
+        modality: '',
+        seenBefore: false,
+        reminderTime: '',
+        habit: '',
+        habitCategory: '',
+        snoozesToday: 0,
+        streak: 0,
+        totalNumberOfSnoozes: 0,
+        totalNumberOfFailedSnoozes: 0,
+        expectingAge: false,
+        age: '',
+        hasUsedHabitAppsBefore: false,
+        expectingPreviousHabits: false,
+        previousHabits: '',
+        hasUsedHabitAppsBeforeWorked: false,
+        expectingHabitContext: false,
+        habitContext: '',
+        email: '',
+        interview: false,
+        expectingContactDetails: false,
+        gender: '',
+        expectingMoreFeedback: false,
+        survey1a: '',
+        survey1b: '',
+        survey1c: '',
+        survey1d: '',
+        surveyModality1a: '',
+        surveyModality1b: '',
+        surveyModality1c: '',
+        surveyModality1d: '',
+        moreFeedback: '',
+        finished: true
+      };
+
+      // User doesn't exist, so lets create them
+      base('Users').create(userData, (err, record) => {
+        if (err) {
+          console.error(err);
+          throw new Error(err);
+        }
+        console.log('Created user in database fbid: ' + fbid);
+        userData.id = record.getId();
+        callback(userData);
+      });
+    }
+  }, function done(err) {
+    if (err) {
+      console.error(err);
+      throw new Error(err);
+    }
+  });
+};
+
 const getUsersByStreak = callback => {
   let users = [];
   base('Users').select({
@@ -87,73 +154,6 @@ const hasUserCompletedHabit = (user, callback) => {
   });
 };
 
-const findOrCreateUser = (fbid, callback) => {
-  console.log('Finding user with fbid ' + fbid);
-
-  base('Users').select({
-    filterByFormula: '({fbid} = "' + fbid + '")'
-  }).eachPage(function page(records, fetchNextPage) {
-    if (records !== undefined && records[0] !== undefined) {
-      const userData = records[0].fields;
-      userData.id = records[0].getId();
-      callback(userData);
-    } else {
-      const userData = {
-        fbid,
-        modality: '',
-        seenBefore: false,
-        reminderTime: '',
-        habit: '',
-        habitCategory: '',
-        snoozesToday: 0,
-        streak: 0,
-        totalNumberOfSnoozes: 0,
-        totalNumberOfFailedSnoozes: 0,
-        hasAndroid: false,
-        expectingAge: false,
-        age: '',
-        hasUsedHabitAppsBefore: false,
-        expectingPreviousHabits: false,
-        previousHabits: '',
-        hasUsedHabitAppsBeforeWorked: false,
-        expectingHabitContext: false,
-        habitContext: '',
-        phone: '',
-        email: '',
-        interview: false,
-        expectingContactDetails: false,
-        gender: '',
-        expectingMoreFeedback: false,
-        survey1a: '',
-        survey1b: '',
-        survey1c: '',
-        survey1d: '',
-        surveyModality1a: '',
-        surveyModality1b: '',
-        surveyModality1c: '',
-        surveyModality1d: '',
-        moreFeedback: '',
-        finished: true
-      };
-
-      // User doesn't exist, so lets create them
-      base('Users').create(userData, (err, record) => {
-        if (err) {
-          console.error(err);
-          throw new Error(err);
-        }
-        console.log('Created user in database fbid: ' + fbid);
-        userData.id = record.getId();
-        callback(userData);
-      });
-    }
-  }, function done(err) {
-    if (err) {
-      console.error(err);
-      throw new Error(err);
-    }
-  });
-};
 
 const updateHabit = (habit, callback) => {
   const callbackHabit = habit;
@@ -192,9 +192,8 @@ const getAllModalities = callback => {
   const modalities = {
     VISUAL: 0,
     SOUND: 0,
-    VIBRATION: 0,
     VISUAL_AND_SOUND: 0,
-    VISUAL_AND_SOUND_AND_VIBRATION: 0
+    NONE: 0
   };
   base('Users').select({
     fields: ['modality'],

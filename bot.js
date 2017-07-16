@@ -2,7 +2,6 @@
 
 const snoozeAmountReminderTrigger = 5;
 
-const fitbit = require('./connectors/fitbit');
 const database = require('./connectors/database');
 const rewards = require('./generate-reward');
 const Time = require('./time');
@@ -63,11 +62,6 @@ const convertToFriendlyName = str => {
 
 function displaySettings(user, sender, reply, debug) {
   const usr = user;
-  // Remove some stuff so we arent over the 640 character limit
-  delete usr.fitbit_user_id;
-  delete usr.fitbit_access_token;
-  delete usr.fitbit_tracker_id;
-  delete usr.fitbit_refresh_token;
 
   if (debug) {
     reply(sender,
@@ -534,9 +528,14 @@ const read = function (sender, message, reply) {
         user.expectingHabitContext = false;
         user.habitContext = message.text;
 
-        // Save user information to datastore
-        database.updateUser(user, () => {
-          displayWhatPhone(sender, reply);
+        // Auto assign users a modality.
+        autoAssignModality(mode => {
+          user.modality = mode;
+
+          // Save user information to datastore
+          database.updateUser(user, () => {
+            displayInterview(sender, reply);
+          });
         });
       } else if (message.text && user.expectingContactDetails) {
         user.expectingContactDetails = false;
@@ -664,7 +663,7 @@ const read = function (sender, message, reply) {
             [
               'Visual',
               'Sound',
-              'Vibration'
+              'Both'
             ]
           )
         );
@@ -688,23 +687,6 @@ const read = function (sender, message, reply) {
         user.snoozedReminderTime = user.reminderTime;
         database.updateUser(user, () => {
           displayExistingRoutine(user.reminderTime, user, sender, reply);
-        });
-
-      } else if (message.quick_reply.payload === 'PICKED_PHONE_IPHONE' ||
-        message.quick_reply.payload === 'PICKED_PHONE_ANDROID' ||
-        message.quick_reply.payload === 'PICKED_PHONE_DONTKNOW' ||
-        message.quick_reply.payload === 'PICKED_PHONE_OTHER') {
-
-        user.hasAndroid = (message.quick_reply.payload === 'PICKED_PHONE_ANDROID');
-        user.phone = message.quick_reply.payload.split('_').pop();
-
-        // Auto assign users a modality.
-        autoAssignModality(user.hasAndroid, mode => {
-          user.modality = mode;
-
-          database.updateUser(user, () => {
-            displayInterview(sender, reply);
-          });
         });
 
       } else if (message.quick_reply.payload === 'PICKED_INTERVIEW_NO' || message.quick_reply.payload === 'PICKED_INTERVIEW_YES') {
@@ -876,24 +858,9 @@ const read = function (sender, message, reply) {
                 payload: 'PICKED_' + user.modality + '_REWARD'
               }];
               reply(sender, replyContent);
-            } else if (user.modality === 'VIBRATION') {
-              console.log('Modality is vibration...');
-              console.log(JSON.stringify(user));
-              fitbit.sendVibration(user.fitbit_user_id, user.fitbit_tracker_id, user.fitbit_access_token, err => {
-                if (err) {
-                  console.log('Failed to send vibration reward to user:');
-                  console.log(JSON.stringify(user));
-                  console.log(err);
-                  // TODO remove this reply
-                  reply(sender, {
-                    text: JSON.stringify(err)
-                  });
-                } else {
-                  console.log('Vibration reward sent.');
-                  reply(sender, replyContent, {
-                    text: 'Enjoy your reward. I\'ll see you tomorrow!'
-                  });
-                }
+            } else if (user.modality === 'NONE') {
+              reply(sender, {
+                text: 'Thanks, I\'ll see you tomorrow'
               });
             } else {
                 reply(sender, replyContent, {
@@ -1084,26 +1051,13 @@ function getRandomInt(min, max) {
  * Returns:
  * VISUAL
  * SOUND
- * VIBRATION
  * VISUAL_AND_SOUND
- * VISUAL_AND_SOUND_AND_VIBRATION
+* NONE
  * Based on the number of currently assigned users.
  *
  */
-function autoAssignModality(vibration, callback) {
+function autoAssignModality(callback) {
   database.getAllModalities(modalities => {
-    if (vibration) {
-      if (getRandomInt(0, 10) === 0) {
-        // 1 in 10 chance of automatically removing vibration and picking something else
-        delete modalities.VIBRATION;
-        delete modalities.VISUAL_AND_SOUND_AND_VIBRATION;
-      }
-    } else {
-      delete modalities.VIBRATION;
-      delete modalities.VISUAL_AND_SOUND_AND_VIBRATION;
-    }
-
-    console.log(modalities);
     const lowest = {
       amount: 999999999,
       mode: ''
@@ -1115,7 +1069,6 @@ function autoAssignModality(vibration, callback) {
         lowest.mode = mode;
       }
     }
-    console.log(lowest);
     callback(lowest.mode);
   });
 }
