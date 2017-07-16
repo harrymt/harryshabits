@@ -95,7 +95,7 @@ function displayAbout(sender, reply) {
   });
 }
 
-function displayHelp(sender, reply) {
+function displayHelp(showDontKnow, sender, reply) {
   database.getGlobals(globals => {
     let firstMsg = 'There are ' + globals.remainingDays + ' days remaining in the study.';
     if (globals.remainingDays === 0) {
@@ -104,22 +104,20 @@ function displayHelp(sender, reply) {
     if (globals.remainingDays < 0) {
       firstMsg = 'The study has ended.';
     }
-    reply(sender,
-      {
-        text: 'Sorry, I don\'t know how to respond to that. This is everything I have...'
-      },
-      {
-        text: firstMsg
-      },
-      createQuickReply(
-       'Here are the list of commands you can message me.',
-        [
-          'About',
-          'Settings',
-          'Help'
-        ]
-      )
+    const sorryMsg = 'Sorry, I don\'t know how to respond to that. This is everything I have...';
+    const qr = createQuickReply(
+     'Here are the list of commands you can message me.',
+      [
+        'About',
+        'Settings',
+        'Help'
+      ]
     );
+    if (showDontKnow) {
+      reply(sender,{text: sorryMsg},{text: firstMsg},qr);
+    } else {
+      reply(sender,{text: firstMsg},qr);
+    }
   });
 }
 
@@ -319,7 +317,7 @@ function displayWhatPhone(sender, reply) {
 function displayInterview(sender, reply) {
   reply(sender,
     {
-      text: 'At the end of the 30-day study, I\'d like to interview you to see how you got on. Would you be available for this?',
+      text: 'At the end of the study, I\'d like to interview you to see how you got on. Would you be available for this?',
       quick_replies: [
         createQRItem('Yes', 'PICKED_INTERVIEW_YES'),
         createQRItem('No', 'PICKED_INTERVIEW_NO')
@@ -557,7 +555,7 @@ const read = function (sender, message, reply) {
       } else if (message.text && message.text.toLowerCase() === 'settings') {
         displaySettings(user, sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'help')) {
-        displayHelp(sender, reply);
+        displayHelp(false, sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'about')) {
         displayAbout(sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'harrymt')) {
@@ -589,7 +587,7 @@ const read = function (sender, message, reply) {
           //     }
           //   });
           // } else {
-          displayHelp(sender, reply);
+          displayHelp(true, sender, reply);
           // }
         }
       }
@@ -601,7 +599,7 @@ const read = function (sender, message, reply) {
       } else if (message.quick_reply.payload === 'PICKED_SETTINGS') {
         displaySettings(user, sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_HELP') {
-        displayHelp(sender, reply);
+        displayHelp(false, sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_GENDER_MALE' ||
         message.quick_reply.payload === 'PICKED_GENDER_FEMALE' ||
         message.quick_reply.payload === 'PICKED_GENDER_NON_BINARY' ||
