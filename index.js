@@ -84,6 +84,9 @@
     // Extract message content
     const entry = FB.getMessageEntry(req.body);
     console.log(entry);
+    if (entry.sticker_id) {
+      entry.message = '<sticker id: ' + entry.sticker_id;
+    }
 
     // If the message is valid
     if (entry && entry.message) {
