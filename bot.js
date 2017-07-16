@@ -195,7 +195,7 @@ function displayDidTheyWork(sender, reply) {
 function displayPickHabit(sender, reply) {
   reply(sender,
     {
-      text: 'Okay, what new daily habit would you like to complete?',
+      text: 'Brill! Now onto the good part. What new daily habit would you like to complete?',
       quick_replies: [
         createQRItem('Physical Habit', 'PICKED_HABIT_CATEGORY_PHYSICAL'),
         createQRItem('Relaxing Habit', 'PICKED_HABIT_CATEGORY_RELAXATION')
