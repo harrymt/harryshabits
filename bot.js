@@ -953,7 +953,12 @@ const read = function (sender, message, reply) {
         user.survey1d = s1d;
 
         database.updateUser(user, () => {
-          displayModalityQuestion1a(sender, reply);
+          if (user.modality === 'NONE') {
+            // Skip modality/reward questions
+            displayAnyMoreFeedback(user, sender, reply);
+          } else {
+            displayModalityQuestion1a(sender, reply);
+          }
         });
       } else if (message.quick_reply.payload === 'SURVEY1_MODALITY_A_STRONGLY_AGREE' ||
           message.quick_reply.payload === 'SURVEY1_MODALITY_A_AGREE' ||
