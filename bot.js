@@ -477,16 +477,28 @@ function displayEndOfBotPeriod(user, sender, reply) {
   const msgB = 'If you have any further questions about the study, please contact me at hm16679@my.bristol.ac.uk.';
   const msgGoodbye = 'Goodbye! 👋';
 
-  if (user.interview) {
-    reply(sender,{text: msgA},{text: msgB},{text: 'I will contact you in about a week to see how you\'re getting on with your habit.'},{text: msgGoodbye});
-  } else {
-    reply(sender,{text: msgA},{text: msgB},{text: msgGoodbye});
-  }
+  user.finished = true;
+  database.updateUser(user, () => {
+    if (user.interview) {
+      reply(sender,{text: msgA},{text: msgB},{text: 'I will contact you in about a week to see how you\'re getting on with your habit.'},{text: msgGoodbye});
+    } else {
+      reply(sender,{text: msgA},{text: msgB},{text: msgGoodbye});
+    }
+  });
 }
 
 const read = function (sender, message, reply) {
   // Let's find the user object
   database.find(sender, user => {
+    if (user.finished) {
+      reply(sender,
+        {
+          text: 'The study is now over, please contact hm16679@my.bristol.ac.uk if you have any further questions.'
+        }
+      );
+      return;
+    }
+
     let firstTime = false;
 
     // If we have seen this user before, marked them as seen
