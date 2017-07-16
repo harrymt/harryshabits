@@ -92,7 +92,7 @@ function displayAbout(sender, reply) {
   database.getGlobals(globals => {
     reply(sender,
       {
-        text: 'Information about the trial.'
+        text: 'Information about the study.'
       },
       {
         text: 'TODO'
@@ -103,12 +103,12 @@ function displayAbout(sender, reply) {
 
 function displayHelp(sender, reply) {
   database.getGlobals(globals => {
-    let firstMsg = 'There are ' + globals.remainingDays + ' days remaining in the trial.';
+    let firstMsg = 'There are ' + globals.remainingDays + ' days remaining in the study.';
     if (globals.remainingDays === 0) {
-      firstMsg = 'This is the last day of the trail.';
+      firstMsg = 'This is the last day of the study.';
     }
     if (globals.remainingDays < 0) {
-      firstMsg = 'The trail has ended.';
+      firstMsg = 'The study has ended.';
     }
     reply(sender,
       {
@@ -132,10 +132,10 @@ function displayHelp(sender, reply) {
 function displayGetStarted(sender, reply) {
   reply(sender,
     {
-      text: 'Welcome to Harry\'s Habits! I am a chatbot designed to help you form a new healthy habit during a 30-day trial.'
+      text: 'Welcome to Harry\'s Habits! I am a chatbot designed to help you form a new healthy habit during a month long study.'
     },
     {
-      text: 'The trial looks at forming new habits and has been approved by the University of Bristol ethics committee (ref id: 54701).'
+      text: 'The study looks at forming new habits and has been approved by the University of Bristol ethics committee (ref id: 54701).'
     },
     {
       text: 'If you would like to quit at any time, press the Manage button at the top of the screen, then Manage Messages to block all communication.'
@@ -325,7 +325,7 @@ function displayWhatPhone(sender, reply) {
 function displayInterview(sender, reply) {
   reply(sender,
     {
-      text: 'At the end of the 30-day trail, I\'d like to interview you to see how you got on. Would you be available for this?',
+      text: 'At the end of the 30-day study, I\'d like to interview you to see how you got on. Would you be available for this?',
       quick_replies: [
         createQRItem('Yes', 'PICKED_INTERVIEW_YES'),
         createQRItem('No', 'PICKED_INTERVIEW_NO')
