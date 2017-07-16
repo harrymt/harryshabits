@@ -40,13 +40,13 @@ const createQuickReply = (message, options) => {
   ]
 }
 */
-function createQRItem(text, payload) {
+const createQRItem = (text, payload) => {
   return {
     content_type: 'text',
     title: text,
     payload: payload
   };
-}
+};
 
 /**
  * Convert to Pascal Case.
@@ -222,6 +222,7 @@ function displayPhysicalHabits(sender, reply) {
     }
   );
 }
+
 
 function displayRelaxationHabits(sender, reply) {
   reply(sender,
@@ -887,5 +888,6 @@ function autoAssignModality(vibration, callback) {
 module.exports = {
   read,
   convertToFriendlyName,
-  createQuickReply
+  createQuickReply,
+  createQRItem
 };
