@@ -475,28 +475,13 @@ function displayAnyMoreFeedback(user, sender, reply) {
 function displayEndOfBotPeriod(user, sender, reply) {
   const msgA = 'Thank you for your time! You will be unable to use me to track habits anymore.';
   const msgB = 'If you have any further questions about the study, please contact me at hm16679@my.bristol.ac.uk.';
-  let msgB1 = '';
-  const msgC = 'Goodbye!';
-  const msgD = '👋';
+  const msgGoodbye = 'Goodbye! 👋';
 
   if (user.interview) {
-    msgB1 = ' I will contact you in about a week to see how you\'re getting on with your habit.';
+    reply(sender,{text: msgA},{text: msgB},{text: 'I will contact you in about a week to see how you\'re getting on with your habit.'},{text: msgGoodbye});
+  } else {
+    reply(sender,{text: msgA},{text: msgB},{text: msgGoodbye});
   }
-
-  reply(sender,
-    {
-      text: msgA
-    },
-    {
-      text: msgB + msgB1
-    },
-    {
-      text: msgC
-    },
-    {
-      text: msgD
-    }
-  );
 }
 
 const read = function (sender, message, reply) {
