@@ -683,10 +683,10 @@ const read = function (sender, message, reply) {
                  message.quick_reply.payload === 'PICKED_MID_EVENING' ||
                  message.quick_reply.payload === 'PICKED_LATE_EVENING') {
 
-        user.reminderTime = message.quick_reply.payload.split('_').pop();
+        user.reminderTime = message.quick_reply.payload.substring(7);
         user.snoozedReminderTime = user.reminderTime;
         database.updateUser(user, () => {
-          displayExistingRoutine(user.reminderTime, user, sender, reply);
+          displayExistingRoutine(user.reminderTime.split('_').pop(), user, sender, reply);
         });
 
       } else if (message.quick_reply.payload === 'PICKED_INTERVIEW_NO' || message.quick_reply.payload === 'PICKED_INTERVIEW_YES') {
