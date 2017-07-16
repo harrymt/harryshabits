@@ -131,7 +131,8 @@ const findOrCreateUser = (fbid, callback) => {
         surveyModality1a: '',
         surveyModality1b: '',
         surveyModality1c: '',
-        surveyModality1d: ''
+        surveyModality1d: '',
+        moreFeedback: ''
       };
 
       // User doesn't exist, so lets create them
