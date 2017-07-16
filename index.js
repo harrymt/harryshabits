@@ -74,6 +74,8 @@
     });
   });
 
+  const database = require('./connectors/database');
+
   /**
    * Facebook Messenger webhook, to receive messages via Messenger.
    */
@@ -84,68 +86,79 @@
     const entry = FB.getMessageEntry(req.body);
     console.log(entry);
     if (entry.sticker_id) {
-      entry.message = '<sticker id: ' + entry.sticker_id;
+      console.log('Sticker sent: id ' + entry.sticker_id);
+      entry.message.text = '<sticker id: ' + entry.sticker_id;
     }
 
-    // If the message is valid
-    if (entry && entry.message) {
-      if (entry.message && entry.message.quick_reply) {
-        console.log('QR> ' + entry.message.quick_reply.payload);
+    database.getGlobals(globals => {
+      if (!globals.studyActive) {
+        console.log('Study is inactive, replying stock message.');
+        FB.newMessage(entry.sender.id, { text: 'Sorry the study is over. For further questions email hm16679@my.bristol.ac.uk' });
       } else {
-        console.log('MSG> ' + entry.message.text);
-      }
 
-      // Process the message and decide on the response
-      Bot.read(entry.sender.id, entry.message, (senderFbid, reply, anotherReply, thirdReply, fourthReply) => {
-        console.log('-- from bot to user vv --');
-        console.log(JSON.stringify(reply));
-
-        // Send message to that user
-        FB.newMessage(senderFbid, reply, (msg, data) => {
-          if (data.error) {
-            console.log('Error sending new fb message');
-            console.log(msg); // Log received info
-            console.log(data); // Log recieved info
-          } else if (typeof anotherReply !== 'undefined' && anotherReply !== null) {
-            // Check if we want to double message the user
-            setTimeout(() => {
-              FB.newMessage(senderFbid, anotherReply, (msg, data) => {
-                if (data.error) {
-                  console.log('Error sending new second reply fb message');
-                  console.log(msg); // Log received info
-                  console.log(data); // Log recieved info
-                  // TODO there is definitely a better way todo this
-                } else if (typeof thirdReply !== 'undefined' && thirdReply !== null) {
-                  setTimeout(() => {
-                    FB.newMessage(senderFbid, thirdReply, (msg, data) => {
-                      if (data.error) {
-                        console.log('Error sending new third reply fb message');
-                        console.log(msg); // Log received info
-                        console.log(data); // Log recieved info
-                      } else if (typeof fourthReply !== 'undefined' && fourthReply !== null) {
-                        setTimeout(() => {
-                          FB.newMessage(senderFbid, fourthReply, (msg, data) => {
-                            if (data.error) {
-                              console.log('Error sending new third reply fb message');
-                              console.log(msg); // Log received info
-                              console.log(data); // Log recieved info
-                            }
-                          });
-                        }, 4000);
-                      }
-                    });
-                  }, 3000);
-                }
-              });
-            }, 4000); // 4 second gap between messages
+        // If the message is valid
+        if (entry && entry.message) {
+          if (entry.message && entry.message.quick_reply) {
+            console.log('QR> ' + entry.message.quick_reply.payload);
+          } else {
+            console.log('MSG> ' + entry.message.text);
           }
-        });
-      });
-    } else {
-      console.log('Invalid entry/message or attachment found.');
-      console.log(JSON.stringify(entry));
-      console.log(JSON.stringify(req.body));
-    }
+
+          // Process the message and decide on the response
+          Bot.read(entry.sender.id, entry.message, (senderFbid, reply, anotherReply, thirdReply, fourthReply) => {
+            console.log('-- from bot to user vv --');
+            console.log(JSON.stringify(reply));
+
+            // Send message to that user
+            FB.newMessage(senderFbid, reply, (msg, data) => {
+              if (data.error) {
+                console.log('Error sending new fb message');
+                console.log(msg); // Log received info
+                console.log(data); // Log recieved info
+              } else if (typeof anotherReply !== 'undefined' && anotherReply !== null) {
+                // Check if we want to double message the user
+                setTimeout(() => {
+                  FB.newMessage(senderFbid, anotherReply, (msg, data) => {
+                    if (data.error) {
+                      console.log('Error sending new second reply fb message');
+                      console.log(msg); // Log received info
+                      console.log(data); // Log recieved info
+                      // TODO there is definitely a better way todo this
+                    } else if (typeof thirdReply !== 'undefined' && thirdReply !== null) {
+                      setTimeout(() => {
+                        FB.newMessage(senderFbid, thirdReply, (msg, data) => {
+                          if (data.error) {
+                            console.log('Error sending new third reply fb message');
+                            console.log(msg); // Log received info
+                            console.log(data); // Log recieved info
+                          } else if (typeof fourthReply !== 'undefined' && fourthReply !== null) {
+                            setTimeout(() => {
+                              FB.newMessage(senderFbid, fourthReply, (msg, data) => {
+                                if (data.error) {
+                                  console.log('Error sending new third reply fb message');
+                                  console.log(msg); // Log received info
+                                  console.log(data); // Log recieved info
+                                }
+                              });
+                            }, 4000);
+                          }
+                        });
+                      }, 3000);
+                    }
+                  });
+                }, 4000); // 4 second gap between messages
+              }
+            });
+          });
+        } else {
+          console.log('Invalid entry/message or attachment found.');
+          console.log(JSON.stringify(entry));
+          console.log(JSON.stringify(req.body));
+        }
+      }
+    });
+
+
 
     res.sendStatus(200);
   });
