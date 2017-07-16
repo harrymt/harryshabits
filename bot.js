@@ -242,7 +242,7 @@ function displayReminderTime(habit, sender, reply) {
       text: 'That\'s a good one! I will check your progress every day.'
     },
     createQuickReply(
-      'What time would you like this reminder?',
+      'What time would you like me to check on you?',
       [
         'Morning',
         'Afternoon',
