@@ -39,7 +39,7 @@ const decideOnReminder = (override, callback) => {
           if (result.success) {
             console.log('Successfully sent end of study messages');
           } else {
-            console.log('We couldnt send end of study messages');
+            console.log('We couldn\'t send end of study messages');
           }
           callback(null);
         });
@@ -64,8 +64,22 @@ const decideOnReminder = (override, callback) => {
 
 const sendEndOfStudyMessages = callback => {
   const message = {
-    text: 'End of study'
+    text: 'The study is now over, thank you for participating. To help with my analysis what extent do you agree with the following:'
   };
+
+  const startQR = {
+    text: {
+      ' is something I do automatically.'
+    },
+    quick_replies: [
+      createQRItem('Strongly agree', 'SURVEY1_A_STRONGLY_AGREE'),
+      createQRItem('Agree', 'SURVEY1_A_AGREE'),
+      createQRItem('Neither', 'SURVEY1_A_NEITHER'),
+      createQRItem('Disagree', 'SURVEY1_A_DISAGREE'),
+      createQRItem('Strongly disagree', 'SURVEY1_A_STRONGLY_DISAGREE')
+    ]
+  };
+
   const base = require('airtable').base(process.env.AIRTABLE_BASE);
   base('Users').select().eachPage(function page(records, fetchNextPage) {
     for (let i = 0; i < records.length; i++) {
@@ -75,8 +89,18 @@ const sendEndOfStudyMessages = callback => {
         (msg, data) => {
           if (data.error) {
             console.log('Error sending new fb message');
-            console.log(msg); // Log received info
-            console.log(data); // Log recieved info
+            console.log(msg);
+            console.log(data);
+          } else {
+            startQR.text = records[i].get('habit') + ' after ' + records[i].get('habitContext') + ' ' + startQR.text;
+            FB.newMessage(records[i].get('fbid'), startQR,
+              (msg, data) => {
+              if (data.error) {
+                console.log('Error sending new fb message');
+                console.log(msg);
+                console.log(data);
+              }
+            });
           }
           console.log('Looking for next user');
           if ((i + 1) >= records.length) {
@@ -150,8 +174,8 @@ const sendReminders = (timePeriod, callback) => {
               (msg, data) => {
                 if (data.error) {
                   console.log('Error sending new fb message');
-                  console.log(msg); // Log received info
-                  console.log(data); // Log recieved info
+                  console.log(msg);
+                  console.log(data);
                 }
                 console.log('Looking for next user');
                 if ((i + 1) >= records.length) {
@@ -171,8 +195,8 @@ const sendReminders = (timePeriod, callback) => {
               (msg, data) => {
                 if (data.error) {
                   console.log('Error sending new fb message');
-                  console.log(msg); // Log received info
-                  console.log(data); // Log recieved info
+                  console.log(msg);
+                  console.log(data);
                 }
                 console.log('Looking for next user');
                 if ((i + 1) >= records.length) {
