@@ -81,20 +81,6 @@ function displaySettings(user, sender, reply, debug) {
   }
 }
 
-function displayAbout(sender, reply) {
-
-  database.getGlobals(globals => {
-    reply(sender,
-      {
-        text: 'Information about the study.'
-      },
-      {
-        text: 'TODO'
-      }
-    );
-  });
-}
-
 function displayHelp(showDontKnow, sender, reply) {
   database.getGlobals(globals => {
     let firstMsg = 'There are ' + globals.remainingDays + ' days remaining in the study.';
@@ -118,6 +104,25 @@ function displayHelp(showDontKnow, sender, reply) {
     } else {
       reply(sender,{text: firstMsg},qr);
     }
+  });
+}
+
+function displayAbout(sender, reply) {
+  database.getGlobals(globals => {
+    reply(sender,
+      {
+        text: 'Harry\'s Habits is a chatbot to help you form new healthy habits. It is part of a study that looks at habit formation.'
+      },
+      {
+        text: 'The study lasts for 1 month, with 3 weeks of chatbot interaction followed by 1-week without, finishing with a survey.'
+      },
+      {
+        text: 'It\'s conducted by the University of Bristol and approved by their ethics committee (reference id of 54701).'
+      },
+      {
+        text: 'If you would like to quit at any time, press the Manage button at the top of the screen, then Manage Messages to block all communication.'
+      }
+    );
   });
 }
 
