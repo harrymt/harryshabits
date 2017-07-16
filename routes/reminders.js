@@ -68,9 +68,7 @@ const sendEndOfStudyMessages = callback => {
   };
 
   const startQR = {
-    text: {
-      ' is something I do automatically.'
-    },
+    text: ' is something I do automatically.',
     quick_replies: [
       createQRItem('Strongly agree', 'SURVEY1_A_STRONGLY_AGREE'),
       createQRItem('Agree', 'SURVEY1_A_AGREE'),
