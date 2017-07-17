@@ -571,6 +571,9 @@ const read = function (sender, message, reply) {
       } else {
         if (firstTime) {
           displayGetStarted(sender, reply);
+        } else if (message.sticker_id || message.text.toLowerCase() === 'bye') {
+          // If user sends a sticker to no response, reply with a thumb
+          reply(sender, { text: '👍' });
         } else {
           // If users are trying to tell us to mark thier habit as completed, then issue the completed dialog
           // if (message.text && (String(message.text.toLowerCase()).includes('track') ||

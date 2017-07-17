@@ -85,10 +85,6 @@
     // Extract message content
     const entry = FB.getMessageEntry(req.body);
     console.log(entry);
-    if (entry.sticker_id) {
-      console.log('Sticker sent: id ' + entry.sticker_id);
-      entry.message.text = '<sticker id: ' + entry.sticker_id;
-    }
 
     database.getGlobals(globals => {
       if (!globals.studyActive) {

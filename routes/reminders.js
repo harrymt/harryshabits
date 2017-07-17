@@ -16,7 +16,7 @@ const decideOnReminder = (override, callback) => {
   // Decide what period of the day it is
   const timeOfDay = Time.period(override);
 
-  console.log(timeOfDay, override);
+  console.log(timeOfDay, 'override is : ' + override);
 
   if (timeOfDay === 'NIGHT') {
     // Remove snooze if its in the night time

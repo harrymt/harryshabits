@@ -52,6 +52,13 @@ module.exports = {
         }
       };
     }
+
+    // If its a sticker, convert it into text
+    if (val.message.sticker_id) {
+      console.log('Sticker received: id ' + val.message.sticker_id);
+      val.message.text = 'sticker_id:' + val.message.sticker_id;
+    }
+
     return val || null;
   }
 };
