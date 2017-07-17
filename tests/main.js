@@ -39,12 +39,18 @@
         myExistingRoutine().then(setTimeout(() => {
         availableForInterview().then(setTimeout(() => {
         email().then(setTimeout(() => {
+        about().then(setTimeout(() => {
+        settings().then(setTimeout(() => {
+        help().then(setTimeout(() => {
 
         thumb()
         .then(
           botServer.shutdown()
         ).catch(console.error);
 
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
         }, waitTime));
         }, waitTime));
         }, waitTime));
@@ -168,6 +174,24 @@
   function thumb() {
     return t.message({
       sticker_id: 123
+    });
+  }
+
+  function about() {
+    return t.message({
+      text: 'about'
+    });
+  }
+
+  function settings() {
+    return t.message({
+      text: 'settings'
+    });
+  }
+
+  function help() {
+    return t.message({
+      text: 'help'
     });
   }
 })();
