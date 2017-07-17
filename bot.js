@@ -195,7 +195,7 @@ function displayDidTheyWork(sender, reply) {
 function displayPickHabit(sender, reply) {
   reply(sender,
     {
-      text: 'Brill! Now onto the good part. What new daily habit would you like to complete?',
+      text: 'Brill! Now onto the fun part. What new daily habit would you like to complete?',
       quick_replies: [
         createQRItem('Physical Habit', 'PICKED_HABIT_CATEGORY_PHYSICAL'),
         createQRItem('Relaxing Habit', 'PICKED_HABIT_CATEGORY_RELAXATION')
@@ -232,9 +232,6 @@ function displayRelaxationHabits(sender, reply) {
 
 function displayReminderTime(habit, sender, reply) {
   reply(sender,
-    {
-      text: 'That\'s a good one! I will check your progress every day.'
-    },
     createQuickReply(
       'What time would you like me to check on you?',
       [
@@ -302,20 +299,6 @@ function displayExistingRoutine(time, user, sender, reply) {
   });
 }
 
-function displayWhatPhone(sender, reply) {
-  reply(sender,
-    {
-      text: 'What phone do you have?',
-      quick_replies: [
-        createQRItem('iPhone', 'PICKED_PHONE_IPHONE'),
-        createQRItem('Android', 'PICKED_PHONE_ANDROID'),
-        createQRItem('Don\'t know', 'PICKED_PHONE_DONTKNOW'),
-        createQRItem('Other', 'PICKED_PHONE_OTHER')
-      ]
-    }
-  );
-}
-
 function displayInterview(sender, reply) {
   reply(sender,
     {
@@ -356,7 +339,7 @@ function displayFinalStage(habit, time, sender, reply) {
 function displaySurvey1b(habit, context, sender, reply) {
   reply(sender,
     {
-      text: '1b, ' + convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without having to consciously remember.',
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without having to consciously remember.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_B_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_B_AGREE'),
@@ -371,7 +354,7 @@ function displaySurvey1b(habit, context, sender, reply) {
 function displaySurvey1c(habit, context, sender, reply) {
   reply(sender,
     {
-      text: '1c, ' + convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without thinking.',
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without thinking.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_C_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_C_AGREE'),
@@ -386,7 +369,7 @@ function displaySurvey1c(habit, context, sender, reply) {
 function displaySurvey1d(habit, context, sender, reply) {
   reply(sender,
     {
-      text: '1d, ' + convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I start doing before I realise I\'m doing it.',
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I start doing before I realise I\'m doing it.',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_D_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_D_AGREE'),
@@ -397,17 +380,16 @@ function displaySurvey1d(habit, context, sender, reply) {
     }
   );
 }
-
 function displayModalityQuestion1a(sender, reply) {
   reply(sender,
     {
-      text: 'I found my rewards annoying.',
+      text: 'The rewards helped me form my new habit.',
       quick_replies: [
-        createQRItem('Strongly agree', 'SURVEY1_MODALITY_A_STRONGLY_AGREE'),
-        createQRItem('Agree', 'SURVEY1_MODALITY_A_AGREE'),
-        createQRItem('Neither', 'SURVEY1_MODALITY_A_NEITHER'),
-        createQRItem('Disagree', 'SURVEY1_MODALITY_A_DISAGREE'),
-        createQRItem('Strongly disagree', 'SURVEY1_MODALITY_A_STRONGLY_DISAGREE')
+        createQRItem('Strongly agree', 'SURVEY1_MODALITY_C_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY1_MODALITY_C_AGREE'),
+        createQRItem('Neither', 'SURVEY1_MODALITY_C_NEITHER'),
+        createQRItem('Disagree', 'SURVEY1_MODALITY_C_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY1_MODALITY_C_STRONGLY_DISAGREE')
       ]
     }
   );
@@ -431,13 +413,13 @@ function displayModalityQuestion1b(sender, reply) {
 function displayModalityQuestion1c(sender, reply) {
   reply(sender,
     {
-      text: 'The rewards helped.',
+      text: 'I found my rewards annoying.',
       quick_replies: [
-        createQRItem('Strongly agree', 'SURVEY1_MODALITY_C_STRONGLY_AGREE'),
-        createQRItem('Agree', 'SURVEY1_MODALITY_C_AGREE'),
-        createQRItem('Neither', 'SURVEY1_MODALITY_C_NEITHER'),
-        createQRItem('Disagree', 'SURVEY1_MODALITY_C_DISAGREE'),
-        createQRItem('Strongly disagree', 'SURVEY1_MODALITY_C_STRONGLY_DISAGREE')
+        createQRItem('Strongly agree', 'SURVEY1_MODALITY_A_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY1_MODALITY_A_AGREE'),
+        createQRItem('Neither', 'SURVEY1_MODALITY_A_NEITHER'),
+        createQRItem('Disagree', 'SURVEY1_MODALITY_A_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY1_MODALITY_A_STRONGLY_DISAGREE')
       ]
     }
   );
@@ -483,7 +465,7 @@ function displayTakeFeedback(user, sender, reply) {
 
 function displayEndOfBotPeriod(user, sender, reply) {
   const msgA = 'Thank you for your time! You will be unable to use me to track habits anymore.';
-  const msgB = 'If you have any further questions about the study, please contact me at hm16679@my.bristol.ac.uk.';
+  const msgB = 'If you have any further questions about the study, please contact hm16679@my.bristol.ac.uk.';
   const msgGoodbye = 'Goodbye! 👋';
 
   user.finished = true;
