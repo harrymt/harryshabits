@@ -459,11 +459,23 @@ function displayModalityQuestion1d(sender, reply) {
 }
 
 function displayAnyMoreFeedback(user, sender, reply) {
+  reply(sender,
+    {
+      text: 'Thank you! Do you have any other comments or any other feedback you would like to share?',
+      quick_replies: [
+        createQRItem('Yes', 'PICKED_YES_MORE_FEEDBACK'),
+        createQRItem('No', 'PICKED_NO_MORE_FEEDBACK')
+      ]
+    }
+  );
+}
+
+function displayTakeFeedback(user, sender, reply) {
   user.expectingMoreFeedback = true;
   database.updateUser(user, () => {
     reply(sender,
       {
-        text: 'Thank you! Message me anymore feedback you have now:'
+        text: 'Type your comments below'
       }
     );
   });
@@ -1007,6 +1019,10 @@ const read = function (sender, message, reply) {
         database.updateUser(user, () => {
           displayAnyMoreFeedback(user, sender, reply);
         });
+      } else if (message.quick_reply.payload === 'PICKED_YES_MORE_FEEDBACK') {
+        displayTakeFeedback(user, sender, reply);
+      } else if (message.quick_reply.payload === 'PICKED_NO_MORE_FEEDBACK') {
+        displayEndOfBotPeriod(user, sender, reply);
       }
     }
   });
