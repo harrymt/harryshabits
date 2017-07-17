@@ -9,7 +9,8 @@
     "url": "git+https://github.com/harrymt/harryshabits"
   },
   "engines": {
-    "node": "8.1.0"
+    "node": "8.1.x",
+    "npm": "5.x"
   },
   "scripts": {
     "test": "node tests/main.js",
