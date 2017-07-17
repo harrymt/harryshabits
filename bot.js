@@ -132,10 +132,7 @@ function displayAbout(sender, reply) {
 function displayGetStarted(sender, reply) {
   reply(sender,
     {
-      text: 'Welcome to Harry\'s Habits! I am a chatbot designed to help you form a new healthy habit during a month long study.'
-    },
-    {
-      text: 'The study looks at forming new habits and has been approved by the University of Bristol ethics committee (ref id: 54701). I will check up on you every day and at the end of the study I will ask you some questions to finish.'
+      text: 'Welcome to Harry\'s Habits! Thank you for participating!'
     },
     {
       text: 'If you would like to quit at any time, press the Manage button at the top of the screen, then Manage Messages to block all communication.'
