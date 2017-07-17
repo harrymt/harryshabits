@@ -34,7 +34,6 @@
 
   app.use(require('body-parser').json());
   app.use(express.static('./public'));
-  app.use(express.static('./docs'));
   app.use('/rewards', require('./routes/rewards'));
   app.use('/email', require('./routes/email'));
 
