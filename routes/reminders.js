@@ -63,8 +63,16 @@ const decideOnReminder = (override, callback) => {
 };
 
 const sendEndOfStudyMessages = callback => {
-  const message = {
-    text: 'My time is up, I will be quiet for a while, I will check on you for about a week to see how you\'re getting on with your habit. To help with my analysis what extent do you agree with the following:'
+  const endOfStudy = {
+    text: 'The study is now over, thank you for taking part. I will not track your habits for about a week to see how you do without me.'
+  };
+
+  const analysisQuestion = {
+    text: 'To help with my analysis I will ask you a few questions'
+  };
+
+  const surveyStart = {
+    text: 'What extent do you agree with the following:'
   };
 
   const startQR = {
@@ -89,31 +97,45 @@ const sendEndOfStudyMessages = callback => {
       }
       console.log('Sending end of study message to user ' + records[i].get('fbid'));
 
-      FB.newMessage(records[i].get('fbid'), message,
-        (msg, data) => {
-          if (data.error) {
-            console.log('Error sending new fb message');
-            console.log(msg);
-            console.log(data);
-          } else {
-            startQR.text = '1a, ' + Bot.convertToFriendlyName(records[i].get('habit')) + ' after ' + Bot.convertToFriendlyName(records[i].get('habitContext')) + ' ' + startQR.text;
-            FB.newMessage(records[i].get('fbid'), startQR,
-              (msg, data) => {
-              if (data.error) {
-                console.log('Error sending new fb message');
-                console.log(msg);
-                console.log(data);
-              }
-            });
-          }
-          console.log('Looking for next user');
-          if ((i + 1) >= records.length) {
-            // last record, fetch next page
-            console.log('fetching next page');
-            fetchNextPage();
-          }
+      FB.newMessage(records[i].get('fbid'), endOfStudy, (msg, data) => {
+        if (data.error) {
+          console.log('Error sending new fb message');
+          console.log(msg);
+          console.log(data);
+        } else {
+          FB.newMessage(records[i].get('fbid'), analysisQuestion, (msg, data) => {
+            if (data.error) {
+              console.log('Error sending new fb message');
+              console.log(msg);
+              console.log(data);
+            } else {
+              FB.newMessage(records[i].get('fbid'), surveyStart, (msg, data) => {
+                if (data.error) {
+                  console.log('Error sending new fb message');
+                  console.log(msg);
+                  console.log(data);
+                } else {
+                  startQR.text = Bot.convertToFriendlyName(records[i].get('habit')) + ' after ' + Bot.convertToFriendlyName(records[i].get('habitContext')) + startQR.text;
+                  FB.newMessage(records[i].get('fbid'), startQR,
+                    (msg, data) => {
+                    if (data.error) {
+                      console.log('Error sending new fb message');
+                      console.log(msg);
+                      console.log(data);
+                    }
+                  });
+                }
+                console.log('Looking for next user');
+                if ((i + 1) >= records.length) {
+                  // last record, fetch next page
+                  console.log('fetching next page');
+                  fetchNextPage();
+                }
+              });
+            }
+          });
         }
-      );
+      });
     }
   }, function done(err) {
     if (err) {
@@ -227,5 +249,6 @@ const sendReminders = (timePeriod, callback) => {
 };
 
 module.exports = {
-  sendReminders
+  sendReminders,
+  sendEndOfStudyMessages
 };
