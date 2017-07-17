@@ -12,6 +12,15 @@ if (process.env.NODE_ENV !== 'production') {
 // Integrate with airtable
 const base = require('airtable').base(process.env.AIRTABLE_BASE);
 
+const removeUserByFbid = (fbid, callback) => {
+  findOrCreateUser(fbid, user => {
+    base('Users').destroy(user.id, function(err, deletedRecord) {
+      if (err) { console.error(err); }
+      console.log('Deleted record', deletedRecord.id);
+      callback('Deleted record ' + fbid);
+    });
+  });
+};
 
 const findOrCreateUser = (fbid, callback) => {
   console.log('Finding user with fbid ' + fbid);
@@ -180,11 +189,12 @@ const updateUser = (user, callback) => {
     if (err) {
       console.error(err);
       callback(null);
+    } else {
+      console.log('Updated user to:');
+      console.log(record.fields);
+      callbackUser.id = record.getId();
+      callback(callbackUser);
     }
-    console.log('Updated user to:');
-    console.log(record.fields);
-    callbackUser.id = record.getId();
-    callback(callbackUser);
   });
 };
 
@@ -227,5 +237,6 @@ module.exports = {
   hasUserCompletedHabit,
   getGlobals,
   updateGlobals,
-  getAllModalities
+  getAllModalities,
+  removeUserByFbid
 };
