@@ -846,7 +846,7 @@ const read = function (sender, message, reply) {
                 type: 'template',
                 payload: {
                   template_type: 'button',
-                  text: 'Your ' + convertToFriendlyName(user.modality) + ' is waiting...',
+                  text: 'Your reward is waiting...',
                   sharable: false,
                   buttons: [{
                     type: 'web_url',
