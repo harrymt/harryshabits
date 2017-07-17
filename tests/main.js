@@ -1,4 +1,5 @@
 
+
 //
 // File to run all the tests
 //
@@ -8,97 +9,165 @@
 
   // Start the chatbot server and run an initial test
   const botServer = require('../index');
+  const waitTime = 2000;
 
-  const waitTime = 500;
+  const t = require('./test-utils');
+  const ps = [];
 
-  require('./basic')(isError => {
-    if (isError) {
-      throw new Error('Test basic failed.');
-    }
-    setTimeout(() => {
-      testMessageHello(); // Should be the first test
-    }, waitTime);
-  });
+  function sleep() {
+    return new Promise(resolve => setTimeout(resolve, waitTime));
+  }
 
-  function testMessageHello() {
-    require('./message-hello')(isError => {
-      if (isError) {
-        throw new Error('Test message hello failed.');
-      }
+  start();
+  function start() {
+
+    // Remove my test user from database
+    removeTestUser(r => {
+
       setTimeout(() => {
-        testChooseHabit(); // Should be the next test
+        hi().then(setTimeout(() => {
+        male().then(setTimeout(() => {
+        age23().then(setTimeout(() => {
+        usedHabitSystems().then(setTimeout(() => {
+        trackedTime().then(setTimeout(() => {
+        theyDidWork().then(setTimeout(() => {
+        choosePhysicalHabit().then(setTimeout(() => {
+        chooseStretchHabit().then(setTimeout(() => {
+        chooseMorning().then(setTimeout(() => {
+        chooseEarlyMorning().then(setTimeout(() => {
+        chooseMorning().then(setTimeout(() => {
+        myExistingRoutine().then(setTimeout(() => {
+        availableForInterview().then(setTimeout(() => {
+        email().then(setTimeout(() => {
+
+        thumb()
+        .then(
+          botServer.shutdown()
+        ).catch(console.error);
+
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
+        }, waitTime));
       }, waitTime);
+
     });
   }
 
-  function testChooseHabit() {
-    require('./choose-habit')(isError => {
-      if (isError) {
-        throw new Error('Test choose habit failed.');
-      }
-      setTimeout(() => {
-        testChooseTime();
-      }, waitTime);
+
+  function removeTestUser(callback) {
+    require('../connectors/database').removeUserByFbid(process.env.USER_ID, s => {
+      callback(s);
     });
   }
 
-  function testChooseTime() {
-    require('./choose-time')(isError => {
-      if (isError) {
-        throw new Error('Test choose time failed.');
-      }
-      setTimeout(() => {
-        testChooseNestedTime();
-      }, waitTime);
+  function hi() {
+    return t.message({
+      text: 'Hi'
     });
   }
 
-  function testChooseNestedTime() {
-    require('./choose-nested-time')(isError => {
-      if (isError) {
-        throw new Error('Test choose nested time failed.');
+  function male() {
+    return t.message({
+      quick_reply: {
+        payload: 'PICKED_GENDER_MALE'
       }
-      setTimeout(() => {
-        testChooseButtonBack();
-      }, waitTime);
     });
   }
 
-  function testChooseButtonBack() {
-    require('./choose-button-back')(isError => {
-      if (isError) {
-        throw new Error('Test choose button back failed.');
-      }
-      setTimeout(() => {
-        testChooseModality();
-      }, waitTime);
+  function age23() {
+    return t.message({
+      text: '23'
     });
   }
 
-  function testChooseModality() {
-    require('./choose-modality')(isError => {
-      if (isError) {
-        throw new Error('Test choose modality failed.');
+  function usedHabitSystems() {
+    return t.message({
+      quick_reply: {
+        payload: 'PICKED_HABIT_APPS_YES'
       }
-      setTimeout(() => {
-        testChooseSettings();
-      }, waitTime);
     });
   }
 
-  function testChooseSettings() {
-    require('./choose-settings')(isError => {
-      if (isError) {
-        throw new Error('Test choose settings failed.');
-      }
-      setTimeout(() => {
-        testEnd();
-      }, waitTime);
+  function trackedTime() {
+    return t.message({
+      text: 'Tracking some time'
     });
   }
 
-  function testEnd() {
-    console.log('Finished processing tests...waiting for promises...');
-    botServer.shutdown();
+  function theyDidWork() {
+    return t.message({
+      quick_reply: {
+        payload: 'PICKED_PREVIOUS_HABIT_APPS_DID_WORK_YES'
+      }
+    });
+  }
+
+  function choosePhysicalHabit() {
+    return t.message({
+      quick_reply: {
+        payload: 'PICKED_HABIT_CATEGORY_PHYSICAL'
+      }
+    });
+  }
+
+  function chooseStretchHabit() {
+    return t.message({
+      quick_reply: {
+        payload: 'PICKED_HABIT_STRETCH'
+      }
+    });
+  }
+
+  function chooseMorning() {
+    return t.message({
+      quick_reply: {
+        payload: 'PICKED_MORNING'
+      }
+    });
+  }
+
+  function chooseEarlyMorning() {
+    return t.message({
+      quick_reply: {
+        payload: 'PICKED_EARLY_MORNING'
+      }
+    });
+  }
+
+  function myExistingRoutine() {
+    return t.message({
+      text: 'Waking up'
+    });
+  }
+
+  function availableForInterview() {
+    return t.message({
+      quick_reply: {
+        payload: 'PICKED_INTERVIEW_YES'
+      }
+    });
+  }
+
+  function email() {
+    return t.message({
+      text: 'Robot@me.com'
+    });
+  }
+
+  function thumb() {
+    return t.message({
+      sticker_id: 123
+    });
   }
 })();
