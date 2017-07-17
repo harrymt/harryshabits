@@ -132,10 +132,7 @@ function displayAbout(sender, reply) {
 function displayGetStarted(sender, reply) {
   reply(sender,
     {
-      text: 'Welcome to Harry\'s Habits! Thank you for participating!'
-    },
-    {
-      text: 'If you would like to quit at any time, press the Manage button at the top of the screen, then Manage Messages to block all communication.'
+      text: 'Welcome to Harry\'s Habits! Thank you for taking part in the study!'
     },
     {
       text: 'Before we start, can you tell me a bit more about yourself? (This data cannot be used to identify you and will not be shared). What is your gender?',
@@ -346,6 +343,9 @@ function displayFinalStage(habit, time, sender, reply) {
   reply(sender,
     {
       text: 'All set up! I will remind you about your ' + convertToFriendlyName(habit) + ' tomorrow around ' + convertToFriendlyName(time) + '!'
+    },
+    {
+      text: 'If you would like to quit at any time, press the Manage button at the top of the screen, then Manage Messages to block all communication.'
     },
     {
       text: 'Catch you tomorrow!'
