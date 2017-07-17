@@ -64,7 +64,7 @@ const decideOnReminder = (override, callback) => {
 
 const sendEndOfStudyMessages = callback => {
   const message = {
-    text: 'My time is up, I will be quiet for a while, I will check on you for about a week to see how youre getting on with your habit. To help with my analysis what extent do you agree with the following:'
+    text: 'My time is up, I will be quiet for a while, I will check on you for about a week to see how you\'re getting on with your habit. To help with my analysis what extent do you agree with the following:'
   };
 
   const startQR = {
