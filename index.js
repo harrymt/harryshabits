@@ -5,6 +5,7 @@
 
   const express = require('express');
   const app = express();
+  const database = require('./connectors/database');
 
   // Load the .env file, that sets process.env.
   if (process.env.NODE_ENV !== 'production') {
@@ -18,6 +19,11 @@
       res.send(`<h1>${r}<h1>`);
     });
   }
+
+  database.getGlobals(d => {
+    console.log(JSON.stringify(d));
+  });
+
 
   // Start server
   const serverInstance = app.listen(process.env.PORT, () => {
@@ -73,7 +79,6 @@
     });
   });
 
-  const database = require('./connectors/database');
 
   /**
    * Facebook Messenger webhook, to receive messages via Messenger.
@@ -86,6 +91,7 @@
     console.log(entry);
 
     database.getGlobals(globals => {
+      console.log(globals);
       if (!globals.studyActive) {
         console.log('Study is inactive, replying stock message.');
         FB.newMessage(entry.sender.id, { text: 'Sorry the study is over. For further questions email hm16679@my.bristol.ac.uk' });

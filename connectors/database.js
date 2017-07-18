@@ -4,10 +4,20 @@
 
 'use strict';
 
+
 if (process.env.NODE_ENV !== 'production') {
   // Load the .env file, that sets process.env.
   require('dotenv').load();
 }
+
+const pg = require('pg');
+const db = new pg.Client({
+  ssl: true,
+  connectionString: process.env.DATABASE_URL
+});
+db.connect(err => {
+  if (err) throw err;
+});
 
 // Integrate with airtable
 const base = require('airtable').base(process.env.AIRTABLE_BASE);
@@ -111,17 +121,15 @@ const getUsersByStreak = callback => {
 };
 
 const getGlobals = callback => {
-  base('Globals').select().firstPage((err, records) => {
+  db.query('select * from globals limit 1', (err, res) => {
     if (err) {
       console.error(err);
       callback(err);
+    } else {
+      for (let i = 0, len = res.rows.length; i < len; i++) {
+        callback(res.rows[i]);
+      }
     }
-    records.forEach(record => {
-      const g = record.fields;
-      g.id = record.getId();
-      console.log('Getting globals: ' + JSON.stringify(g));
-      callback(g);
-    });
   });
 };
 
