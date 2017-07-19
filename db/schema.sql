@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS habits;
+DROP TABLE IF EXISTS globals;
 
 CREATE TABLE users (
   "fbid" VARCHAR PRIMARY KEY,
@@ -54,6 +57,7 @@ INSERT INTO users (
 
 
 CREATE TABLE habits (
+  id SERIAL PRIMARY KEY,
   "fbid" VARCHAR,
   "fullDay" VARCHAR,
   "day" VARCHAR,
@@ -87,6 +91,7 @@ INSERT INTO habits (
   0);
 
 CREATE TABLE globals (
+  id SERIAL PRIMARY KEY,
   "remainingDays" INT,
   "studyActive" BOOLEAN
 );

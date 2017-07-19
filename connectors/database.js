@@ -123,8 +123,8 @@ const getUsersByStreak = callback => {
 const getGlobals = callback => {
   db.query('select * from globals limit 1', (err, res) => {
     if (err) {
-      console.error(err);
-      callback(err);
+      console.error(err.error);
+      callback(err.error);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
         callback(res.rows[i]);

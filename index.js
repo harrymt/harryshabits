@@ -90,15 +90,24 @@
     const entry = FB.getMessageEntry(req.body);
     console.log(entry);
 
-    database.getGlobals(globals => {
-      console.log(globals);
-      if (!globals.studyActive) {
-        console.log('Study is inactive, replying stock message.');
-        FB.newMessage(entry.sender.id, { text: 'Sorry the study is over. For further questions email hm16679@my.bristol.ac.uk' });
-      } else {
+    // If the message is valid
+    if (entry && entry.message) {
 
-        // If the message is valid
-        if (entry && entry.message) {
+      database.getGlobals(globals => {
+        console.log(globals);
+        if (!globals.studyActive) {
+          console.log('Study is inactive, replying stock message.');
+          FB.newMessage(entry.sender.id, { text: 'Sorry the study is over. For further questions email hm16679@my.bristol.ac.uk' }, (msg, data) => {
+            if (data.error) {
+              console.log('Error sending stock study inactive message')
+              console.error(data);
+            } else {
+              console.log(msg, data);
+            }
+          });
+          } else {
+
+
           if (entry.message && entry.message.quick_reply) {
             console.log('QR> ' + entry.message.quick_reply.payload);
           } else {
@@ -161,15 +170,13 @@
               }
             });
           });
-        } else {
-          console.log('Invalid entry/message or attachment found.');
-          console.log(JSON.stringify(entry));
-          console.log(JSON.stringify(req.body));
         }
-      }
-    });
-
-
+      });
+    } else {
+      console.log('Invalid entry/message or attachment found.');
+      console.log(JSON.stringify(entry));
+      console.log(JSON.stringify(req.body));
+    }
 
     res.sendStatus(200);
   });
