@@ -231,7 +231,28 @@ function displayRelaxationHabits(sender, reply) {
 }
 
 function displayReminderTime(habit, sender, reply) {
+  let habitInstructions = 'Okay, try and';
+  console.log(habit);
+  if (habit === 'PLANK') {
+    habitInstructions += ' hold your plank for at least 30 seconds.';
+  } else if (habit === 'PRESS_UPS') {
+    habitInstructions += ' complete at least 10 press-ups.';
+  } else if (habit === 'STRETCH') {
+    habitInstructions += ' stretch for at least 1 minute.';
+  } else if (habit === 'READING') {
+    habitInstructions += ' read for at least 5 minutes.';
+  } else if (habit === 'WRITING') {
+    habitInstructions += ' write for at least 5 minutes';
+  } else if (habit === 'MEDITATION') {
+    habitInstructions += ' close your eyes and take deep breaths for at least 5 minutes.';
+  } else {
+    habitInstructions = 'Great!';
+  }
+
   reply(sender,
+    {
+      text: habitInstructions
+    },
     {
       text: 'I am going to check on you every day to see how you\'re getting on with your habit.'
     },
