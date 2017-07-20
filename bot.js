@@ -84,6 +84,7 @@ function displaySettings(user, sender, reply, debug) {
 function displayHelp(showDontKnow, sender, reply) {
   database.getGlobals(globals => {
     let firstMsg = 'There are ' + globals.remainingDays + ' days remaining in the study.';
+    const secondMsg = 'If you have any questions email hm16679@my.bristol.ac.uk';
     if (globals.remainingDays === 0) {
       firstMsg = 'This is the last day of the study.';
     }
@@ -92,17 +93,16 @@ function displayHelp(showDontKnow, sender, reply) {
     }
     const sorryMsg = 'Sorry, I don\'t know how to respond to that. This is everything I have...';
     const qr = createQuickReply(
-     'Here are the list of commands you can message me.',
+     'Here is the list of commands you can message me.',
       [
         'About',
-        'Settings',
         'Help'
       ]
     );
     if (showDontKnow) {
-      reply(sender,{text: sorryMsg},{text: firstMsg},qr);
+      reply(sender,{text: sorryMsg},{text: firstMsg},{text: secondMsg},qr);
     } else {
-      reply(sender,{text: firstMsg},qr);
+      reply(sender,{text: firstMsg},{text:secondMsg}, qr);
     }
   });
 }
@@ -232,6 +232,9 @@ function displayRelaxationHabits(sender, reply) {
 
 function displayReminderTime(habit, sender, reply) {
   reply(sender,
+    {
+      text: 'I am going to check on you every day to see how you\'re getting on with your habit.'
+    },
     createQuickReply(
       'What time would you like me to check on you?',
       [
@@ -287,7 +290,7 @@ function displayExistingRoutine(time, user, sender, reply) {
     }
   }
 
-  message += 'Think of 1 existing routine you want to use?';
+  message += 'Please enter below 1 existing routine you will want to use:';
 
   user.expectingHabitContext = true;
   database.updateUser(user, () => {
@@ -302,7 +305,7 @@ function displayExistingRoutine(time, user, sender, reply) {
 function displayInterview(sender, reply) {
   reply(sender,
     {
-      text: 'At the end of the study, I\'d like to interview you to see how you got on. Would you be available for this?',
+      text: 'At the end of the study, I\'d like to interview you to see how you got on. Would you be interested in this?',
       quick_replies: [
         createQRItem('Yes', 'PICKED_INTERVIEW_YES'),
         createQRItem('No', 'PICKED_INTERVIEW_NO')
@@ -325,13 +328,16 @@ function displayContactDetails(user, sender, reply) {
 function displayFinalStage(habit, time, sender, reply) {
   reply(sender,
     {
-      text: 'All set up! I will remind you about your ' + convertToFriendlyName(habit) + ' tomorrow around ' + convertToFriendlyName(time) + '!'
+      text: 'All set up! I will check if you have completed your ' + convertToFriendlyName(habit) + ' tomorrow around ' + convertToFriendlyName(time) + '!'
     },
     {
       text: 'If you would like to quit at any time, press the Manage button at the top of the screen, then Manage Messages to block all communication.'
     },
     {
       text: 'Catch you tomorrow!'
+    },
+    {
+      text: '(you can close messenger now)'
     }
   );
 }
@@ -339,7 +345,7 @@ function displayFinalStage(habit, time, sender, reply) {
 function displaySurvey1b(habit, context, sender, reply) {
   reply(sender,
     {
-      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without having to consciously remember.',
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without having to consciously remember',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_B_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_B_AGREE'),
@@ -354,7 +360,7 @@ function displaySurvey1b(habit, context, sender, reply) {
 function displaySurvey1c(habit, context, sender, reply) {
   reply(sender,
     {
-      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without thinking.',
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without thinking',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_C_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_C_AGREE'),
@@ -369,7 +375,7 @@ function displaySurvey1c(habit, context, sender, reply) {
 function displaySurvey1d(habit, context, sender, reply) {
   reply(sender,
     {
-      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I start doing before I realise I\'m doing it.',
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I start doing before I realise I\'m doing it',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_D_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_D_AGREE'),
@@ -380,10 +386,11 @@ function displaySurvey1d(habit, context, sender, reply) {
     }
   );
 }
+
 function displayModalityQuestion1a(sender, reply) {
   reply(sender,
     {
-      text: 'The rewards helped me form my new habit.',
+      text: 'The rewards helped me form my new habit',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_MODALITY_C_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_MODALITY_C_AGREE'),
@@ -398,7 +405,7 @@ function displayModalityQuestion1a(sender, reply) {
 function displayModalityQuestion1b(sender, reply) {
   reply(sender,
     {
-      text: 'I enjoyed my rewards.',
+      text: 'I enjoyed my rewards',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_MODALITY_B_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_MODALITY_B_AGREE'),
@@ -413,7 +420,7 @@ function displayModalityQuestion1b(sender, reply) {
 function displayModalityQuestion1c(sender, reply) {
   reply(sender,
     {
-      text: 'I found my rewards annoying.',
+      text: 'I found my rewards annoying',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_MODALITY_A_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_MODALITY_A_AGREE'),
@@ -428,7 +435,7 @@ function displayModalityQuestion1c(sender, reply) {
 function displayModalityQuestion1d(sender, reply) {
   reply(sender,
     {
-      text: 'I looked forward to my rewards.',
+      text: 'I looked forward to my rewards',
       quick_replies: [
         createQRItem('Strongly agree', 'SURVEY1_MODALITY_D_STRONGLY_AGREE'),
         createQRItem('Agree', 'SURVEY1_MODALITY_D_AGREE'),
@@ -461,6 +468,187 @@ function displayTakeFeedback(user, sender, reply) {
       }
     );
   });
+}
+
+function displaySurvey2b(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do automatically',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_B_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_B_AGREE'),
+        createQRItem('Neither', 'SURVEY2_B_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_B_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_B_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+
+function displaySurvey2c(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without having to consciously remember',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_C_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_C_AGREE'),
+        createQRItem('Neither', 'SURVEY2_C_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_C_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_C_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+function displaySurvey2d(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something that makes me feel weird if I do not do it',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_D_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_D_AGREE'),
+        createQRItem('Neither', 'SURVEY2_D_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_D_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_D_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+function displaySurvey2e(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I do without thinking',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_E_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_E_AGREE'),
+        createQRItem('Neither', 'SURVEY2_E_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_E_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_E_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+function displaySurvey2f(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something that would require effort not to do it',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_F_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_F_AGREE'),
+        createQRItem('Neither', 'SURVEY2_F_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_F_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_F_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+function displaySurvey2g(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something that belongs to my daily routine',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_G_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_G_AGREE'),
+        createQRItem('Neither', 'SURVEY2_G_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_G_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_G_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+function displaySurvey2h(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I start doing before I realize I\'m doing it',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_H_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_H_AGREE'),
+        createQRItem('Neither', 'SURVEY2_H_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_H_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_H_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+function displaySurvey2i(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I would find hard not to do',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_I_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_I_AGREE'),
+        createQRItem('Neither', 'SURVEY2_I_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_I_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_I_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+function displaySurvey2j(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I have no need to think about doing',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_J_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_J_AGREE'),
+        createQRItem('Neither', 'SURVEY2_J_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_J_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_J_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+function displaySurvey2k(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something that is typically \'me\'',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_K_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_K_AGREE'),
+        createQRItem('Neither', 'SURVEY2_K_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_K_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_K_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+function displaySurvey2l(habit, context, sender, reply) {
+  reply(sender,
+    {
+      text: convertToFriendlyName(habit) + ' after ' + convertToFriendlyName(context) + ' is something I have been doing for a long time',
+      quick_replies: [
+        createQRItem('Strongly agree', 'SURVEY2_L_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY2_L_AGREE'),
+        createQRItem('Neither', 'SURVEY2_L_NEITHER'),
+        createQRItem('Disagree', 'SURVEY2_L_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY2_L_STRONGLY_DISAGREE')
+      ]
+    }
+  );
+}
+
+
+function displayFinalFinalMessage(user, sender, reply) {
+  reply(sender,
+    {
+      text: 'Thank you for participating in the study!'
+    },
+    {
+      text: 'If you have any more comments or questions email hm16679@my.bristol.ac.uk'
+    },
+    {
+      text: 'Goodbye! 👋'
+    }
+  );
 }
 
 function displayEndOfBotPeriod(user, sender, reply) {
@@ -551,8 +739,8 @@ const read = function (sender, message, reply) {
         database.updateUser(user, () => {
           displayEndOfBotPeriod(user, sender, reply);
         });
-      } else if (message.text && message.text.toLowerCase() === 'settings') {
-        displaySettings(user, sender, reply);
+      // } else if (message.text && message.text.toLowerCase() === 'settings') {
+      //   displaySettings(user, sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'help')) {
         displayHelp(false, sender, reply);
       } else if (message.text && (message.text.toLowerCase() === 'about')) {
@@ -562,9 +750,19 @@ const read = function (sender, message, reply) {
       } else {
         if (firstTime) {
           displayGetStarted(sender, reply);
-        } else if (message.sticker_id || message.text.toLowerCase() === 'bye') {
+        } else if (message.sticker_id ||
+          message.text.toLowerCase() === 'bye' ||
+          message.text.toLowerCase() === 'thanks' ||
+          message.text.toLowerCase() === 'thank you' ||
+          message.text.toLowerCase() === 'sweet' ||
+          message.text.toLowerCase() === 'great' ||
+          message.text.toLowerCase() === 'cool' ||
+          message.text.toLowerCase() === 'awesome') {
           // If user sends a sticker to no response, reply with a thumb
           reply(sender, { text: '👍' });
+        } else if (message.text.toLowerCase() === 'sex' || message.text.toLowerCase() === 'dick') {
+          // If user sends a sticker to no response, reply with a thumb
+          reply(sender, { text: 'I\'m not that kind of bot...' });
         } else {
           // If users are trying to tell us to mark thier habit as completed, then issue the completed dialog
           // if (message.text && (String(message.text.toLowerCase()).includes('track') ||
@@ -598,8 +796,8 @@ const read = function (sender, message, reply) {
         displayGetStarted(sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_ABOUT') {
         displayAbout(sender, reply);
-      } else if (message.quick_reply.payload === 'PICKED_SETTINGS') {
-        displaySettings(user, sender, reply);
+      // } else if (message.quick_reply.payload === 'PICKED_SETTINGS') {
+      //   displaySettings(user, sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_HELP') {
         displayHelp(false, sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_GENDER_MALE' ||
@@ -1005,6 +1203,126 @@ const read = function (sender, message, reply) {
         displayTakeFeedback(user, sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_NO_MORE_FEEDBACK') {
         displayEndOfBotPeriod(user, sender, reply);
+      } else if (message.quick_reply.payload === 'SURVEY2_A_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_A_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_A_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_A_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_A_STRONGLY_DISAGREE') {
+        user.survey2a = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2b(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_B_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_B_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_B_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_B_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_B_STRONGLY_DISAGREE') {
+        user.survey2b = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2c(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_C_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_C_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_C_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_C_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_C_STRONGLY_DISAGREE') {
+        user.survey2c = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2d(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_D_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_D_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_D_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_D_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_D_STRONGLY_DISAGREE') {
+        user.survey2d = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2e(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_E_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_E_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_E_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_E_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_E_STRONGLY_DISAGREE') {
+        user.survey2e = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2f(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_F_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_F_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_F_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_F_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_F_STRONGLY_DISAGREE') {
+        user.survey2f = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2g(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_G_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_G_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_G_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_G_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_G_STRONGLY_DISAGREE') {
+        user.survey2g = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2h(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_H_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_H_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_H_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_H_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_H_STRONGLY_DISAGREE') {
+        user.survey2h = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2i(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_I_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_I_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_I_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_I_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_I_STRONGLY_DISAGREE') {
+        user.survey2i = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2j(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_J_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_J_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_J_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_J_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_J_STRONGLY_DISAGREE') {
+        user.survey2j = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2k(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_K_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_K_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_K_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_K_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_K_STRONGLY_DISAGREE') {
+        user.survey2k = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displaySurvey2l(user.habit, user.habitContext, sender, reply);
+        });
+      } else if (message.quick_reply.payload === 'SURVEY2_L_STRONGLY_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_L_AGREE' ||
+          message.quick_reply.payload === 'SURVEY2_L_NEITHER' ||
+          message.quick_reply.payload === 'SURVEY2_L_DISAGREE' ||
+          message.quick_reply.payload === 'SURVEY2_L_STRONGLY_DISAGREE') {
+        user.survey2l = message.quick_reply.payload.substring(10);
+
+        database.updateUser(user, () => {
+          displayFinalFinalMessage(user, sender, reply);
+        });
       }
     }
   });
