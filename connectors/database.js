@@ -4,7 +4,6 @@
 
 'use strict';
 
-
 if (process.env.NODE_ENV !== 'production') {
   // Load the .env file, that sets process.env.
   require('dotenv').load();
@@ -135,16 +134,13 @@ const getGlobals = callback => {
 
 const updateGlobals = (globals, callback) => {
   console.log('Updating globals ' + JSON.stringify(globals));
-  const callbackGlobals = globals;
-  const id = callbackGlobals.id;
-  delete globals.id;
-  base('Globals').update(id, globals, (err, record) => {
+  db.query('update globals SET "remainingDays"=' + globals.remainingDays + ', "studyActive"=' + globals.studyActive + ' where id=1;', (err, res) => {
     if (err) {
-      console.error(err);
-      throw new Error(err);
-    }
-    callbackGlobals.id = record.getId();
-    callback(callbackGlobals);
+        console.error(err.error);
+        callback(err.error);
+      } else {
+        callback(globals);
+      }
   });
 };
 
