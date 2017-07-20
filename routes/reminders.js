@@ -64,19 +64,15 @@ const decideOnReminder = (override, callback) => {
 
 const sendEndOfStudyMessages = callback => {
   const endOfStudy = {
-    text: 'The study is now over, thank you for taking part. I will not track your habits for about a week to see how you do without me.'
+    text: 'This part of the study is over. Thank you for taking part! I will not track your habits for about a week to see how well you do without me.'
   };
 
   const analysisQuestion = {
-    text: 'To help with my analysis I will ask you a few questions'
-  };
-
-  const surveyStart = {
-    text: 'What extent do you agree with the following:'
+    text: 'To help with my analysis I will ask you a few questions. What extent do you agree with the following:'
   };
 
   const startQR = {
-    text: ' is something I do automatically.',
+    text: ' is something I do automatically',
     quick_replies: [
       Bot.createQRItem('Strongly agree', 'SURVEY1_A_STRONGLY_AGREE'),
       Bot.createQRItem('Agree', 'SURVEY1_A_AGREE'),
@@ -109,29 +105,21 @@ const sendEndOfStudyMessages = callback => {
               console.log(msg);
               console.log(data);
             } else {
-              FB.newMessage(records[i].get('fbid'), surveyStart, (msg, data) => {
+              startQR.text = Bot.convertToFriendlyName(records[i].get('habit')) + ' after ' + Bot.convertToFriendlyName(records[i].get('habitContext')) + startQR.text;
+              FB.newMessage(records[i].get('fbid'), startQR,
+                (msg, data) => {
                 if (data.error) {
                   console.log('Error sending new fb message');
                   console.log(msg);
                   console.log(data);
-                } else {
-                  startQR.text = Bot.convertToFriendlyName(records[i].get('habit')) + ' after ' + Bot.convertToFriendlyName(records[i].get('habitContext')) + startQR.text;
-                  FB.newMessage(records[i].get('fbid'), startQR,
-                    (msg, data) => {
-                    if (data.error) {
-                      console.log('Error sending new fb message');
-                      console.log(msg);
-                      console.log(data);
-                    }
-                  });
-                }
-                console.log('Looking for next user');
-                if ((i + 1) >= records.length) {
-                  // last record, fetch next page
-                  console.log('fetching next page');
-                  fetchNextPage();
                 }
               });
+            }
+            console.log('Looking for next user');
+            if ((i + 1) >= records.length) {
+              // last record, fetch next page
+              console.log('fetching next page');
+              fetchNextPage();
             }
           });
         }
