@@ -34,14 +34,18 @@ const decideOnReminder = (override, callback) => {
       g.remainingDays--;
       console.log('Decrementing remaining days to ' + g.remainingDays);
       if (g.remainingDays == 0) {
-        // Send out end of study messages
-        sendEndOfStudyMessages(result => {
-          if (result.success) {
-            console.log('Successfully sent end of study messages');
-          } else {
-            console.log('We couldn\'t send end of study messages');
-          }
-          callback(null);
+        database.updateGlobals(g, globals => {
+          // Send out end of study messages
+          sendEndOfStudyMessages(result => {
+            if (result.success) {
+              console.log('Successfully sent end of study messages');
+            } else {
+              console.log('We couldn\'t send end of study messages');
+            }
+            callback(null);
+          });
+          console.log('Remaining days : ' + globals.remainingDays);
+          callback(timeOfDay, quickReplyActions);
         });
       } else {
         database.updateGlobals(g, globals => {
@@ -112,14 +116,15 @@ const sendEndOfStudyMessages = callback => {
                   console.log('Error sending new fb message');
                   console.log(msg);
                   console.log(data);
+                } else {
+                   console.log('Looking for next user');
+                    if ((i + 1) >= records.length) {
+                      // last record, fetch next page
+                      console.log('fetching next page');
+                      fetchNextPage();
+                    }
                 }
               });
-            }
-            console.log('Looking for next user');
-            if ((i + 1) >= records.length) {
-              // last record, fetch next page
-              console.log('fetching next page');
-              fetchNextPage();
             }
           });
         }
