@@ -48,14 +48,15 @@ const startFullSurvey = callback => {
                   console.log('Error sending new fb message');
                   console.log(msg);
                   console.log(data);
+                } else {
+                  console.log('Looking for next user');
+                  if ((i + 1) >= records.length) {
+                    // last record, fetch next page
+                    console.log('fetching next page');
+                    fetchNextPage();
+                  }
                 }
               });
-            }
-            console.log('Looking for next user');
-            if ((i + 1) >= records.length) {
-              // last record, fetch next page
-              console.log('fetching next page');
-              fetchNextPage();
             }
           });
         }
