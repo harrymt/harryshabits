@@ -33,7 +33,7 @@ const decideOnReminder = (override, callback) => {
     database.getGlobals(g => {
       g.remainingDays--;
       console.log('Decrementing remaining days to ' + g.remainingDays);
-      if (g.remainingDays < 0) {
+      if (g.remainingDays == 0) {
         // Send out end of study messages
         sendEndOfStudyMessages(result => {
           if (result.success) {
