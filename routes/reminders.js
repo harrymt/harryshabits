@@ -199,7 +199,7 @@ const sendReminders = (timePeriod, callback) => {
             console.log('Sending ' + timeOfDay + ' reminder to user ' + users[i].fbid);
             FB.newMessage(users[i].fbid,
               Bot.createQuickReply(
-                'Hey, after ' + Bot.convertToFriendlyName(users[i].habitContext) + ' have you completed your daily ' + Bot.convertToFriendlyName(users[i].habit) + '?',
+                'Hey, after \'' + Bot.convertToFriendlyName(users[i].habitContext) + '\' have you completed your daily ' + Bot.convertToFriendlyName(users[i].habit) + '?',
                 quickReplyActions
               ),
               (msg, data) => {

@@ -311,7 +311,7 @@ function displayExistingRoutine(habit, time, user, sender, reply) {
     ];
   }
 
-  let message = 'Habits are better formed when part of an existing routine. For example ' + convertToFriendlyName(habit) + ' after ';
+  let message = 'Habits are better formed when part of your existing daily routine. For example ' + convertToFriendlyName(habit) + ' after ';
   for (let i = 0; i < existingRoutines.length; i++) {
     if ((i + 1) === existingRoutines.length) {
       message += 'or ' + existingRoutines[i] + '. ';
