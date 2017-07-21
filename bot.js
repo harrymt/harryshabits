@@ -787,7 +787,7 @@ const read = function (sender, message, reply) {
           message.text.toLowerCase() === 'sweet' ||
           message.text.toLowerCase() === 'great' ||
           message.text.toLowerCase() === 'k' ||
-          message.text.toLoweraCse() === 'ok' ||
+          message.text.toLowerCase() === 'ok' ||
           message.text.toLowerCase() === 'okay' ||
           message.text.toLowerCase() === 'ty' ||
           message.text.toLowerCase() === 'good' ||
