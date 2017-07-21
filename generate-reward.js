@@ -33,7 +33,7 @@ const audioVisualRewards = [
 /**
  * Choose a random audio reward and wrap it up into an object ready to send.
  */
-const getAudioReward = spotifyRewards => {
+const getAudioReward = (spotifyRewards) => {
   if (spotifyRewards) {
     return getRandom(audioSpotify);
   }
@@ -44,7 +44,7 @@ const getAudioReward = spotifyRewards => {
 /**
  * Wrap a random gif up in an object.
  */
-const getVisualReward = online => {
+const getVisualReward = (online) => {
   if (online) {
     return getRandom(visualRewards);
   }
@@ -54,15 +54,24 @@ const getVisualReward = online => {
 /**
  * Get a combined audio visual reward
  */
-const getVisualAudioReward = function () {
-  const reward = getRandom(audioVisualRewards);
+const getVisualAudioReward = () => {
+  const reward = getRandom(audioVisualRewards); // );
   return {
     audio: cdn + '/sound/' + reward + '.mp3',
     gif: cdn + '/gif/' + reward + '.gif'
   };
 };
 
-function getRandom(arr) {
+function getRandom(arr) { //, el) {
+  // if (el) {
+  //   for(let i = 0; i < arr.length; i++) {
+  //     if(arr[i] === el) {
+  //       arr.pop(i);
+  //       break;
+  //     }
+  //   }
+  // }
+
   return arr[Math.floor((Math.random() * (arr.length)) + 1) - 1];
 }
 

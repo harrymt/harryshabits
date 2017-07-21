@@ -134,10 +134,9 @@ const findOrCreateUser = (fbid, callback) => {
           "\"surveyModality1c\", " +
           "\"surveyModality1d\", " +
           "\"moreFeedback\", " +
-          "\"finished\", " +
-          "\"previousReward\" " +
+          "\"finished\" " +
           ") values (" +
-          "$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34) returning *;";
+          "$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33) returning *;";
 
         db.query(sql, values, (err, res) => {
           if (err) {
@@ -154,9 +153,11 @@ const findOrCreateUser = (fbid, callback) => {
   });
 };
 
+
+// Only get users that have finished setup
 const getUsers = callback => {
   let users = [];
-  db.query('SELECT * from users;', (err, res) => {
+  db.query("SELECT * from users WHERE \"modality\"!='' AND \"habitContext\"!='' AND \"snoozedReminderTime\"!='';", (err, res) => {
     if (err) {
       console.error(err.error);
       callback(null);
@@ -280,7 +281,7 @@ const updateUser = (user, callback) => {
     }
     sql += "\"" + key + "\"='" + user[key] + "',";
   });
-
+  console.log(sql);
   sql = sql.slice(0, -1);
   sql += " where \"fbid\"='" + id + "';";
 

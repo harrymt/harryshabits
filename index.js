@@ -121,7 +121,7 @@
 
             // Send message to that user
             FB.newMessage(senderFbid, reply, (msg, data) => {
-              if (data.error) {
+              if (data && data.error) {
                 console.log('Error sending new fb message');
                 console.log(msg); // Log received info
                 console.log(data); // Log recieved info
@@ -129,7 +129,7 @@
                 // Check if we want to double message the user
                 setTimeout(() => {
                   FB.newMessage(senderFbid, anotherReply, (msg, data) => {
-                    if (data.error) {
+                    if (data && data.error) {
                       console.log('Error sending new second reply fb message');
                       console.log(msg); // Log received info
                       console.log(data); // Log recieved info
@@ -137,21 +137,21 @@
                     } else if (typeof thirdReply !== 'undefined' && thirdReply !== null) {
                       setTimeout(() => {
                         FB.newMessage(senderFbid, thirdReply, (msg, data) => {
-                          if (data.error) {
+                          if (data && data.error) {
                             console.log('Error sending new third reply fb message');
                             console.log(msg); // Log received info
                             console.log(data); // Log recieved info
                           } else if (typeof fourthReply !== 'undefined' && fourthReply !== null) {
                             setTimeout(() => {
                               FB.newMessage(senderFbid, fourthReply, (msg, data) => {
-                                if (data.error) {
+                                if (data && data.error) {
                                   console.log('Error sending new third reply fb message');
                                   console.log(msg); // Log received info
                                   console.log(data); // Log recieved info
                                 } else if (typeof fifthReply !== 'undefined' && fifthReply !== null) {
                                   setTimeout(() => {
                                     FB.newMessage(senderFbid, fifthReply, (msg, data) => {
-                                      if (data.error) {
+                                      if (data && data.error) {
                                         console.log('Error sending new third reply fb message');
                                         console.log(msg); // Log received info
                                         console.log(data); // Log recieved info
