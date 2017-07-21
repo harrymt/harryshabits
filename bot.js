@@ -74,10 +74,10 @@ function displaySettings(user, sender, reply, debug) {
     delete usr.surveyModality1d;
     reply(sender,
       {
-        text: JSON.stringify(usr)
+        text: (JSON.stringify(usr)).substring(0, 640) // Trim output to max message
       },
       {
-        text: JSON.stringify(Time.reminderTimes)
+        text: (JSON.stringify(Time.reminderTimes)).substring(0, 640)
       }
     );
   } else {
@@ -787,7 +787,7 @@ const read = function (sender, message, reply) {
           message.text.toLowerCase() === 'sweet' ||
           message.text.toLowerCase() === 'great' ||
           message.text.toLowerCase() === 'k' ||
-          message.text.toLowerCase() === 'ok' ||
+          message.text.toLoweraCse() === 'ok' ||
           message.text.toLowerCase() === 'okay' ||
           message.text.toLowerCase() === 'ty' ||
           message.text.toLowerCase() === 'good' ||
