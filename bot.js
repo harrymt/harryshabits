@@ -220,7 +220,7 @@ function displayPhysicalHabits(sender, reply) {
         createQRItem('Stretching', 'PICKED_HABIT_STRETCH'),
         createQRItem('Press Ups', 'PICKED_HABIT_PRESS_UPS'),
         createQRItem('Plank', 'PICKED_HABIT_PLANK'),
-        createQRItem('Back', 'PICKED_SHOW_HABITS_LIST')
+        createQRItem('Different Type', 'PICKED_SHOW_HABITS_LIST')
       ]
     }
   );
@@ -234,7 +234,7 @@ function displayRelaxationHabits(sender, reply) {
         createQRItem('Reading', 'PICKED_HABIT_READING'),
         createQRItem('Writing', 'PICKED_HABIT_WRITING'),
         createQRItem('Meditation', 'PICKED_HABIT_MEDITATION'),
-        createQRItem('Back', 'PICKED_SHOW_HABITS_LIST')
+        createQRItem('Different Type', 'PICKED_SHOW_HABITS_LIST')
       ]
     }
   );
@@ -311,7 +311,7 @@ function displayExistingRoutine(habit, time, user, sender, reply) {
     ];
   }
 
-  let message = 'Habits are better formed when part of an existing routine. For example ' + habit + ' after ';
+  let message = 'Habits are better formed when part of an existing routine. For example ' + convertToFriendlyName(habit) + ' after ';
   for (let i = 0; i < existingRoutines.length; i++) {
     if ((i + 1) === existingRoutines.length) {
       message += 'or ' + existingRoutines[i] + '. ';
@@ -786,6 +786,11 @@ const read = function (sender, message, reply) {
           message.text.toLowerCase() === 'thank you' ||
           message.text.toLowerCase() === 'sweet' ||
           message.text.toLowerCase() === 'great' ||
+          message.text.toLowerCase() === 'k' ||
+          message.text.toLowerCase() === 'ok' ||
+          message.text.toLowerCase() === 'okay' ||
+          message.text.toLowerCase() === 'ty' ||
+          message.text.toLowerCase() === 'good' ||
           message.text.toLowerCase() === 'cool' ||
           message.text.toLowerCase() === 'awesome') {
           // If user sends a sticker to no response, reply with a thumb
@@ -793,7 +798,7 @@ const read = function (sender, message, reply) {
         } else if (message.text.toLowerCase() === 'sex' || message.text.toLowerCase() === 'dick') {
           // If user sends a sticker to no response, reply with a thumb
           reply(sender, { text: 'I\'m not that kind of bot...' });
-        } else {
+        } else {7
           // If users are trying to tell us to mark thier habit as completed, then issue the completed dialog
           // if (message.text && (String(message.text.toLowerCase()).includes('track') ||
           //     String(message.text.toLowerCase()).includes('mark') ||
