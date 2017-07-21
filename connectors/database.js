@@ -97,8 +97,7 @@ const findOrCreateUser = (fbid, callback) => {
           '', // surveyModality1c
           '', // surveyModality1d
           '', // moreFeedback
-          false, // finished
-          '' // previousReward
+          false // finished
         ];
 
         const sql = "insert into users(" +
