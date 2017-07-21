@@ -27,8 +27,6 @@ FB_PAGE_TOKEN=<your fb page token here>
 FB_VERIFY_TOKEN=<verify token>
 USER_ID=<user id>
 CRON_SECRET=<secret phrase>
-AIRTABLE_BASE=<base url>
-AIRTABLE_API=<airtable api key>
 EMAIL_ID=<your email address for data backups and alerts>
 EMAIL_PASS=<your email password>
 ```

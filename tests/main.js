@@ -25,28 +25,29 @@
     removeTestUser(r => {
 
       setTimeout(() => {
-        hi().then(setTimeout(() => {
-        male().then(setTimeout(() => {
-        age23().then(setTimeout(() => {
-        usedHabitSystems().then(setTimeout(() => {
-        trackedTime().then(setTimeout(() => {
-        theyDidWork().then(setTimeout(() => {
-        choosePhysicalHabit().then(setTimeout(() => {
-        chooseStretchHabit().then(setTimeout(() => {
-        chooseMorning().then(setTimeout(() => {
-        chooseEarlyMorning().then(setTimeout(() => {
-        chooseMorning().then(setTimeout(() => {
-        myExistingRoutine().then(setTimeout(() => {
-        availableForInterview().then(setTimeout(() => {
-        email().then(setTimeout(() => {
-        about().then(setTimeout(() => {
-        settings().then(setTimeout(() => {
-        help().then(setTimeout(() => {
+         hi().then(setTimeout(() => {
+         male().then(setTimeout(() => {
+         age23().then(setTimeout(() => {
+         usedHabitSystems().then(setTimeout(() => {
+         trackedTime().then(setTimeout(() => {
+         theyDidWork().then(setTimeout(() => {
+         choosePhysicalHabit().then(setTimeout(() => {
+         chooseStretchHabit().then(setTimeout(() => {
+         chooseMorning().then(setTimeout(() => {
+         chooseEarlyMorning().then(setTimeout(() => {
+         chooseMorning().then(setTimeout(() => {
+         myExistingRoutine().then(setTimeout(() => {
+         availableForInterview().then(setTimeout(() => {
+         email().then(setTimeout(() => {
+         about().then(setTimeout(() => {
+         settings().then(setTimeout(() => {
+         help().then(setTimeout(() => {
 
         thumb()
-        .then(
-          botServer.shutdown()
-        ).catch(console.error);
+        .then(setTimeout(() => {
+          process.exit(0)
+        }, waitTime)
+        ).catch(console.log(console.error) && process.exit(1));
 
         }, waitTime));
         }, waitTime));

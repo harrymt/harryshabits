@@ -28,7 +28,11 @@ module.exports = {
 
     newRequest(opts, (err, resp, data) => {
       if (cb) {
-        cb((err || data.error) && data.error.message, data);
+        if (data) {
+          cb((err || data.error) && data.error.message, data);
+        } else {
+          cb(err, data);
+        }
       }
     });
   },

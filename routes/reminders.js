@@ -86,43 +86,33 @@ const sendEndOfStudyMessages = callback => {
     ]
   };
 
-  const base = require('airtable').base(process.env.AIRTABLE_BASE);
-  base('Users').select({
-      filterByFormula: '({finished} != "' + true + '")'
-  }).eachPage(function page(records, fetchNextPage) {
-    for (let i = 0; i < records.length; i++) {
-      if (records[i].get('finished')) {
+  database.getUsers(users => {
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].finished) {
         console.log('Users finished, so not sending reminder.');
         continue;
       }
-      console.log('Sending end of study message to user ' + records[i].get('fbid'));
+      console.log('Sending end of study message to user ' + users[i].fbid);
 
-      FB.newMessage(records[i].get('fbid'), endOfStudy, (msg, data) => {
+      FB.newMessage(users[i].fbid, endOfStudy, (msg, data) => {
         if (data.error) {
           console.log('Error sending new fb message');
           console.log(msg);
           console.log(data);
         } else {
-          FB.newMessage(records[i].get('fbid'), analysisQuestion, (msg, data) => {
+          FB.newMessage(users[i].fbid, analysisQuestion, (msg, data) => {
             if (data.error) {
               console.log('Error sending new fb message');
               console.log(msg);
               console.log(data);
             } else {
-              startQR.text = Bot.convertToFriendlyName(records[i].get('habit')) + ' after ' + Bot.convertToFriendlyName(records[i].get('habitContext')) + startQR.text;
-              FB.newMessage(records[i].get('fbid'), startQR,
+              startQR.text = Bot.convertToFriendlyName(users[i].habit) + ' after ' + Bot.convertToFriendlyName(users[i].habitContext) + startQR.text;
+              FB.newMessage(users[i].fbid, startQR,
                 (msg, data) => {
                 if (data.error) {
                   console.log('Error sending new fb message');
                   console.log(msg);
                   console.log(data);
-                } else {
-                   console.log('Looking for next user');
-                    if ((i + 1) >= records.length) {
-                      // last record, fetch next page
-                      console.log('fetching next page');
-                      fetchNextPage();
-                    }
                 }
               });
             }
@@ -130,13 +120,43 @@ const sendEndOfStudyMessages = callback => {
         }
       });
     }
-  }, function done(err) {
-    if (err) {
-      console.log(err);
-      callback({ error: err, success: true });
-    } else {
-      console.log('Sent end of study messages.');
-      callback({ success: true });
+    console.log('Sent end of study messages.');
+  });
+};
+
+const sendNewDayMessages = (timeOfDay, callback) => {
+  database.getUsers(users => {
+    for (let i = 0; i < users.length; i++) {
+      if (users.length === 0) {
+        callback({ failure: false, noUsersAtTime: timeOfDay });
+      }
+      console.log('Sending final nightime messages');
+      // Reset snooze time
+      const userData = users[i];
+      userData.snoozedReminderTime = users[i].reminderTime;
+
+      // Reset number of snoozes today
+      userData.snoozesToday = 0;
+
+      // Reset users streak
+      userData.streak = 0;
+
+      database.updateUser(userData, () => {
+        FB.newMessage(users[i].fbid, {
+          text: 'You haven\'t logged any time today. Try again tomorrow.'
+        },
+        (msg, data) => {
+          if (data.error) {
+            console.log('Error sending new fb message');
+            console.log(msg);
+            console.log(data);
+          } else {
+            if (i + 1 === users.length) {
+              callback({ time: timeOfDay, finalMessage: true, success: true });
+            }
+          }
+        });
+      });
     }
   });
 };
@@ -160,55 +180,26 @@ const sendReminders = (timePeriod, callback) => {
     // Debug Logging!
     console.log('We got a reminder at time: ' + timeOfDay);
 
-    // Get all users based on time
-    // Setup online database, airtable
-    const base = require('airtable').base(process.env.AIRTABLE_BASE);
-    const filter = '({snoozedReminderTime} = "' + timeOfDay + '")';
-    base('Users').select({
-      filterByFormula: filter
-    }).eachPage(function page(records, fetchNextPage) {
-
-      for (let i = 0; i < records.length; i++) {
-        if (records[i].fields.habit === undefined) {
-          console.log('User hasn\'t told us their habit');
-          console.log('Looking for next user');
-        } else {
-          if (quickReplyActions === null) {
-            console.log('Sending final nightime messages');
-            // Reset snooze time
-            const userData = records[i].fields;
-            userData.id = records[i].getId();
-            userData.snoozedReminderTime = records[i].fields.reminderTime;
-
-            // Reset number of snoozes today
-            userData.snoozesToday = 0;
-
-            // Reset users streak
-            userData.streak = 0;
-
-            database.updateUser(userData, () => {
-              FB.newMessage(records[i].get('fbid'), {
-                text: 'You haven\'t logged any time today. Try again tomorrow.'
-              },
-              (msg, data) => {
-                if (data.error) {
-                  console.log('Error sending new fb message');
-                  console.log(msg);
-                  console.log(data);
-                }
-                console.log('Looking for next user');
-                if ((i + 1) >= records.length) {
-                  // last record, fetch next page
-                  console.log('fetching next page');
-                  fetchNextPage();
-                }
-              });
-            });
+    if (timeOfDay === 'NEW_DAY') {
+      sendNewDayMessages(timeOfDay, cb => {
+        callback(cb);
+      });
+    } else {
+      // Get all users based on time
+      database.getUsersByTime(timeOfDay, users => {
+        if (users.length === 0) {
+          callback({ failure: false, noUsersAtTime: timeOfDay });
+        }
+        for (let i = 0; i < users.length; i++) {
+          if (users[i].habit === undefined) {
+            console.log('User hasn\'t told us their habit');
+            console.log('Looking for next user');
           } else {
-            console.log('Sending ' + timeOfDay + ' reminder to user ' + records[i].get('fbid'));
-            FB.newMessage(records[i].get('fbid'),
+
+            console.log('Sending ' + timeOfDay + ' reminder to user ' + users[i].fbid);
+            FB.newMessage(users[i].fbid,
               Bot.createQuickReply(
-                'Hey, after ' + Bot.convertToFriendlyName(records[i].get('habitContext')) + ' have you completed your daily ' + Bot.convertToFriendlyName(records[i].get('habit')) + '?',
+                'Hey, after ' + Bot.convertToFriendlyName(users[i].habitContext) + ' have you completed your daily ' + Bot.convertToFriendlyName(users[i].habit) + '?',
                 quickReplyActions
               ),
               (msg, data) => {
@@ -216,28 +207,19 @@ const sendReminders = (timePeriod, callback) => {
                   console.log('Error sending new fb message');
                   console.log(msg);
                   console.log(data);
-                }
-                console.log('Looking for next user');
-                if ((i + 1) >= records.length) {
-                  // last record, fetch next page
-                  console.log('fetching next page');
-                  fetchNextPage();
+                } else {
+                  if (i + 1 === users.length) {
+                    callback({ time: timeOfDay, success: true });
+                  }
                 }
               }
             );
           }
         }
-      }
+      });
 
-    }, function done(err) {
-      if (err) {
-        console.log(err);
-        callback({ time: timeOfDay, failure: true });
-      } else {
-        console.log('Sent ' + timeOfDay + ' reminders users.');
-        callback({ time: timeOfDay, success: true });
-      }
-    });
+    }
+
   });
 };
 

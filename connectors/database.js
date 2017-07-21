@@ -14,106 +14,187 @@ const db = new pg.Client({
   ssl: true,
   connectionString: process.env.DATABASE_URL
 });
+
+// TODO may have to have this inside of every function call below
+// Yes do it!s
+// e.g.
+// db.connect((err, client) => {
+//   if (err) {
+//     throw err;
+//   }
+//   // client.query()...
+// });
 db.connect(err => {
-  if (err) throw err;
+  if (err) {
+    throw err;
+  }
 });
 
-// Integrate with airtable
-const base = require('airtable').base(process.env.AIRTABLE_BASE);
-
+// For tests
 const removeUserByFbid = (fbid, callback) => {
-  findOrCreateUser(fbid, user => {
-    base('Users').destroy(user.id, function(err, deletedRecord) {
-      if (err) { console.error(err); }
-      console.log('Deleted record', deletedRecord.id);
-      callback('Deleted record ' + fbid);
-    });
+  db.query("delete from users where \"fbid\"='" + fbid + "';", (err, res) => {
+    if (err) {
+        console.error(err.error);
+        callback(err.error);
+      } else {
+        if (res.rowCount === 0) {
+          console.log('No user found with fbid ' + fbid);
+          callback(false);
+        } else {
+          console.log('Successfully delete user fbid ' + fbid);
+          callback(true);
+        }
+      }
   });
 };
 
 const findOrCreateUser = (fbid, callback) => {
   console.log('Finding user with fbid ' + fbid);
-
-  base('Users').select({
-    filterByFormula: '({fbid} = "' + fbid + '")'
-  }).eachPage(function page(records, fetchNextPage) {
-    if (records !== undefined && records[0] !== undefined) {
-      const userData = records[0].fields;
-      userData.id = records[0].getId();
-      callback(userData);
-    } else {
-      const userData = {
-        fbid,
-        modality: '',
-        seenBefore: false,
-        reminderTime: '',
-        habit: '',
-        habitCategory: '',
-        snoozesToday: 0,
-        streak: 0,
-        totalNumberOfSnoozes: 0,
-        totalNumberOfFailedSnoozes: 0,
-        expectingAge: false,
-        age: '',
-        hasUsedHabitAppsBefore: false,
-        expectingPreviousHabits: false,
-        previousHabits: '',
-        hasUsedHabitAppsBeforeWorked: false,
-        expectingHabitContext: false,
-        habitContext: '',
-        email: '',
-        interview: false,
-        expectingContactDetails: false,
-        gender: '',
-        expectingMoreFeedback: false,
-        survey1a: '',
-        survey1b: '',
-        survey1c: '',
-        survey1d: '',
-        surveyModality1a: '',
-        surveyModality1b: '',
-        surveyModality1c: '',
-        surveyModality1d: '',
-        moreFeedback: '',
-        finished: false
-      };
-
-      // User doesn't exist, so lets create them
-      base('Users').create(userData, (err, record) => {
-        if (err) {
-          console.error(err);
-          throw new Error(err);
-        }
-        console.log('Created user in database fbid: ' + fbid);
-        userData.id = record.getId();
-        callback(userData);
-      });
-    }
-  }, function done(err) {
+  db.query("select * from users where \"fbid\"='" + String(fbid) + "' limit 1;", (err, res) => {
     if (err) {
-      console.error(err);
-      throw new Error(err);
+      console.error(err.error);
+      callback(err.error);
+    } else {
+      // User found, just return the result
+      if (res.rows.length > 0) {
+        for (let i = 0, len = res.rows.length; i < len; i++) {
+          callback(res.rows[i]);
+        }
+      } else {
+        console.log('New user, creating user with fbid: ' + fbid);
+
+        // Default values
+        const values = [
+          fbid,
+          '', // modality
+          false, // seenBefore
+          '', // reminderTime
+          '', // habit
+          '', // habitCategory
+          0, // snoozesToday
+          0, // streak
+          0, // totalNumberOfSnoozes
+          0, // totalNumberOfFailedSnoozes
+          false, // expectingAge
+          '', // age
+          false, // hasUsedHabitAppsBefore
+          false, // expectingPreviousHabits
+          '', // previousHabits
+          false, // hasUsedHabitAppsBeforeWorked
+          false, // expectingHabitContext
+          '', // habitContext
+          '', // email
+          false, // interview
+          false, // expectingContactDetails
+          '', // gender
+          false, // expectingMoreFeedback
+          '', // survey1a
+          '', // survey1b
+          '', // survey1c
+          '', // survey1d
+          '', // surveyModality1a
+          '', // surveyModality1b
+          '', // surveyModality1c
+          '', // surveyModality1d
+          '', // moreFeedback
+          false, // finished
+          '' // previousReward
+        ];
+
+        const sql = "insert into users(" +
+          "\"fbid\", " +
+          "\"modality\", " +
+          "\"seenBefore\", " +
+          "\"reminderTime\", " +
+          "\"habit\", " +
+          "\"habitCategory\", " +
+          "\"snoozesToday\", " +
+          "\"streak\", " +
+          "\"totalNumberOfSnoozes\", " +
+          "\"totalNumberOfFailedSnoozes\", " +
+          "\"expectingAge\", " +
+          "\"age\", " +
+          "\"hasUsedHabitAppsBefore\", " +
+          "\"expectingPreviousHabits\", " +
+          "\"previousHabits\", " +
+          "\"hasUsedHabitAppsBeforeWorked\", " +
+          "\"expectingHabitContext\", " +
+          "\"habitContext\", " +
+          "\"email\", " +
+          "\"interview\", " +
+          "\"expectingContactDetails\", " +
+          "\"gender\", " +
+          "\"expectingMoreFeedback\", " +
+          "\"survey1a\", " +
+          "\"survey1b\", " +
+          "\"survey1c\", " +
+          "\"survey1d\", " +
+          "\"surveyModality1a\", " +
+          "\"surveyModality1b\", " +
+          "\"surveyModality1c\", " +
+          "\"surveyModality1d\", " +
+          "\"moreFeedback\", " +
+          "\"finished\", " +
+          "\"previousReward\" " +
+          ") values (" +
+          "$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34) returning *;";
+
+        db.query(sql, values, (err, res) => {
+          if (err) {
+              console.error(err.error);
+              throw new Error(err);
+            } else {
+              for (let i = 0, len = res.rows.length; i < len; i++) {
+                callback(res.rows[i]);
+              }
+            }
+        });
+      }
     }
   });
 };
 
+const getUsers = callback => {
+  let users = [];
+  db.query('SELECT * from users;', (err, res) => {
+    if (err) {
+      console.error(err.error);
+      callback(null);
+    } else {
+      for (let i = 0, len = res.rows.length; i < len; i++) {
+        users.push(res.rows[i]);
+      }
+      callback(users);
+    }
+  });
+};
+
+const getUsersByTime = (timeOfDay ,callback) => {
+  let users = [];
+  db.query("SELECT * from users where \"snoozedReminderTime\"='" + timeOfDay + "';", (err, res) => {
+    if (err) {
+      console.error(err.error);
+      callback(null);
+    } else {
+      for (let i = 0, len = res.rows.length; i < len; i++) {
+        users.push(res.rows[i]);
+      }
+      callback(users);
+    }
+  });
+};
+
+
 const getUsersByStreak = callback => {
   let users = [];
-  base('Users').select({
-    sort: [{field: "streak", direction: "desc"}]
-  }).eachPage(function page(records, fetchNextPage) {
-    for (let i = 0; i < records.length; i++) {
-      const usr = records[i].fields;
-      usr.index = i;
-      users.push(usr);
-    }
-    console.log('fetching next page')
-    fetchNextPage();
-  }, function done(err) {
+  db.query('SELECT * from users ORDER BY streak DESC;', (err, res) => {
     if (err) {
-      console.log(err);
-      callback(false);
+      console.error(err.error);
+      callback(null);
     } else {
+      for (let i = 0, len = res.rows.length; i < len; i++) {
+        users.push(res.rows[i]);
+      }
       callback(users);
     }
   });
@@ -133,7 +214,6 @@ const getGlobals = callback => {
 };
 
 const updateGlobals = (globals, callback) => {
-  console.log('Updating globals ' + JSON.stringify(globals));
   db.query('update globals SET "remainingDays"=' + globals.remainingDays + ', "studyActive"=' + globals.studyActive + ' where id=1;', (err, res) => {
     if (err) {
         console.error(err.error);
@@ -146,59 +226,71 @@ const updateGlobals = (globals, callback) => {
 
 const hasUserCompletedHabit = (user, callback) => {
   const today = (new Date()).toUTCString().slice(5, -13); // Save date;
-
-  base('Habits').select({
-    filterByFormula: 'AND({day} = "' + today + '", {fbid} = "' + user.fbid + '")'
-  }).eachPage(function page(records, fetchNextPage) {
-    if (records !== undefined && records[0] !== undefined) {
-      const habitFound = records[0].fields;
-      console.log('User has completed their habit today:');
-      console.log(habitFound);
-      callback(true);
+  db.query("select count(*) from habits where \"day\"='" + today + "' and \"fbid\"='" + user.fbid + "';", (err, res) => {
+   if (err) {
+      console.error(err.error);
+      callback(err.error);
     } else {
-      console.log('User has not completed their habit today.')
-      callback(false);
-    }
-  }, function done(err) {
-    if (err) {
-      console.error(err);
-      throw new Error(err);
+      for (let i = 0, len = res.rows.length; i < len; i++) {
+        callback(res.rows[i].count > 0);
+      }
     }
   });
 };
 
-
 const updateHabit = (habit, callback) => {
-  const callbackHabit = habit;
-  delete habit.id;
   console.log('Creating a new row in habit table...');
-  base('Habits').create(habit, (err, record) => {
+
+  const values = [
+    habit.fbid,
+    habit.fullDay,
+    habit.day,
+    habit.competed,
+    habit.reminderTime,
+    habit.numberOfSnoozes,
+    habit.currentModality,
+    habit.currentHabit,
+    habit.currentStreak
+  ];
+
+  db.query("insert into habits(\"fbid\", \"fullDay\", \"day\", \"completed\", \"reminderTime\", \"numberOfSnoozes\", \"currentModality\", \"currentHabit\", \"currentStreak\") values($1, $2, $3, $4, $5, $6, $7, $8, $9);", values, (err, res) => {
     if (err) {
-      console.error(err);
-      throw new Error(err);
-    }
-    console.log('Added new habit');
-    callbackHabit.id = record.getId();
-    callback(callbackHabit);
+        console.error(err.error);
+        throw new Error(err);
+      } else {
+        callback(habit);
+      }
   });
 };
 
 const updateUser = (user, callback) => {
-  const callbackUser = user;
-  const userId = user.id;
-  delete user.id;
-
+  const id = user.fbid;
+  if (user.fbid === null) {
+    console.log(user);
+    console.log('Cannot update user as no fbid');
+    callback(user);
+  } else {
+    delete user.fbid;
+  }
   console.log('Updating user...');
-  base('Users').update(userId, user, (err, record) => {
-    if (err) {
-      console.error(err);
-      callback(null);
-    } else {
-      console.log('Updated user to:');
-      console.log(record.fields);
-      callbackUser.id = record.getId();
-      callback(callbackUser);
+  let sql = 'update users set ';
+  Object.keys(user).forEach((key, i) => {
+    if (user[key] === null) {
+      user[key] = false;
     }
+    sql += "\"" + key + "\"='" + user[key] + "',";
+  });
+
+  sql = sql.slice(0, -1);
+  sql += " where \"fbid\"='" + id + "';";
+
+  db.query(sql, (err, res) => {
+    if (err) {
+        console.error(err.error);
+        throw new Error(err);
+      } else {
+        callback(user);
+      }
   });
 };
 
@@ -209,25 +301,16 @@ const getAllModalities = callback => {
     VISUAL_AND_SOUND: 0,
     NONE: 0
   };
-  base('Users').select({
-    fields: ['modality'],
-    sort: [{field: 'modality', direction: 'desc'}]
-  }).eachPage(function page(records, fetchNextPage) {
-    for (let i = 0; i < records.length; i++) {
-      if (records[i].fields && records[i].fields.modality) {
-        if (modalities[records[i].fields.modality] === undefined) {
-          modalities[records[i].fields.modality] = 0;
-        }
-        modalities[records[i].fields.modality]++;
-      }
-    }
-    console.log('fetching next page');
-    fetchNextPage();
-  }, function done(err) {
+
+  db.query('select count(\"modality\"), "modality" from users group by "modality";', (err, res) => {
     if (err) {
-      console.log(err);
-      callback(false);
+      console.error(err.error);
+      callback(err.error);
     } else {
+      for (let i = 0, len = res.rows.length; i < len; i++) {
+        modalities[res.rows[i].modality] = res.rows[i].count;
+      }
+
       callback(modalities);
     }
   });
@@ -235,6 +318,8 @@ const getAllModalities = callback => {
 
 module.exports = {
   getUsersByStreak,
+  getUsers,
+  getUsersByTime,
   updateUser,
   updateHabit,
   find: findOrCreateUser,

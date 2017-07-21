@@ -36,7 +36,8 @@ CREATE TABLE users (
   "surveyModality1c" VARCHAR,
   "surveyModality1d" VARCHAR,
   "moreFeedback" VARCHAR,
-  "finished" BOOLEAN
+  "finished" BOOLEAN,
+  "previousReward" VARCHAR
 );
 
 INSERT INTO users (
