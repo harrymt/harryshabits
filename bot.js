@@ -1060,7 +1060,7 @@ const read = function (sender, message, reply) {
         database.updateHabit(habit, () => {
           database.updateUser(user, () => {
 
-            const rewardURL = 'https://infinite-falls-46264.herokuapp.com/rewards/' + String(user.modality).toLowerCase() + "?previousReward=" + user.previousReward;
+            const rewardURL = 'https://infinite-falls-46264.herokuapp.com/rewards/' + String(user.modality).toLowerCase();
 
             const replyContent = {
               attachment: {

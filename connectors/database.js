@@ -26,7 +26,7 @@ const db = new pg.Client({
 // });
 db.connect(err => {
   if (err) {
-    throw err;
+    console.log('Err connecting to db: ' + err);
   }
 });
 
@@ -274,12 +274,18 @@ const updateUser = (user, callback) => {
     delete user.fbid;
   }
   console.log('Updating user...');
+  console.log(user);
   let sql = 'update users set ';
   Object.keys(user).forEach((key, i) => {
     if (user[key] === null) {
       user[key] = false;
     }
-    sql += "\"" + key + "\"='" + user[key] + "',";
+    sql += "\"" + key + "\"=";
+    if (typeof user[key] === 'boolean') {
+      sql += user[key] + ",";
+    } else {
+      sql += "'" + user[key] + "',";
+    }
   });
   console.log(sql);
   sql = sql.slice(0, -1);
@@ -290,6 +296,7 @@ const updateUser = (user, callback) => {
         console.error(err.error);
         throw new Error(err);
       } else {
+        user.fbid = id;
         callback(user);
       }
   });
