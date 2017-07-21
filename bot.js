@@ -64,12 +64,20 @@ function displaySettings(user, sender, reply, debug) {
   const usr = user;
 
   if (debug) {
+    delete usr.survey1a;
+    delete usr.survey1b;
+    delete usr.survey1c;
+    delete usr.survey1d;
+    delete usr.surveyModality1a;
+    delete usr.surveyModality1b;
+    delete usr.surveyModality1c;
+    delete usr.surveyModality1d;
     reply(sender,
       {
         text: JSON.stringify(usr)
       },
       {
-        text: '\nTimes are ' + JSON.stringify(Time.reminderTimes)
+        text: JSON.stringify(Time.reminderTimes)
       }
     );
   } else {
