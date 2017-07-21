@@ -195,10 +195,10 @@ function displayDidTheyWork(sender, reply) {
 function displayPickHabit(sender, reply) {
   reply(sender,
     {
-      text: 'Brill! Now onto the fun part. What new daily habit would you like to complete?',
+      text: 'Brill! Now onto the fun part. What type of habit would you like to complete?',
       quick_replies: [
-        createQRItem('Physical Habit', 'PICKED_HABIT_CATEGORY_PHYSICAL'),
-        createQRItem('Relaxing Habit', 'PICKED_HABIT_CATEGORY_RELAXATION')
+        createQRItem('Type: Exercise', 'PICKED_HABIT_CATEGORY_PHYSICAL'),
+        createQRItem('Type: Relaxation', 'PICKED_HABIT_CATEGORY_RELAXATION')
       ]
     }
   );
@@ -211,7 +211,8 @@ function displayPhysicalHabits(sender, reply) {
       quick_replies: [
         createQRItem('Stretching', 'PICKED_HABIT_STRETCH'),
         createQRItem('Press Ups', 'PICKED_HABIT_PRESS_UPS'),
-        createQRItem('Plank', 'PICKED_HABIT_PLANK')
+        createQRItem('Plank', 'PICKED_HABIT_PLANK'),
+        createQRItem('Back', 'PICKED_SHOW_HABITS_LIST')
       ]
     }
   );
@@ -224,7 +225,8 @@ function displayRelaxationHabits(sender, reply) {
       quick_replies: [
         createQRItem('Reading', 'PICKED_HABIT_READING'),
         createQRItem('Writing', 'PICKED_HABIT_WRITING'),
-        createQRItem('Meditation', 'PICKED_HABIT_MEDITATION')
+        createQRItem('Meditation', 'PICKED_HABIT_MEDITATION'),
+        createQRItem('Back', 'PICKED_SHOW_HABITS_LIST')
       ]
     }
   );
@@ -232,7 +234,6 @@ function displayRelaxationHabits(sender, reply) {
 
 function displayReminderTime(habit, sender, reply) {
   let habitInstructions = 'Okay, try and';
-  console.log(habit);
   if (habit === 'PLANK') {
     habitInstructions += ' hold your plank for at least 30 seconds.';
   } else if (habit === 'PRESS_UPS') {
@@ -254,10 +255,10 @@ function displayReminderTime(habit, sender, reply) {
       text: habitInstructions
     },
     {
-      text: 'I am going to check on you every day to see how you\'re getting on with your habit.'
+      text: 'I am going to check every day to see how you\'re getting on with your habit.'
     },
     createQuickReply(
-      'What time would you like me to check on you?',
+      'What time would you like me to message you?',
       [
         'Morning',
         'Afternoon',
@@ -280,7 +281,7 @@ function displayNestedTime(timePeriod, sender, reply) {
   );
 }
 
-function displayExistingRoutine(time, user, sender, reply) {
+function displayExistingRoutine(habit, time, user, sender, reply) {
 
   let existingRoutines = [];
   if (time === 'MORNING') {
@@ -302,7 +303,7 @@ function displayExistingRoutine(time, user, sender, reply) {
     ];
   }
 
-  let message = 'Habits are better formed when part of an existing routine. For example ';
+  let message = 'Habits are better formed when part of an existing routine. For example ' + habit + ' after ';
   for (let i = 0; i < existingRoutines.length; i++) {
     if ((i + 1) === existingRoutines.length) {
       message += 'or ' + existingRoutines[i] + '. ';
@@ -311,7 +312,7 @@ function displayExistingRoutine(time, user, sender, reply) {
     }
   }
 
-  message += 'Please enter below 1 existing routine you will want to use:';
+  message += 'Please enter one of these contexts (e.g. \'' + existingRoutines[0] + '\') or enter your own below:';
 
   user.expectingHabitContext = true;
   database.updateUser(user, () => {
@@ -850,6 +851,8 @@ const read = function (sender, message, reply) {
         database.updateUser(user, () => {
           displayPickHabit(sender, reply);
         });
+      } else if (message.quick_reply.payload === 'PICKED_SHOW_HABITS_LIST') {
+        displayPickHabit(sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_HABIT_CATEGORY_PHYSICAL') {
         displayPhysicalHabits(sender, reply);
       } else if (message.quick_reply.payload === 'PICKED_HABIT_CATEGORY_RELAXATION') {
@@ -905,7 +908,7 @@ const read = function (sender, message, reply) {
         user.reminderTime = message.quick_reply.payload.substring(7);
         user.snoozedReminderTime = user.reminderTime;
         database.updateUser(user, () => {
-          displayExistingRoutine(user.reminderTime.split('_').pop(), user, sender, reply);
+          displayExistingRoutine(user.habit, user.reminderTime.split('_').pop(), user, sender, reply);
         });
 
       } else if (message.quick_reply.payload === 'PICKED_INTERVIEW_NO' || message.quick_reply.payload === 'PICKED_INTERVIEW_YES') {
@@ -1049,7 +1052,7 @@ const read = function (sender, message, reply) {
         database.updateHabit(habit, () => {
           database.updateUser(user, () => {
 
-            const rewardURL = 'https://infinite-falls-46264.herokuapp.com/rewards/' + String(user.modality).toLowerCase();
+            const rewardURL = 'https://infinite-falls-46264.herokuapp.com/rewards/' + String(user.modality).toLowerCase() + "?previousReward=" + user.previousReward;
 
             const replyContent = {
               attachment: {
