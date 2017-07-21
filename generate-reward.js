@@ -13,6 +13,7 @@ const audioMP3 = [
   '/sound/hands-up.mp3',
   '/sound/snow.mp3',
   '/sound/thumbs-up.mp3',
+  '/sound/base-ball.mp3',
   '/sound/we-are-the-campions.mp3'
 ];
 
@@ -27,7 +28,8 @@ const audioVisualRewards = [
   'hands-up',
   'snow',
   'we-are-the-campions',
-  'thumbs-up'
+  'thumbs-up',
+  'base-ball'
 ];
 
 /**
