@@ -52,11 +52,11 @@
     if (req.params.timeOfDay) {
     console.log('Time of day: ' + req.params.timeOfDay);
       require('./routes/reminders').sendReminders(req.params.timeOfDay, success => {
-        res.send(success);
+        console.log(success);
       });
     } else {
       require('./routes/reminders').sendReminders(null, success => {
-        res.send(success);
+        console.log(success);
       });
     }
   });
