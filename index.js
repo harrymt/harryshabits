@@ -49,8 +49,9 @@
       return;
     }
 
-    if (req.params.timeOfDay && Time.period(req.params.timeOfDay) !== null) {
-      require('./routes/reminders').sendReminders(Time.period(req.params.timeOfDay), success => {
+    if (req.params.timeOfDay) {
+    console.log('Time of day: ' + req.params.timeOfDay);
+      require('./routes/reminders').sendReminders(req.params.timeOfDay, success => {
         res.send(success);
       });
     } else {

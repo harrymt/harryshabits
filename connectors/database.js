@@ -34,7 +34,7 @@ db.connect(err => {
 const removeUserByFbid = (fbid, callback) => {
   db.query("delete from users where \"fbid\"='" + fbid + "';", (err, res) => {
     if (err) {
-        console.error(err.error);
+        console.error(err);
         callback(err.error);
       } else {
         if (res.rowCount === 0) {
@@ -52,7 +52,7 @@ const findOrCreateUser = (fbid, callback) => {
   console.log('Finding user with fbid ' + fbid);
   db.query("select * from users where \"fbid\"='" + String(fbid) + "' limit 1;", (err, res) => {
     if (err) {
-      console.error(err.error);
+      console.error(err);
       callback(err.error);
     } else {
       // User found, just return the result
@@ -139,7 +139,7 @@ const findOrCreateUser = (fbid, callback) => {
 
         db.query(sql, values, (err, res) => {
           if (err) {
-              console.error(err.error);
+              console.error(err);
               throw new Error(err);
             } else {
               for (let i = 0, len = res.rows.length; i < len; i++) {
@@ -158,7 +158,7 @@ const getUsers = callback => {
   let users = [];
   db.query("SELECT * from users WHERE \"modality\"!='' AND \"habitContext\"!='' AND \"snoozedReminderTime\"!='';", (err, res) => {
     if (err) {
-      console.error(err.error);
+      console.error(err);
       callback(null);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
@@ -171,10 +171,10 @@ const getUsers = callback => {
 
 const getUsersByTime = (timeOfDay ,callback) => {
   let users = [];
-  db.query("SELECT * from users where \"snoozedReminderTime\"='" + timeOfDay + "';", (err, res) => {
+  db.query("SELECT * from users WHERE \"snoozedReminderTime\"='" + timeOfDay + "';", (err, res) => {
     if (err) {
-      console.error(err.error);
-      callback(null);
+      console.error(err);
+      callback([]);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
         users.push(res.rows[i]);
@@ -189,7 +189,7 @@ const getUsersByStreak = callback => {
   let users = [];
   db.query('SELECT * from users ORDER BY streak DESC;', (err, res) => {
     if (err) {
-      console.error(err.error);
+      console.error(err);
       callback(null);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
@@ -203,7 +203,7 @@ const getUsersByStreak = callback => {
 const getGlobals = callback => {
   db.query('select * from globals limit 1', (err, res) => {
     if (err) {
-      console.error(err.error);
+      console.error(err);
       callback(err.error);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
@@ -216,7 +216,7 @@ const getGlobals = callback => {
 const updateGlobals = (globals, callback) => {
   db.query('update globals SET "remainingDays"=' + globals.remainingDays + ', "studyActive"=' + globals.studyActive + ' where id=1;', (err, res) => {
     if (err) {
-        console.error(err.error);
+        console.error(err);
         callback(err.error);
       } else {
         callback(globals);
@@ -228,7 +228,7 @@ const hasUserCompletedHabit = (user, callback) => {
   const today = (new Date()).toUTCString().slice(5, -13); // Save date;
   db.query("select count(*) from habits where \"day\"='" + today + "' and \"fbid\"='" + user.fbid + "';", (err, res) => {
    if (err) {
-      console.error(err.error);
+      console.error(err);
       callback(err.error);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
@@ -255,7 +255,7 @@ const updateHabit = (habit, callback) => {
 
   db.query("insert into habits(\"fbid\", \"fullDay\", \"day\", \"completed\", \"reminderTime\", \"numberOfSnoozes\", \"currentModality\", \"currentHabit\", \"currentStreak\") values($1, $2, $3, $4, $5, $6, $7, $8, $9);", values, (err, res) => {
     if (err) {
-        console.error(err.error);
+        console.error(err);
         throw new Error(err);
       } else {
         callback(habit);
@@ -292,7 +292,7 @@ const updateUser = (user, callback) => {
 
   db.query(sql, (err, res) => {
     if (err) {
-        console.error(err.error);
+        console.error(err);
         throw new Error(err);
       } else {
         user.fbid = id;
@@ -311,7 +311,7 @@ const getAllModalities = callback => {
 
   db.query('select count(\"modality\"), "modality" from users group by "modality";', (err, res) => {
     if (err) {
-      console.error(err.error);
+      console.error(err);
       callback(err.error);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {

@@ -187,33 +187,34 @@ const sendReminders = (timePeriod, callback) => {
     } else {
       // Get all users based on time
       database.getUsersByTime(timeOfDay, users => {
-        if (users.length === 0) {
+        if (users && users.length === 0) {
           callback({ failure: false, noUsersAtTime: timeOfDay });
-        }
-        for (let i = 0; i < users.length; i++) {
-          if (users[i].habit === undefined) {
-            console.log('User hasn\'t told us their habit');
-            console.log('Looking for next user');
-          } else {
+        } else {
+          for (let i = 0; i < users.length; i++) {
+            if (users[i].habit === undefined) {
+              console.log('User hasn\'t told us their habit');
+              console.log('Looking for next user');
+            } else {
 
-            console.log('Sending ' + timeOfDay + ' reminder to user ' + users[i].fbid);
-            FB.newMessage(users[i].fbid,
-              Bot.createQuickReply(
-                'Hey, after \'' + Bot.convertToFriendlyName(users[i].habitContext) + '\' have you completed your daily ' + Bot.convertToFriendlyName(users[i].habit) + '?',
-                quickReplyActions
-              ),
-              (msg, data) => {
-                if (data.error) {
-                  console.log('Error sending new fb message');
-                  console.log(msg);
-                  console.log(data);
-                } else {
-                  if (i + 1 === users.length) {
-                    callback({ time: timeOfDay, success: true });
+              console.log('Sending ' + timeOfDay + ' reminder to user ' + users[i].fbid);
+              FB.newMessage(users[i].fbid,
+                Bot.createQuickReply(
+                  'Hey, after \'' + Bot.convertToFriendlyName(users[i].habitContext) + '\' have you completed your daily ' + Bot.convertToFriendlyName(users[i].habit) + '?',
+                  quickReplyActions
+                ),
+                (msg, data) => {
+                  if (data.error) {
+                    console.log('Error sending new fb message');
+                    console.log(msg);
+                    console.log(data);
+                  } else {
+                    if (i + 1 === users.length) {
+                      callback({ time: timeOfDay, success: true });
+                    }
                   }
                 }
-              }
-            );
+              );
+            }
           }
         }
       });
