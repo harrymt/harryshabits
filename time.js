@@ -27,7 +27,7 @@ const properties = () => {
 const value = key => {
   const keys = Object.keys(reminderTimes);
   for (let i = 0; i < keys.length; i++) {
-    if (reminderTimes[keys[i]] === key) {
+    if (reminderTimes[keys[i]] == key) {
       return keys[i];
     }
   }
