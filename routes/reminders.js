@@ -151,7 +151,10 @@ const sendNewDayMessages = (timeOfDay, callback) => {
               console.log('Error sending new fb message');
               console.log(msg);
               console.log(data);
-              callback({ time: timeOfDay, finalMessage: true, success: false });
+
+              if (i + 1 === users.length) {
+                callback({ time: timeOfDay, finalMessage: true, success: false });
+              }
 
             } else {
               if (i + 1 === users.length) {
