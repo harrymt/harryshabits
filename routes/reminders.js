@@ -129,34 +129,39 @@ const sendNewDayMessages = (timeOfDay, callback) => {
     for (let i = 0; i < users.length; i++) {
       if (users.length === 0) {
         callback({ failure: false, noUsersAtTime: timeOfDay });
-      }
-      console.log('Sending final nightime messages');
-      // Reset snooze time
-      const userData = users[i];
-      userData.snoozedReminderTime = users[i].reminderTime;
+      } else {
 
-      // Reset number of snoozes today
-      userData.snoozesToday = 0;
+        console.log('Sending final nightime messages');
+        // Reset snooze time
+        const userData = users[i];
+        userData.snoozedReminderTime = users[i].reminderTime;
 
-      // Reset users streak
-      userData.streak = 0;
+        // Reset number of snoozes today
+        userData.snoozesToday = 0;
 
-      database.updateUser(userData, () => {
-        FB.newMessage(users[i].fbid, {
-          text: 'You haven\'t logged any time today. Try again tomorrow.'
-        },
-        (msg, data) => {
-          if (data.error) {
-            console.log('Error sending new fb message');
-            console.log(msg);
-            console.log(data);
-          } else {
-            if (i + 1 === users.length) {
-              callback({ time: timeOfDay, finalMessage: true, success: true });
+        // Reset users streak
+        userData.streak = 0;
+
+        database.updateUser(userData, () => {
+          FB.newMessage(users[i].fbid, {
+            text: 'You haven\'t logged any time today. Try again tomorrow.'
+          },
+          (msg, data) => {
+            if (data.error) {
+              console.log('Error sending new fb message');
+              console.log(msg);
+              console.log(data);
+              callback({ time: timeOfDay, finalMessage: true, success: false });
+
+            } else {
+              if (i + 1 === users.length) {
+                callback({ time: timeOfDay, finalMessage: true, success: true });
+              }
             }
-          }
+          });
         });
-      });
+
+      }
     }
   });
 };
