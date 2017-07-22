@@ -26,6 +26,7 @@ const decideOnReminder = (override, callback) => {
     ];
   }
 
+
   if (timeOfDay === 'NEW_DAY') {
     console.log('Time is new day');
 
@@ -33,7 +34,7 @@ const decideOnReminder = (override, callback) => {
     database.getGlobals(g => {
       g.remainingDays--;
       console.log('Decrementing remaining days to ' + g.remainingDays);
-      if (g.remainingDays == 0) {
+      if (g.remainingDays <= 0) {
         database.updateGlobals(g, globals => {
           // Send out end of study messages
           sendEndOfStudyMessages(result => {
@@ -54,9 +55,7 @@ const decideOnReminder = (override, callback) => {
         });
       }
     });
-  }
-
-  if (timeOfDay === null) {
+  } else if (timeOfDay === null) {
     // Not time to send reminders
     console.log('Not time to send reminders... time: ' + Time.hour() + ' date: ' + (new Date()).toUTCString());
     console.log('Reminder times are: ' + JSON.stringify(Time.reminderTimes));
@@ -125,7 +124,11 @@ const sendEndOfStudyMessages = callback => {
 };
 
 const sendNewDayMessages = (timeOfDay, callback) => {
+  console.log('Start of sendNewDayMessages');
   database.getUsers(users => {
+
+
+    // console.log(users.length, users);
     for (let i = 0; i < users.length; i++) {
       if (users.length === 0) {
         callback({ failure: false, noUsersAtTime: timeOfDay });
@@ -141,6 +144,7 @@ const sendNewDayMessages = (timeOfDay, callback) => {
 
         // Reset users streak
         userData.streak = 0;
+
 
         database.updateUser(userData, () => {
           FB.newMessage(users[i].fbid, {
@@ -175,11 +179,13 @@ const sendNewDayMessages = (timeOfDay, callback) => {
  */
 const sendReminders = (timePeriod, callback) => {
 
+
   decideOnReminder(timePeriod, (timeOfDay, quickReplyActions) => {
     if (timeOfDay === null) {
       callback({ failure: false, notTimeToSendReminders: true });
       return;
     }
+
 
     if (process.env.NODE_ENV !== 'production') {
       // Load the .env file, that sets process.env.
@@ -191,6 +197,7 @@ const sendReminders = (timePeriod, callback) => {
     if (timeOfDay === 'NEW_DAY') {
       sendNewDayMessages(timeOfDay, cb => {
         callback(cb);
+        return;
       });
     } else {
       // Get all users based on time

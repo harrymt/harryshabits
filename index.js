@@ -48,9 +48,8 @@
       res.send('Invalid secret.');
       return;
     }
-
     if (req.params.timeOfDay) {
-    console.log('Time of day: ' + req.params.timeOfDay);
+      console.log('Time of day: ' + req.params.timeOfDay);
       require('./routes/reminders').sendReminders(req.params.timeOfDay, success => {
         console.log(success);
       });

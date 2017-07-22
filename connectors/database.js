@@ -273,7 +273,6 @@ const updateUser = (user, callback) => {
     delete user.fbid;
   }
   console.log('Updating user...');
-  console.log(user);
   let sql = 'update users set ';
   Object.keys(user).forEach((key, i) => {
     if (user[key] === null) {
