@@ -725,7 +725,7 @@ const read = function (sender, message, reply) {
     if (message.quick_reply === undefined) {
       if (message.text && user.expectingAge) {
         user.expectingAge = false;
-        user.age = message.text;
+        user.age = message.text.split("'").join("").split("\"").join("");
 
         // Save user information to datastore
         database.updateUser(user, () => {
@@ -733,7 +733,7 @@ const read = function (sender, message, reply) {
         });
       } else if (message.text && user.expectingPreviousHabits) {
         user.expectingPreviousHabits = false;
-        user.previousHabits = message.text;
+        user.previousHabits = message.text.split("'").join("").split("\"").join("");
 
         // Save user information to datastore
         database.updateUser(user, () => {
@@ -741,7 +741,7 @@ const read = function (sender, message, reply) {
         });
       } else if (message.text && user.expectingHabitContext) {
         user.expectingHabitContext = false;
-        user.habitContext = message.text;
+        user.habitContext = message.text.split("'").join("").split("\"").join("");
 
         // Auto assign users a modality.
         autoAssignModality(mode => {
@@ -754,7 +754,7 @@ const read = function (sender, message, reply) {
         });
       } else if (message.text && user.expectingContactDetails) {
         user.expectingContactDetails = false;
-        user.email = message.text;
+        user.email = message.text.split("'").join("").split("\"").join("");
 
         // Save user information to datastore
         database.updateUser(user, () => {
@@ -763,7 +763,7 @@ const read = function (sender, message, reply) {
 
       } else if (message.text && user.expectingMoreFeedback) {
         user.expectingMoreFeedback = false;
-        user.moreFeedback = message.text;
+        user.moreFeedback = message.text.split("'").join("").split("\"").join("");
 
         // Save user information to datastore
         database.updateUser(user, () => {
