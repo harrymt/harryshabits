@@ -1078,7 +1078,6 @@ const read = function (sender, message, reply) {
                     type: 'web_url',
                     url: rewardURL,
                     title: 'Open Reward',
-                    messenger_extensions: true,
                     webview_height_ratio: 'compact'
                   }]
                 }
