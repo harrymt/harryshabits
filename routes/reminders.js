@@ -142,32 +142,25 @@ const sendNewDayMessages = (timeOfDay, callback) => {
         // Reset number of snoozes today
         userData.snoozesToday = 0;
 
-        // Reset users streak
-        userData.streak = 0;
-
-
-        database.updateUser(userData, () => {
-          FB.newMessage(users[i].fbid, {
-            text: 'You haven\'t logged any time today. Try again tomorrow.'
-          },
-          (msg, data) => {
-            if (data.error) {
-              console.log('Error sending new fb message');
-              console.log(msg);
-              console.log(data);
-
+        database.hasUserCompletedHabit(users[i], hasCompletedHabit => {
+          if (hasCompletedHabit) {
+            database.updateUser(userData, () => {
+              console.log('User ' + users[i].fbid + ' has completed their habit');
               if (i + 1 === users.length) {
                 callback({ time: timeOfDay, finalMessage: true, success: false });
               }
+            });
+          } else {
+            // Reset users streak
+            userData.streak = 0;
 
-            } else {
+            database.updateUser(userData, () => {
               if (i + 1 === users.length) {
-                callback({ time: timeOfDay, finalMessage: true, success: true });
+                callback({ time: timeOfDay, finalMessage: true, success: false });
               }
-            }
-          });
+            });
+          }
         });
-
       }
     }
   });
@@ -241,5 +234,6 @@ const sendReminders = (timePeriod, callback) => {
 
 module.exports = {
   sendReminders,
-  sendEndOfStudyMessages
+  sendEndOfStudyMessages,
+  sendNewDayMessages
 };

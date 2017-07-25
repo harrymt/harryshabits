@@ -226,7 +226,7 @@ const updateGlobals = (globals, callback) => {
 
 const hasUserCompletedHabit = (user, callback) => {
   const today = (new Date()).toUTCString().slice(5, -13); // Save date;
-  db.query("select count(*) from habits where \"day\"='" + today + "' and \"fbid\"='" + user.fbid + "';", (err, res) => {
+  db.query("select count(*) from habits where \"day\" like '" + today + "' and \"fbid\"='" + user.fbid + "';", (err, res) => {
    if (err) {
       console.error(err);
       callback(err.error);
