@@ -8,7 +8,7 @@
 
 Tracks habits and gives you rewards from 3 different modalities.
 
-**[<img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" width="200">](https://m.me/2278578462368010)**
+**[<img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" width="200">](https://m.me/harryshabits/)**
 
 
 #### Build
