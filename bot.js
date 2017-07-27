@@ -1423,7 +1423,7 @@ function autoAssignModality(callback) {
   database.getAllModalities(modalities => {
     const lowest = {
       amount: 999999999,
-      mode: ''
+      mode: 'VISUAL_AND_SOUND'
     };
 
     for (const mode in modalities) {
