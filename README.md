@@ -37,8 +37,7 @@ EMAIL_PASS=<your email password>
 
 #### Deployment
 
-- `npm run deploy`
-- Done via heroku instead of [Now.Sh](https://zeit.co/docs) or Google App Engine.
+- `npm run deploy` (to deploy to heroku) 
 
 
 #### Attribution
