@@ -10,29 +10,23 @@ Tracks habits and gives you rewards from 3 different modalities.
 
 **[<img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" width="200">](https://m.me/2278578462368010)**
 
+#### Setup
+
+- Heroku
+  - Deploy
+  - Install postgres addon
+- Facebook Messenger
+  - Create page and get page id
+  - Generate access token
+  - [Whitelist your domain](https://developers.facebook.com/docs/messenger-platform/webview/extensions)
+  - Add a [Get Started Button](https://developers.facebook.com/docs/messenger-platform/messenger-profile/get-started-button)
+- `mv .env.example .example` and edit the values
+
 
 #### Build
 
-- Create a environment variables file called `.env` described below
 - `npm install`
 - `npm start`
-
-#### .env file
-
-- Create a `.env` file with: (also add these variables to Travis-CI and Heroku)
-
-```
-NODE_ENV=development
-FB_PAGE_TOKEN=<your fb page token here>
-FB_VERIFY_TOKEN=<verify token>
-USER_ID=<user id>
-CRON_SECRET=<secret phrase>
-EMAIL_ID=<your email address for data backups and alerts>
-EMAIL_PASS=<your email password>
-```
-
-- Note you will have to manually send a curl to [whitelist your domain](https://developers.facebook.com/docs/messenger-platform/webview/extensions).
-- Note you will have to manually create a [Get Started Button](https://developers.facebook.com/docs/messenger-platform/messenger-profile/get-started-button)
 
 
 #### Deployment
