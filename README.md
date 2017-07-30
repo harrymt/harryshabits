@@ -8,7 +8,7 @@
 
 Tracks habits and gives you rewards from 3 different modalities.
 
-**[<img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" width="200">](https://m.me/2278578462368010)**
+**[<img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" width="200">](https://m.me/harryshabits/)**
 
 #### Setup
 
@@ -31,8 +31,7 @@ Tracks habits and gives you rewards from 3 different modalities.
 
 #### Deployment
 
-- `npm run deploy`
-- Done via heroku instead of [Now.Sh](https://zeit.co/docs) or Google App Engine.
+- `npm run deploy` (to deploy to heroku) 
 
 
 #### Attribution
