@@ -73,8 +73,27 @@
       width: 60%;
     }
 
+    .img-inline {
+      display: flex;
+      left: -25%;
+      position: relative;
+      padding-bottom: 25px;
+      padding-top: 10px;
+      width: 70%;
+    }
+
+    .img-inline img {
+      height: 100%;
+      width: 100%;
+      padding: 15px;
+      max-width: 100%;
+    }
+
     .facebook {
-      width: 95%;
+      width: 100%;
+      max-width: 200%;
+      padding-top: 20px;
+      padding-bottom: 20px;
     }
 
     h1 {
@@ -83,13 +102,14 @@
     }
 
     h2 {
-      padding-top: 15px;
+      padding-top: 45px;
     }
 
     footer {
       display: block;
       line-height: 1.8em;
-      padding-top: 10px;
+      padding-top: 15px;
+      padding-bottom: 20px;
       text-align: center;
       font-size: 22px;
     }
@@ -118,6 +138,22 @@
         font-size: 21px;
       }
 
+      .img-inline {
+        display: block;
+        left: 0;
+        width: 70%;
+        margin: 0 auto;
+      }
+
+      .img-inline img {
+        padding: 0;
+        padding-bottom: 30px;
+      }
+
+      .img-inline img:last {
+        display: none;
+      }
+
       .container {
         margin: 0 5%;
         width: 90%;
@@ -131,18 +167,27 @@
     <h1><b>Harry's Habits</b><br>the habit tracking chatbot</h1>
 
     <p>Harry's Habits is a chatbot to help you form new healthy habits. It is part of a study that looks at habit formation.</p>
+    <div class='img-inline'>
+      <img src="media/1.png" alt="Example 1">
+      <img src="media/2.png" alt="Example 2">
+    </div>
     <p>If you take part, the chatbot will motivate you to form one of these habits: stretching, press ups, the plank, reading, writing or meditation. At the end of the study you will be asked some questions about your habit and the process. <b>Press the button below to get started</b>.</p>
     <a href='https://m.me/harryshabits'>
       <img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" class='facebook' alt="View On Messenger">
     </a>
     <h2>About the Study</h2>
     <p>This study looks at how <a href='https://messenger.fb.com/'>Chatbots</a> can help people form new healthy habits.</p>
+    <div class='img-inline'>
+      <img src="media/3.png" alt="Example 3">
+      <img src="media/4.png" alt="Example 4">
+    </div>
+
     <p>The study lasts for 1 month, with 3 weeks of chatbot interaction followed by 1 week without interaction, finishing with a habit formation survey.</p>
     <p>The study is conducted by the <a href='//www.bris.ac.uk/'>University of Bristol</a> and has been approved by the University of Bristol ethics committee (reference id: 54701).</p>
     <footer>
       <a href='//github.com/harrymt/harryshabits'>GitHub</a>
       <a href='privacy-policy.html'>Privacy Policy</a>
-      <a href='media/media.zip'>Media</a>
+      <a href='media/media.zip'>Download Media</a>
       <a href='//harrymt.com'>Harry Mumford-Turner</a>
     </footer>
   </div>
