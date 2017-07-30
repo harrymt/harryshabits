@@ -1,8 +1,8 @@
 {
-  "name": "harrys-habits-messenger-bot",
+  "name": "harrys-habits",
   "name_friendly": "Harry's Habits",
   "version": "1.0.104",
-  "description": "A Facebook Messenger Chatbot that supports habit formation.",
+  "description": "A Facebook Messenger Chatbot to help you form healthy habits.",
   "main": "index.js",
   "repository": {
     "type": "git",
