@@ -4,7 +4,9 @@
   'use strict';
 
   const express = require('express');
+  const helmet = require('helmet');
   const app = express();
+  app.use(helmet());
   const database = require('./connectors/database');
 
   // Load the .env file, that sets process.env.
