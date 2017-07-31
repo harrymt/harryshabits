@@ -34,5 +34,5 @@ const srcToDist = (src, dist) => {
 };
 
 module.exports = {
-  srcToDist,
+  srcToDist
 };

@@ -35,8 +35,7 @@ const value = key => {
 };
 
 /**
- * Gets time in hour format.
- * In BST TODO change this to users timezone
+ * Gets time in hour format. (hard coded to BST)
  */
 const hour = () => {
   const now = new Date();
@@ -98,7 +97,7 @@ const nextPeriodFromNow = () => {
 };
 
 /**
- * Gets the time period as string.
+ * Gets the time as string.
  */
 const period = theHour => {
   if (!theHour) {

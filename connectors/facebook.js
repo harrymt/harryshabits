@@ -16,7 +16,7 @@ const newRequest = request.defaults({
 });
 
 module.exports = {
-  newMessage(recipientId, msg, cb) {
+  newMessage(recipientId, msg, callback) {
     const opts = {
       form: {
         recipient: {
@@ -27,11 +27,11 @@ module.exports = {
     };
 
     newRequest(opts, (err, resp, data) => {
-      if (cb) {
+      if (callback) {
         if (data) {
-          cb((err || data.error) && data.error.message, data);
+          return callback((err || data.error) && data.error.message, data);
         } else {
-          cb(err, data);
+          return callback(err, data);
         }
       }
     });

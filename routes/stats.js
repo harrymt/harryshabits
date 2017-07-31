@@ -18,10 +18,10 @@ function fbMessageUsers(users, globalStats, callback) {
         console.log('Error sending new fb message');
         console.log(msg); // Log received info
         console.log(data); // Log recieved info
-        callback(false);
+        return callback(false);
       }
       if (users.length === (i + 1)) {
-        callback(true);
+        return callback(true);
       }
     });
   }
@@ -42,7 +42,7 @@ module.exports = {
       const stats = 'There are ' + nPeople + ' people using Harrys Habits rn!';
 
       fbMessageUsers(users, stats, function(isError) {
-        callback({
+        return callback({
           success: isError, data: stats
         });
       });

@@ -35,14 +35,14 @@ const removeUserByFbid = (fbid, callback) => {
   db.query("delete from users where \"fbid\"='" + fbid + "';", (err, res) => {
     if (err) {
         console.error(err);
-        callback(err.error);
+        return callback(err.error);
       } else {
         if (res.rowCount === 0) {
           console.log('No user found with fbid ' + fbid);
-          callback(false);
+          return callback(false);
         } else {
-          console.log('Successfully delete user fbid ' + fbid);
-          callback(true);
+          console.log('Successfully deleted user fbid ' + fbid);
+          return callback(true);
         }
       }
   });
