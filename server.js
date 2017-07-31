@@ -13,7 +13,7 @@
   if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load();
 
-    app.get('/sass', function (req, res) {
+    app.get('/sass', (req, res) => {
       require('./routes/process-sass').srcToDist('reward-style', 'reward-style');
       require('./routes/process-sass').srcToDist('main', 'main');
       const r = (new Date()).toUTCString() + ' | Processed sass files.';
@@ -21,11 +21,6 @@
       res.send(`<h1>${r}<h1>`);
     });
   }
-
-  database.getGlobals(d => {
-    console.log(JSON.stringify(d));
-  });
-
 
   // Start server
   const serverInstance = app.listen(process.env.PORT, () => {
@@ -76,11 +71,10 @@
   // Index page
   app.get('/', (req, res) => {
     res.render('index', {
-      version: require('./package.json').version,
-      name: require('./package.json').name_friendly
+      version: process.env.npm_package_version,
+      name: process.env.npm_package_name_friendly
     });
   });
-
 
   /**
    * Facebook Messenger webhook, to receive messages via Messenger.
@@ -108,7 +102,6 @@
             }
           });
           } else {
-
 
           if (entry.message && entry.message.quick_reply) {
             console.log('QR> ' + entry.message.quick_reply.payload);
