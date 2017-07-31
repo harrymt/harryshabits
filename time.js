@@ -77,9 +77,9 @@ const nextPeriodFromNow = () => {
     return value(t);
   }
 
-  // No next period if we reach these two
+  // Next day if we reach these two
   if (t === reminderTimes.NEW_DAY || t === reminderTimes.NIGHT) {
-    return null;
+    return reminderTimes.EARLY_MORNING;
   }
 
   const theTimes = properties();
