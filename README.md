@@ -23,7 +23,7 @@ Harry's Habits is a Facebook Messenger chatbot to help you form new healthy habi
 
 ### Setup
 
-#### PaaS
+#### Platform as a Service (PaaS)
 
 - `git clone https://github.com/harrymt/harryshabits.git` then deploy to PaaS, e.g. `git push heroku master`
 - *PaaS providers for deployment:*
