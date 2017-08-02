@@ -4,7 +4,7 @@
 
 ## Harry's Habits - the habit tracking chatbot
 
-[<img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" width="200">](https://m.me/harryshabits/)
+[<img src="https://raw.githubusercontent.com/fbsamples/messenger-bot-samples/master/docs/assets/ViewMessenger.png" width="250">](https://m.me/harryshabits/)
 
 Harry's Habits is a Facebook Messenger chatbot to help you form new healthy habits (part of my [MSc thesis](https://www.harrymt.com)).
 
