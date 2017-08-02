@@ -981,7 +981,7 @@ const read = function (sender, message, reply) {
 
         let snoozeTimeChange = null;
         if (user.totalNumberOfSnoozes % snoozeAmountReminderTrigger === 0) {
-          const newReminderTime = getNextReminderTime(user.reminderTime);
+          const newReminderTime = Time.getNextReminderTime(user.reminderTime);
           // Send reminder to user asking them if they want to change their snooze time.
           snoozeTimeChange = {
             text: 'I have noticed that you have been snoozing a lot. Would you like me to change your reminder time to ' + convertToFriendlyName(newReminderTime) + ' (from ' + convertToFriendlyName(user.reminderTime) + ')?\nWon\'t affect today\'s snoozes.',
@@ -1364,17 +1364,6 @@ const read = function (sender, message, reply) {
   });
 };
 
-function getNextReminderTime(reminderTime) {
-  const timePeriod = reminderTime.split('_')[0];
-
-  if (String(reminderTime).includes('MORNING')) {
-    return timePeriod + '_' + 'AFTERNOON';
-  } else if (String(reminderTime).includes('AFTERNOON')) {
-    return timePeriod + '_' + 'EVENING';
-  }
-  // Can't snooze if evening
-  return null;
-}
 
 // Unused
 // function getDifferenceInTimes(baseTime, extendedTime) {

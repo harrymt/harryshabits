@@ -77,9 +77,9 @@ const nextPeriodFromNow = () => {
     return value(t);
   }
 
-  // Next day if we reach these two
+  // Can't snooze if we reach these two
   if (t === reminderTimes.NEW_DAY || t === reminderTimes.NIGHT) {
-    return reminderTimes.EARLY_MORNING;
+    return null;
   }
 
   const theTimes = properties();
@@ -107,9 +107,26 @@ const period = theHour => {
   return value(theHour);
 };
 
+/**
+ * Get the next reminder time for snoozed reminders.
+ * MORNING -> AFTERNOON -> EVENING -> MORNING
+ */
+const getNextReminderTime = reminderTime => {
+  const timePeriod = reminderTime.split('_')[0];
+
+  if (String(reminderTime).includes('MORNING')) {
+    return timePeriod + '_AFTERNOON';
+  } else if (String(reminderTime).includes('AFTERNOON')) {
+    return timePeriod + '_EVENING';
+  }
+
+  return 'EARLY_MORNING'; // If its the night or eve then set to next day
+};
+
 module.exports = {
   hour,
   period,
   nextPeriodFromNow,
-  reminderTimes
+  reminderTimes,
+  getNextReminderTime
 };
