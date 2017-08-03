@@ -13,7 +13,6 @@ const decideOnReminder = (override, callback) => {
     'Not yet'
   ];
 
-  // Decide what period of the day it is
   const timeOfDay = Time.period(override);
 
   console.log(timeOfDay, 'override is : ' + override);
@@ -25,7 +24,6 @@ const decideOnReminder = (override, callback) => {
       'Not today'
     ];
   }
-
 
   if (timeOfDay === 'NEW_DAY') {
     console.log('Time is new day');
@@ -43,15 +41,15 @@ const decideOnReminder = (override, callback) => {
             } else {
               console.log('We couldn\'t send end of study messages');
             }
-            callback(null);
+            return callback(null);
           });
           console.log('Remaining days : ' + globals.remainingDays);
-          callback(timeOfDay, quickReplyActions);
+          return callback(timeOfDay, quickReplyActions);
         });
       } else {
         database.updateGlobals(g, globals => {
           console.log('Remaining days : ' + globals.remainingDays);
-          callback(timeOfDay, quickReplyActions);
+          return callback(timeOfDay, quickReplyActions);
         });
       }
     });
@@ -59,9 +57,9 @@ const decideOnReminder = (override, callback) => {
     // Not time to send reminders
     console.log('Not time to send reminders... time: ' + Time.hour() + ' date: ' + (new Date()).toUTCString());
     console.log('Reminder times are: ' + JSON.stringify(Time.reminderTimes));
-    callback(null);
+    return callback(null);
   } else {
-    callback(timeOfDay, quickReplyActions);
+    return callback(timeOfDay, quickReplyActions);
   }
 };
 
@@ -127,13 +125,10 @@ const sendNewDayMessages = (timeOfDay, callback) => {
   console.log('Start of sendNewDayMessages');
   database.getUsers(users => {
 
-
-    // console.log(users.length, users);
     for (let i = 0; i < users.length; i++) {
       if (users.length === 0) {
-        callback({ failure: false, noUsersAtTime: timeOfDay });
+        return callback({ failure: false, noUsersAtTime: timeOfDay });
       } else {
-
         console.log('Sending final nightime messages');
         // Reset snooze time
         const userData = users[i];
@@ -147,7 +142,7 @@ const sendNewDayMessages = (timeOfDay, callback) => {
             database.updateUser(userData, () => {
               console.log('User ' + users[i].fbid + ' has completed their habit');
               if (i + 1 === users.length) {
-                callback({ time: timeOfDay, finalMessage: true, success: false });
+                return callback({ time: timeOfDay, finalMessage: true, success: false });
               }
             });
           } else {
@@ -156,7 +151,7 @@ const sendNewDayMessages = (timeOfDay, callback) => {
 
             database.updateUser(userData, () => {
               if (i + 1 === users.length) {
-                callback({ time: timeOfDay, finalMessage: true, success: false });
+                return callback({ time: timeOfDay, finalMessage: true, success: false });
               }
             });
           }
@@ -172,13 +167,11 @@ const sendNewDayMessages = (timeOfDay, callback) => {
  */
 const sendReminders = (timePeriod, callback) => {
 
-
   decideOnReminder(timePeriod, (timeOfDay, quickReplyActions) => {
     if (timeOfDay === null) {
-      callback({ failure: false, notTimeToSendReminders: true });
+      return callback({ failure: false, notTimeToSendReminders: true });
       return;
     }
-
 
     if (process.env.NODE_ENV !== 'production') {
       // Load the .env file, that sets process.env.
@@ -189,14 +182,13 @@ const sendReminders = (timePeriod, callback) => {
 
     if (timeOfDay === 'NEW_DAY') {
       sendNewDayMessages(timeOfDay, cb => {
-        callback(cb);
-        return;
+        return callback(cb);
       });
     } else {
       // Get all users based on time
       database.getUsersByTime(timeOfDay, users => {
         if (users && users.length === 0) {
-          callback({ failure: false, noUsersAtTime: timeOfDay });
+          return callback({ failure: false, noUsersAtTime: timeOfDay });
         } else {
           for (let i = 0; i < users.length; i++) {
             if (users[i].habit === undefined) {
@@ -217,7 +209,7 @@ const sendReminders = (timePeriod, callback) => {
                     console.log(data);
                   } else {
                     if (i + 1 === users.length) {
-                      callback({ time: timeOfDay, success: true });
+                      return callback({ time: timeOfDay, success: true });
                     }
                   }
                 }
@@ -226,9 +218,7 @@ const sendReminders = (timePeriod, callback) => {
           }
         }
       });
-
     }
-
   });
 };
 
