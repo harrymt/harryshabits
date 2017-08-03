@@ -298,15 +298,16 @@ const getAllModalities = callback => {
     NONE: 0
   };
 
-  db.query('select count(\"modality\"), "modality" from users group by "modality";', (err, res) => {
+  db.query('select count(NULLIF(\"modality\", \'\')), "modality" from users group by "modality";', (err, res) => {
     if (err) {
       console.error(err);
       return callback(err.error);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
-        modalities[res.rows[i].modality] = res.rows[i].count;
+        if (res.rows[i].modality !== '') { // Ignore empty modalities
+          modalities[res.rows[i].modality] = res.rows[i].count;
+        }
       }
-
       return callback(modalities);
     }
   });
