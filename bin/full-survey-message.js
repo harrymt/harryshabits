@@ -1,4 +1,3 @@
-
 'use strict';
 
 const Bot = require('../bot');
@@ -7,6 +6,7 @@ const database = require('../connectors/database');
 
 const startFullSurvey = callback => {
   const endOfStudy = {
+    text: 'Hello again! I am back, it\'s been a week.'
   };
 
   const analysisQuestion = {
@@ -24,6 +24,9 @@ const startFullSurvey = callback => {
     ]
   };
 
+  // Only gets users that have finished the setup
+  // database.getUsers(users => {
+    const users = [{ fbid: process.env.USER_ID }];
     for (let i = 0; i < users.length; i++) {
       console.log('Sending full survey to user ' + users[i].fbid);
 
@@ -52,6 +55,7 @@ const startFullSurvey = callback => {
         }
       });
     }
+  // });
 };
 
 module.exports = {
