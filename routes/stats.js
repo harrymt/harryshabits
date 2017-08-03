@@ -18,7 +18,6 @@ function fbMessageUsers(users, globalStats, callback) {
         console.log('Error sending new fb message');
         console.log(msg); // Log received info
         console.log(data); // Log recieved info
-        return callback(false);
       }
       if (users.length === (i + 1)) {
         return callback(true);
@@ -30,23 +29,20 @@ function fbMessageUsers(users, globalStats, callback) {
 /**
  * Sends statistics about group.
  * Returns your streak and your group rank.
- *
  */
 module.exports = {
   sendStats: callback => {
-
     database.getUsersByStreak(users => {
       const nPeople = users.length;
       console.log(users);
       console.log(users.length);
       const stats = 'There are ' + nPeople + ' people using Harrys Habits rn!';
 
-      fbMessageUsers(users, stats, function(isError) {
+      fbMessageUsers(users, stats, isError => {
         return callback({
           success: isError, data: stats
         });
       });
     });
-
   }
 };

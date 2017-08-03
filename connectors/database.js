@@ -15,15 +15,6 @@ const db = new pg.Client({
   connectionString: process.env.DATABASE_URL
 });
 
-// TODO may have to have this inside of every function call below
-// Yes do it!s
-// e.g.
-// db.connect((err, client) => {
-//   if (err) {
-//     throw err;
-//   }
-//   // client.query()...
-// });
 db.connect(err => {
   if (err) {
     console.log('Err connecting to db: ' + err);

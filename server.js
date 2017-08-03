@@ -5,9 +5,18 @@
 
   const express = require('express');
   const helmet = require('helmet');
+
+  const FB = require('./connectors/facebook');
+  const database = require('./connectors/database');
+  const Bot = require('./bot');
+
   const app = express();
   app.use(helmet());
-  const database = require('./connectors/database');
+
+  // View engine setup.
+  app.set('views', './views');
+  app.set('view engine', 'pug');
+  app.use(require('body-parser').json());
 
   // Load the .env file, that sets process.env.
   if (process.env.NODE_ENV !== 'production') {
@@ -27,15 +36,6 @@
     console.log('> Running on port', process.env.PORT);
   });
 
-  const FB = require('./connectors/facebook');
-  const Bot = require('./bot');
-  const Time = require('./time');
-
-  // View engine setup.
-  app.set('views', './views');
-  app.set('view engine', 'pug');
-
-  app.use(require('body-parser').json());
   app.use(express.static('./public'));
   app.use('/rewards', require('./routes/rewards'));
   app.use('/email', require('./routes/email'));
@@ -63,7 +63,7 @@
       return;
     }
     res.send('deprecated');
-    // require('./routes/stats').sendStats(success => {
+    // Enable me // require('./routes/stats').sendStats(success => {
       // res.send(success);
     // });
   });
@@ -101,7 +101,7 @@
               console.log(msg, data);
             }
           });
-          } else {
+        } else {
 
           if (entry.message && entry.message.quick_reply) {
             console.log('QR> ' + entry.message.quick_reply.payload);
@@ -114,54 +114,23 @@
             console.log('-- from bot to user vv --');
             console.log(JSON.stringify(reply));
 
-            // Send message to that user
-            FB.newMessage(senderFbid, reply, (msg, data) => {
-              if (data && data.error) {
-                console.log('Error sending new fb message');
-                console.log(msg); // Log received info
-                console.log(data); // Log recieved info
-              } else if (typeof anotherReply !== 'undefined' && anotherReply !== null) {
-                // Check if we want to double message the user
-                setTimeout(() => {
-                  FB.newMessage(senderFbid, anotherReply, (msg, data) => {
-                    if (data && data.error) {
-                      console.log('Error sending new second reply fb message');
-                      console.log(msg); // Log received info
-                      console.log(data); // Log recieved info
-                      // TODO there is definitely a better way todo this
-                    } else if (typeof thirdReply !== 'undefined' && thirdReply !== null) {
-                      setTimeout(() => {
-                        FB.newMessage(senderFbid, thirdReply, (msg, data) => {
-                          if (data && data.error) {
-                            console.log('Error sending new third reply fb message');
-                            console.log(msg); // Log received info
-                            console.log(data); // Log recieved info
-                          } else if (typeof fourthReply !== 'undefined' && fourthReply !== null) {
-                            setTimeout(() => {
-                              FB.newMessage(senderFbid, fourthReply, (msg, data) => {
-                                if (data && data.error) {
-                                  console.log('Error sending new third reply fb message');
-                                  console.log(msg); // Log received info
-                                  console.log(data); // Log recieved info
-                                } else if (typeof fifthReply !== 'undefined' && fifthReply !== null) {
-                                  setTimeout(() => {
-                                    FB.newMessage(senderFbid, fifthReply, (msg, data) => {
-                                      if (data && data.error) {
-                                        console.log('Error sending new third reply fb message');
-                                        console.log(msg); // Log received info
-                                        console.log(data); // Log recieved info
-                                      }
-                                    });
-                                  }, 4000);
-                                }
-                              });
-                            }, 4000);
+            FB.send(senderFbid, reply, 4000, () => {
+              if (typeof anotherReply !== 'undefined' && anotherReply !== null) {
+                FB.send(senderFbid, anotherReply, 4000, () => {
+                  if (typeof thirdReply !== 'undefined' && thirdReply !== null) {
+                    FB.send(senderFbid, thirdReply, 4000, () => {
+                      if (typeof fourthReply !== 'undefined' && fourthReply !== null) {
+                        FB.send(senderFbid, thirdReply, 4000, () => {
+                          if (typeof fifthReply !== 'undefined' && fifthReply !== null) {
+                            FB.send(senderFbid, fifthReply, 4000, () => {
+                              console.log('Sent all messages to user');
+                            });
                           }
                         });
-                      }, 3000);
-                    }
-                  });
-                }, 4000); // 4 second gap between messages
+                      }
+                    });
+                  }
+                });
               }
             });
           });
@@ -193,3 +162,5 @@
     }
   };
 })();
+
+
