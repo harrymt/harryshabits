@@ -60,6 +60,17 @@
     }
   });
 
+  app.get('/finalmsg', (req, res) => {
+    if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
+      res.send('Invalid secret.');
+      return;
+    }
+
+    require('./bin/full-survey-message').startFullSurvey(success => {
+      res.send(success);
+    });
+  });
+
   app.get('/stats', (req, res) => {
     if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
       res.send('Invalid secret.');

@@ -7,7 +7,6 @@ const database = require('../connectors/database');
 
 const startFullSurvey = callback => {
   const endOfStudy = {
-    text: 'Hey its me again, its been a week.'
   };
 
   const analysisQuestion = {
@@ -25,7 +24,6 @@ const startFullSurvey = callback => {
     ]
   };
 
-  database.getUsers(users => {
     for (let i = 0; i < users.length; i++) {
       console.log('Sending full survey to user ' + users[i].fbid);
 
@@ -54,7 +52,6 @@ const startFullSurvey = callback => {
         }
       });
     }
-  });
 };
 
 module.exports = {
