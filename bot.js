@@ -431,11 +431,11 @@ function displayModalityQuestion1a(sender, reply) {
     {
       text: 'The rewards helped me form my new habit',
       quick_replies: [
-        createQRItem('Strongly agree', 'SURVEY1_MODALITY_C_STRONGLY_AGREE'),
-        createQRItem('Agree', 'SURVEY1_MODALITY_C_AGREE'),
-        createQRItem('Neither', 'SURVEY1_MODALITY_C_NEITHER'),
-        createQRItem('Disagree', 'SURVEY1_MODALITY_C_DISAGREE'),
-        createQRItem('Strongly disagree', 'SURVEY1_MODALITY_C_STRONGLY_DISAGREE')
+        createQRItem('Strongly agree', 'SURVEY1_MODALITY_A_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY1_MODALITY_A_AGREE'),
+        createQRItem('Neither', 'SURVEY1_MODALITY_A_NEITHER'),
+        createQRItem('Disagree', 'SURVEY1_MODALITY_A_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY1_MODALITY_A_STRONGLY_DISAGREE')
       ]
     }
   );
@@ -461,11 +461,11 @@ function displayModalityQuestion1c(sender, reply) {
     {
       text: 'I found my rewards annoying',
       quick_replies: [
-        createQRItem('Strongly agree', 'SURVEY1_MODALITY_A_STRONGLY_AGREE'),
-        createQRItem('Agree', 'SURVEY1_MODALITY_A_AGREE'),
-        createQRItem('Neither', 'SURVEY1_MODALITY_A_NEITHER'),
-        createQRItem('Disagree', 'SURVEY1_MODALITY_A_DISAGREE'),
-        createQRItem('Strongly disagree', 'SURVEY1_MODALITY_A_STRONGLY_DISAGREE')
+        createQRItem('Strongly agree', 'SURVEY1_MODALITY_C_STRONGLY_AGREE'),
+        createQRItem('Agree', 'SURVEY1_MODALITY_C_AGREE'),
+        createQRItem('Neither', 'SURVEY1_MODALITY_C_NEITHER'),
+        createQRItem('Disagree', 'SURVEY1_MODALITY_C_DISAGREE'),
+        createQRItem('Strongly disagree', 'SURVEY1_MODALITY_C_STRONGLY_DISAGREE')
       ]
     }
   );
