@@ -68,6 +68,15 @@ function displaySettings(user, sender, reply, debug) {
     delete usr.survey1b;
     delete usr.survey1c;
     delete usr.survey1d;
+    delete usr.survey2a;
+    delete usr.survey2b;
+    delete usr.survey2c;
+    delete usr.survey2d;
+    delete usr.survey2h;
+    delete usr.survey2i;
+    delete usr.survey2j;
+    delete usr.survey2k;
+    delete usr.survey2l;
     delete usr.surveyModality1a;
     delete usr.surveyModality1b;
     delete usr.surveyModality1c;
