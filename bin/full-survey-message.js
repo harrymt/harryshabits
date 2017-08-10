@@ -25,8 +25,7 @@ const startFullSurvey = callback => {
   };
 
   // Only gets users that have finished the setup
-  // database.getUsers(users => {
-    const users = [{ fbid: process.env.USER_ID }];
+  database.getUsers(users => {
     for (let i = 0; i < users.length; i++) {
       console.log('Sending full survey to user ' + users[i].fbid);
 
@@ -55,7 +54,7 @@ const startFullSurvey = callback => {
         }
       });
     }
-  // });
+  });
 };
 
 module.exports = {
