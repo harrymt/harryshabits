@@ -94,10 +94,6 @@
       }
       console.log('Sent end of study messages.');
     });
-
-    require('./bin/full-survey-message').startFullSurvey(success => {
-      res.send(success);
-    });
   });
 
 
