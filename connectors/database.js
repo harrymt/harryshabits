@@ -180,7 +180,7 @@ const findOrCreateUser = (fbid, callback) => {
 // Only get users that have finished setup
 const getUsersSurveyOne = callback => {
   let users = [];
-  db.query("SELECT * from users WHERE \"modality\"!='' AND AND \"survey1a\"='' AND \"habitContext\"!='' AND \"snoozedReminderTime\"!='';", (err, res) => {
+  db.query("SELECT * from users WHERE \"modality\"!='' AND \"survey1a\"='' AND \"habitContext\"!='' AND \"snoozedReminderTime\"!='';", (err, res) => {
     if (err) {
       console.error(err);
       callback(null);
