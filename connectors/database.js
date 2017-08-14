@@ -178,6 +178,22 @@ const findOrCreateUser = (fbid, callback) => {
 
 
 // Only get users that have finished setup
+const getUsersSurveyOne = callback => {
+  let users = [];
+  db.query("SELECT * from users WHERE \"modality\"!='' AND AND \"survey1a\"='' AND \"habitContext\"!='' AND \"snoozedReminderTime\"!='';", (err, res) => {
+    if (err) {
+      console.error(err);
+      callback(null);
+    } else {
+      for (let i = 0, len = res.rows.length; i < len; i++) {
+        users.push(res.rows[i]);
+      }
+      callback(users);
+    }
+  });
+};
+
+// Only get users that have finished setup
 const getUsers = callback => {
   let users = [];
   db.query("SELECT * from users WHERE \"modality\"!='' AND \"habitContext\"!='' AND \"snoozedReminderTime\"!='';", (err, res) => {
@@ -357,5 +373,6 @@ module.exports = {
   getGlobals,
   updateGlobals,
   getAllModalities,
-  removeUserByFbid
+  removeUserByFbid,
+  getUsersSurveyOne
 };

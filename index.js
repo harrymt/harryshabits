@@ -60,13 +60,12 @@
     }
   });
 
-  app.get('/survey/:user_fbid', (req, res) => {
+  app.get('/surveyout', (req, res) => {
     if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
       res.send('Invalid secret.');
       return;
     }
 
-    let user_fbid = req.params.user_fbid;
     const theMSG = {
       text: 'Sorry about that, I just got overloaded with people! Here are the questions: My habit is something I do automatically.',
       quick_replies: [
@@ -78,9 +77,7 @@
       ]
     };
 
-    database.find(user_fbid, user => {
-    // database.getUsers(users => {
-      const users = [user];
+    database.getUsersSurveyOne(users => {
       for (let i = 0; i < users.length; i++) {
         console.log('Sending end of study message to user ' + users[i].fbid);
 
