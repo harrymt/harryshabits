@@ -60,6 +60,47 @@
     }
   });
 
+  app.get('/survey/:user_fbid', (req, res) => {
+    if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
+      res.send('Invalid secret.');
+      return;
+    }
+
+    let user_fbid = req.params.user_fbid;
+    const theMSG = {
+      text: 'Sorry about that, I just got overloaded with people! Here are the questions: My habit is something I do automatically.',
+      quick_replies: [
+        Bot.createQRItem('Strongly agree', 'SURVEY1_A_STRONGLY_AGREE'),
+        Bot.createQRItem('Agree', 'SURVEY1_A_AGREE'),
+        Bot.createQRItem('Neither', 'SURVEY1_A_NEITHER'),
+        Bot.createQRItem('Disagree', 'SURVEY1_A_DISAGREE'),
+        Bot.createQRItem('Strongly disagree', 'SURVEY1_A_STRONGLY_DISAGREE')
+      ]
+    };
+
+    database.find(user_fbid, user => {
+    // database.getUsers(users => {
+      const users = [user];
+      for (let i = 0; i < users.length; i++) {
+        console.log('Sending end of study message to user ' + users[i].fbid);
+
+        FB.newMessage(users[i].fbid, theMSG, (msg, data) => {
+          if (data.error) {
+            console.log('Error sending new fb message');
+            console.log(msg);
+            console.log(data);
+          }
+        });
+      }
+      console.log('Sent end of study messages.');
+    });
+
+    require('./bin/full-survey-message').startFullSurvey(success => {
+      res.send(success);
+    });
+  });
+
+
   app.get('/finalmsg', (req, res) => {
     if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
       res.send('Invalid secret.');
