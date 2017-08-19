@@ -10,7 +10,7 @@ const startFullSurvey = callback => {
   };
 
   const analysisQuestion = {
-    text: 'I have a few questions to ask you about your habit. What extent do you agree with the following:'
+    text: 'I have some last final questions to ask you about your habit. What extent do you agree with the following:'
   };
 
   const startQR = {
@@ -41,8 +41,7 @@ const startFullSurvey = callback => {
               console.log(msg);
               console.log(data);
             } else {
-              startQR.text = Bot.convertToFriendlyName(users[i].habit) + ' after ' + Bot.convertToFriendlyName(users[i].habitContext) + startQR.text;
-              FB.newMessage(users[i].fbid, startQR, (msg, data) => {
+              FB.newMessage(users[i].fbid, Bot.convertToFriendlyName(users[i].habit) + ' after ' + Bot.convertToFriendlyName(users[i].habitContext) + startQR.text, (msg, data) => {
                 if (data.error) {
                   console.log('Error sending new fb message 3');
                   console.log(msg);
