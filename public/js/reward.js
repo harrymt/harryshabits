@@ -1,6 +1,5 @@
 /* jslint node: false */
 'use strict';
-// TODO dont know if the jslint node: false is working
 
 /**
  * JS could show the reward with a basic on click handler,

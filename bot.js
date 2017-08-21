@@ -990,7 +990,7 @@ const read = function (sender, message, reply) {
 
         let snoozeTimeChange = null;
         if (user.totalNumberOfSnoozes % snoozeAmountReminderTrigger === 0) {
-          const newReminderTime = getNextReminderTime(user.reminderTime);
+          const newReminderTime = Time.getNextReminderTime(user.reminderTime);
           // Send reminder to user asking them if they want to change their snooze time.
           snoozeTimeChange = {
             text: 'I have noticed that you have been snoozing a lot. Would you like me to change your reminder time to ' + convertToFriendlyName(newReminderTime) + ' (from ' + convertToFriendlyName(user.reminderTime) + ')?\nWon\'t affect today\'s snoozes.',
@@ -1373,52 +1373,6 @@ const read = function (sender, message, reply) {
   });
 };
 
-function getNextReminderTime(reminderTime) {
-  const timePeriod = reminderTime.split('_')[0];
-
-  if (String(reminderTime).includes('MORNING')) {
-    return timePeriod + '_' + 'AFTERNOON';
-  } else if (String(reminderTime).includes('AFTERNOON')) {
-    return timePeriod + '_' + 'EVENING';
-  }
-  // Can't snooze if evening
-  return null;
-}
-
-// Unused
-// function getDifferenceInTimes(baseTime, extendedTime) {
-//   if (baseTime === 'MORNING' && extendedTime === 'MORNING') {
-//     return 0;
-//   } else if (baseTime === 'MORNING' && extendedTime === 'AFTERNOON') {
-//     return 1;
-//   } else if (baseTime === 'MORNING' && extendedTime === 'EVENING') {
-//     return 2;
-//   } else if (baseTime === 'MORNING' && extendedTime === 'NIGHT') {
-//     return 3;
-
-//   } else if (baseTime === 'AFTERNOON' && extendedTime === 'AFTERNOON') {
-//     return 0;
-//   } else if (baseTime === 'AFTERNOON' && extendedTime === 'EVENING') {
-//     return 1;
-//   } else if (baseTime === 'AFTERNOON' && extendedTime === 'NIGHT') {
-//     return 2;
-
-//   } else if (baseTime === 'EVENING' && extendedTime === 'EVENING') {
-//     return 0;
-//   } else if (baseTime === 'EVENING' && extendedTime === 'NIGHT') {
-//     return 1;
-//   } else {
-//     return 0;
-//   }
-// }
-
-//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-}
-
 /**
  * Returns:
  * VISUAL
@@ -1441,7 +1395,7 @@ function autoAssignModality(callback) {
         lowest.mode = mode;
       }
     }
-    callback(lowest.mode);
+    return callback(lowest.mode);
   });
 }
 

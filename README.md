@@ -1,5 +1,5 @@
-[![codebeat badge](https://codebeat.co/badges/458aff9d-8a59-4881-9fe6-0d8e376b9932)](https://codebeat.co/projects/github-com-harrymt-harryshabits-dev)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dee0a3c7a16a4276b47c27751959c6a6)](https://www.codacy.com/app/harrymt/habit-reward-chatbot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=harrymt/habit-reward-chatbot&amp;utm_campaign=Badge_Grade)
+[![codebeat badge](https://codebeat.co/badges/458aff9d-8a59-4881-9fe6-0d8e376b9932)](https://codebeat.co/projects/github-com-harrymt-harryshabits-dev)
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/codeclimate/codeclimate)
 
 ## Harry's Habits - the habit tracking chatbot
@@ -23,7 +23,7 @@ Harry's Habits is a Facebook Messenger chatbot to help you form new healthy habi
 
 ### Setup
 
-#### PaaS
+#### Platform as a Service (PaaS)
 
 - `git clone https://github.com/harrymt/harryshabits.git` then deploy to PaaS, e.g. `git push heroku master`
 - *PaaS providers for deployment:*

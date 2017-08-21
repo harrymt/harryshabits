@@ -3,7 +3,7 @@
   "name_friendly": "Harry's Habits",
   "version": "1.0.105",
   "description": "A Facebook Messenger Chatbot to help you form healthy habits.",
-  "main": "index.js",
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/harrymt/harryshabits"
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "node tests/main.js",
-    "start": "node index.js",
+    "start": "node server.js",
     "deploy": "standard-version --silent && git push && git push heroku master"
   },
   "homepage": "https://github.com/harrymt/harryshabits",
@@ -25,11 +25,10 @@
     "body-parser": "^1.15.0",
     "dotenv": "^4.0.0",
     "express": "^4.13.4",
+    "helmet": "^3.8.1",
     "nodemailer": "^4.0.1",
     "pg": "7.0.0",
-    "pug": "^2.0.0-rc.2",
-    "request": "^2.71.0",
-    "request-promise": "^4.2.1"
+    "request": "^2.71.0"
   },
   "xo": {
     "space": true

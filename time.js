@@ -35,8 +35,7 @@ const value = key => {
 };
 
 /**
- * Gets time in hour format.
- * In BST TODO change this to users timezone
+ * Gets time in hour format. (hard coded to BST)
  */
 const hour = () => {
   const now = new Date();
@@ -78,7 +77,7 @@ const nextPeriodFromNow = () => {
     return value(t);
   }
 
-  // No next period if we reach these two
+  // Can't snooze if we reach these two
   if (t === reminderTimes.NEW_DAY || t === reminderTimes.NIGHT) {
     return null;
   }
@@ -98,7 +97,7 @@ const nextPeriodFromNow = () => {
 };
 
 /**
- * Gets the time period as string.
+ * Gets the time as string.
  */
 const period = theHour => {
   if (!theHour) {
@@ -108,9 +107,26 @@ const period = theHour => {
   return value(theHour);
 };
 
+/**
+ * Get the next reminder time for snoozed reminders.
+ * MORNING -> AFTERNOON -> EVENING -> MORNING
+ */
+const getNextReminderTime = reminderTime => {
+  const timePeriod = reminderTime.split('_')[0];
+
+  if (String(reminderTime).includes('MORNING')) {
+    return timePeriod + '_AFTERNOON';
+  } else if (String(reminderTime).includes('AFTERNOON')) {
+    return timePeriod + '_EVENING';
+  }
+
+  return 'EARLY_MORNING'; // If its the night or eve then set to next day
+};
+
 module.exports = {
   hour,
   period,
   nextPeriodFromNow,
-  reminderTimes
+  reminderTimes,
+  getNextReminderTime
 };

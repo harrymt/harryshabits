@@ -15,15 +15,6 @@ const db = new pg.Client({
   connectionString: process.env.DATABASE_URL
 });
 
-// TODO may have to have this inside of every function call below
-// Yes do it!s
-// e.g.
-// db.connect((err, client) => {
-//   if (err) {
-//     throw err;
-//   }
-//   // client.query()...
-// });
 db.connect(err => {
   if (err) {
     console.log('Err connecting to db: ' + err);
@@ -35,14 +26,14 @@ const removeUserByFbid = (fbid, callback) => {
   db.query("delete from users where \"fbid\"='" + fbid + "';", (err, res) => {
     if (err) {
         console.error(err);
-        callback(err.error);
+        return callback(err.error);
       } else {
         if (res.rowCount === 0) {
           console.log('No user found with fbid ' + fbid);
-          callback(false);
+          return callback(false);
         } else {
-          console.log('Successfully delete user fbid ' + fbid);
-          callback(true);
+          console.log('Successfully deleted user fbid ' + fbid);
+          return callback(true);
         }
       }
   });
@@ -53,12 +44,12 @@ const findOrCreateUser = (fbid, callback) => {
   db.query("select * from users where \"fbid\"='" + String(fbid) + "' limit 1;", (err, res) => {
     if (err) {
       console.error(err);
-      callback(err.error);
+      return callback(err.error);
     } else {
       // User found, just return the result
       if (res.rows.length > 0) {
         for (let i = 0, len = res.rows.length; i < len; i++) {
-          callback(res.rows[i]);
+          return callback(res.rows[i]);
         }
       } else {
         console.log('New user, creating user with fbid: ' + fbid);
@@ -167,7 +158,7 @@ const findOrCreateUser = (fbid, callback) => {
               throw new Error(err);
             } else {
               for (let i = 0, len = res.rows.length; i < len; i++) {
-                callback(res.rows[i]);
+                return callback(res.rows[i]);
               }
             }
         });
@@ -199,27 +190,27 @@ const getUsers = callback => {
   db.query("SELECT * from users WHERE \"modality\"!='' AND \"habitContext\"!='' AND \"snoozedReminderTime\"!='';", (err, res) => {
     if (err) {
       console.error(err);
-      callback(null);
+      return callback(null);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
         users.push(res.rows[i]);
       }
-      callback(users);
+      return callback(users);
     }
   });
 };
 
-const getUsersByTime = (timeOfDay ,callback) => {
+const getUsersByTime = (timeOfDay, callback) => {
   let users = [];
   db.query("SELECT * from users WHERE \"snoozedReminderTime\"='" + timeOfDay + "';", (err, res) => {
     if (err) {
       console.error(err);
-      callback([]);
+      return callback([]);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
         users.push(res.rows[i]);
       }
-      callback(users);
+      return callback(users);
     }
   });
 };
@@ -230,12 +221,12 @@ const getUsersByStreak = callback => {
   db.query('SELECT * from users ORDER BY streak DESC;', (err, res) => {
     if (err) {
       console.error(err);
-      callback(null);
+      return callback(null);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
         users.push(res.rows[i]);
       }
-      callback(users);
+      return callback(users);
     }
   });
 };
@@ -244,10 +235,10 @@ const getGlobals = callback => {
   db.query('select * from globals limit 1', (err, res) => {
     if (err) {
       console.error(err);
-      callback(err.error);
+      return callback(err.error);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
-        callback(res.rows[i]);
+        return callback(res.rows[i]);
       }
     }
   });
@@ -257,9 +248,9 @@ const updateGlobals = (globals, callback) => {
   db.query('update globals SET "remainingDays"=' + globals.remainingDays + ', "studyActive"=' + globals.studyActive + ' where id=1;', (err, res) => {
     if (err) {
         console.error(err);
-        callback(err.error);
+        return callback(err.error);
       } else {
-        callback(globals);
+        return callback(globals);
       }
   });
 };
@@ -269,10 +260,10 @@ const hasUserCompletedHabit = (user, callback) => {
   db.query("select count(*) from habits where \"day\" like '" + today + "' and \"fbid\"='" + user.fbid + "';", (err, res) => {
    if (err) {
       console.error(err);
-      callback(err.error);
+      return callback(err.error);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
-        callback(res.rows[i].count > 0);
+        return callback(res.rows[i].count > 0);
       }
     }
   });
@@ -295,11 +286,11 @@ const updateHabit = (habit, callback) => {
 
   db.query("insert into habits(\"fbid\", \"fullDay\", \"day\", \"completed\", \"reminderTime\", \"numberOfSnoozes\", \"currentModality\", \"currentHabit\", \"currentStreak\") values($1, $2, $3, $4, $5, $6, $7, $8, $9);", values, (err, res) => {
     if (err) {
-        console.error(err);
-        throw new Error(err);
-      } else {
-        callback(habit);
-      }
+      console.error(err);
+      throw new Error(err);
+    } else {
+      return callback(habit);
+    }
   });
 };
 
@@ -308,10 +299,9 @@ const updateUser = (user, callback) => {
   if (user.fbid === null) {
     console.log(user);
     console.log('Cannot update user as no fbid');
-    callback(user);
-  } else {
-    delete user.fbid;
+    return callback(user);
   }
+  delete user.fbid;
   console.log('Updating user...');
   let sql = 'update users set ';
   Object.keys(user).forEach((key, i) => {
@@ -331,12 +321,12 @@ const updateUser = (user, callback) => {
 
   db.query(sql, (err, res) => {
     if (err) {
-        console.error(err);
-        throw new Error(err);
-      } else {
-        user.fbid = id;
-        callback(user);
-      }
+      console.error(err);
+      throw new Error(err);
+    } else {
+      user.fbid = id;
+      return callback(user);
+    }
   });
 };
 
@@ -348,16 +338,17 @@ const getAllModalities = callback => {
     NONE: 0
   };
 
-  db.query('select count(\"modality\"), "modality" from users group by "modality";', (err, res) => {
+  db.query('select count(NULLIF(\"modality\", \'\')), "modality" from users group by "modality";', (err, res) => {
     if (err) {
       console.error(err);
-      callback(err.error);
+      return callback(err.error);
     } else {
       for (let i = 0, len = res.rows.length; i < len; i++) {
-        modalities[res.rows[i].modality] = res.rows[i].count;
+        if (res.rows[i].modality !== '') { // Ignore empty modalities
+          modalities[res.rows[i].modality] = res.rows[i].count;
+        }
       }
-
-      callback(modalities);
+      return callback(modalities);
     }
   });
 };

@@ -74,7 +74,7 @@
 
   function removeTestUser(callback) {
     require('../connectors/database').removeUserByFbid(process.env.USER_ID, s => {
-      callback(s);
+      return callback(s);
     });
   }
 
