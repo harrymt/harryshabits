@@ -125,15 +125,15 @@
             console.log('-- from bot to user vv --');
             console.log(JSON.stringify(reply));
 
-            FB.send(senderFbid, reply, 4000, () => {
+            FB.send(senderFbid, reply, 500, () => {
               if (typeof anotherReply !== 'undefined' && anotherReply !== null) {
-                FB.send(senderFbid, anotherReply, 4000, () => {
+                FB.send(senderFbid, anotherReply, 500, () => {
                   if (typeof thirdReply !== 'undefined' && thirdReply !== null) {
-                    FB.send(senderFbid, thirdReply, 4000, () => {
+                    FB.send(senderFbid, thirdReply, 500, () => {
                       if (typeof fourthReply !== 'undefined' && fourthReply !== null) {
-                        FB.send(senderFbid, thirdReply, 4000, () => {
+                        FB.send(senderFbid, thirdReply, 500, () => {
                           if (typeof fifthReply !== 'undefined' && fifthReply !== null) {
-                            FB.send(senderFbid, fifthReply, 4000, () => {
+                            FB.send(senderFbid, fifthReply, 500, () => {
                               console.log('Sent all messages to user');
                             });
                           }
