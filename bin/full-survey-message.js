@@ -4,6 +4,9 @@ const Bot = require('../bot');
 const FB = require('../connectors/facebook');
 const database = require('../connectors/database');
 
+/**
+ * Send the last questionnaire.
+ */
 const startFullSurvey = callback => {
   const endOfStudy = {
     text: 'Hello again! This is the last time I will messsage you!'

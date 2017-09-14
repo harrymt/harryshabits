@@ -4,9 +4,12 @@
 
 console.log('Sending reminders..');
 
-// Send to logging service
 const request = require('request-promise');
 
+/**
+ * Send notification to a checking service to make sure
+ * that the schedulder has run this every hour.
+ */
 if (process.env.NODE_ENV === 'production') {
   const options = {
     method: 'GET',

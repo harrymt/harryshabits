@@ -6,6 +6,12 @@ const database = require('../connectors/database');
 const FB = require('../connectors/facebook');
 const Time = require('../time');
 
+
+/**
+ * Decide if it is time to send post completion messages to what users.
+ * should be ran every hour.
+ * An override can be provided to manually send reminders, useful for debugging.
+ */
 const decideOnReminder = (override, callback) => {
 
   let quickReplyActions = [
@@ -14,7 +20,6 @@ const decideOnReminder = (override, callback) => {
   ];
 
   const timeOfDay = Time.period(override);
-
   console.log(timeOfDay, 'override is : ' + override);
 
   if (timeOfDay === 'NIGHT') {
@@ -63,6 +68,10 @@ const decideOnReminder = (override, callback) => {
   }
 };
 
+
+/**
+ * Send the first questionnaire to users.
+ */
 const sendEndOfStudyMessages = callback => {
   const endOfStudy = {
     text: 'This part of the study is over. Thank you for taking part! I will not track your habits for about a week to see how well you do without me.'
@@ -121,6 +130,10 @@ const sendEndOfStudyMessages = callback => {
   });
 };
 
+/**
+ * Deprecated, send the end of day messages telling users if they
+ * haven't completed any habits.
+ */
 const sendNewDayMessages = (timeOfDay, callback) => {
   console.log('Start of sendNewDayMessages');
   database.getUsers(users => {

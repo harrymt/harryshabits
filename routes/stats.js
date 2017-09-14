@@ -1,9 +1,15 @@
+/**
+ * Deprecated.
+ */
 
 'use strict';
 
 const database = require('../connectors/database');
 const FB = require('../connectors/facebook');
 
+/**
+ * Display the stats to all users.
+ */
 function fbMessageUsers(users, globalStats, callback) {
   for (let i = 0; i < users.length; i++) {
     const user = users[i];

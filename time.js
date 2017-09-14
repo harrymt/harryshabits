@@ -1,6 +1,9 @@
 
 'use strict';
 
+/**
+ * List of reminder times to send post completion messages
+ */
 const reminderTimes = {
   EARLY_MORNING: 7,
   MID_MORNING: 9,
@@ -15,6 +18,9 @@ const reminderTimes = {
   NEW_DAY: 23
 };
 
+/**
+ * Get the properties of reminderTimes
+ */
 const properties = () => {
   const p = [];
   const keys = Object.keys(reminderTimes);
@@ -24,6 +30,9 @@ const properties = () => {
   return p.sort((a, b) => (a - b));
 };
 
+/**
+ * Get the keys of reminderTimes
+ */
 const value = key => {
   const keys = Object.keys(reminderTimes);
   for (let i = 0; i < keys.length; i++) {

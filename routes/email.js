@@ -1,8 +1,14 @@
+/**
+ * Deprecated.
+ */
+
 'use strict';
 
 const router = require('express').Router();
 
-// Setup Email
+/**
+ * Setup email..
+ */
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'Gmail',

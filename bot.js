@@ -32,6 +32,7 @@ const createQuickReply = (message, options) => {
 };
 
 /**
+ * Builds a quick reply item to work within a quick reply, usage:
 {
   text: 'Choose these options',
   quick_replies: [
@@ -60,6 +61,10 @@ const convertToFriendlyName = str => {
   return str.split('_').join(' ').toLowerCase();
 };
 
+
+/**
+ * Build the Settings message and send it to the user.
+ */
 function displaySettings(user, sender, reply, debug) {
   const usr = user;
 
@@ -98,6 +103,9 @@ function displaySettings(user, sender, reply, debug) {
   }
 }
 
+/**
+ * Build the Help message and send it to the user.
+ */
 function displayHelp(showDontKnow, sender, reply) {
   database.getGlobals(globals => {
     let firstMsg = 'There are ' + globals.remainingDays + ' days remaining in the study.';
@@ -124,6 +132,9 @@ function displayHelp(showDontKnow, sender, reply) {
   });
 }
 
+/**
+ * Build the About message and send it to the user.
+ */
 function displayAbout(sender, reply) {
   database.getGlobals(globals => {
     reply(sender,
@@ -146,6 +157,9 @@ function displayAbout(sender, reply) {
   });
 }
 
+/**
+ * Build the GetStarted message and send it to the user.
+ */
 function displayGetStarted(sender, reply) {
   reply(sender,
     {
@@ -163,6 +177,9 @@ function displayGetStarted(sender, reply) {
   );
 }
 
+/**
+ * Build the HowOld message and send it to the user.
+ */
 function displayHowOld(user, sender, reply) {
   user.expectingAge = true;
   database.updateUser(user, () => {
@@ -174,6 +191,9 @@ function displayHowOld(user, sender, reply) {
   });
 }
 
+/**
+ * Build the UsedHabitAppsBefore message and send it to the user.
+ */
 function displayUsedHabitAppsBefore(sender, reply) {
   reply(sender,
     {
@@ -186,6 +206,9 @@ function displayUsedHabitAppsBefore(sender, reply) {
   );
 }
 
+/**
+ * Build the WhatHabitsToDevelop message and send it to the user.
+ */
 function displayWhatHabitsToDevelop(user, sender, reply) {
   user.expectingPreviousHabits = true;
   database.updateUser(user, () => {
@@ -197,6 +220,9 @@ function displayWhatHabitsToDevelop(user, sender, reply) {
   });
 }
 
+/**
+ * Build the DidTheyWork message and send it to the user.
+ */
 function displayDidTheyWork(sender, reply) {
   reply(sender,
     {
@@ -209,6 +235,9 @@ function displayDidTheyWork(sender, reply) {
   );
 }
 
+/**
+ * Build the PickHabit message and send it to the user.
+ */
 function displayPickHabit(sender, reply) {
   reply(sender,
     {
@@ -221,6 +250,9 @@ function displayPickHabit(sender, reply) {
   );
 }
 
+/**
+ * Build the PhysicalHabits message and send it to the user.
+ */
 function displayPhysicalHabits(sender, reply) {
   reply(sender,
     {
@@ -235,6 +267,9 @@ function displayPhysicalHabits(sender, reply) {
   );
 }
 
+/**
+ * Build the RelaxationHabits message and send it to the user.
+ */
 function displayRelaxationHabits(sender, reply) {
   reply(sender,
     {
@@ -249,6 +284,9 @@ function displayRelaxationHabits(sender, reply) {
   );
 }
 
+/**
+ * Build the ReminderTime message and send it to the user.
+ */
 function displayReminderTime(habit, sender, reply) {
   let habitInstructions = 'Okay, try and';
   if (habit === 'PLANK') {
@@ -285,6 +323,9 @@ function displayReminderTime(habit, sender, reply) {
   );
 }
 
+/**
+ * Build the NestedTime message and send it to the user.
+ */
 function displayNestedTime(timePeriod, sender, reply) {
   reply(sender,
     createQuickReply(
@@ -298,6 +339,9 @@ function displayNestedTime(timePeriod, sender, reply) {
   );
 }
 
+/**
+ * Build the ExistingRoutine message and send it to the user.
+ */
 function displayExistingRoutine(habit, time, user, sender, reply) {
 
   let existingRoutines = [];
@@ -341,6 +385,9 @@ function displayExistingRoutine(habit, time, user, sender, reply) {
   });
 }
 
+/**
+ * Build the Interview message and send it to the user.
+ */
 function displayInterview(sender, reply) {
   reply(sender,
     {
@@ -353,6 +400,9 @@ function displayInterview(sender, reply) {
   );
 }
 
+/**
+ * Build the ContactDetails message and send it to the user.
+ */
 function displayContactDetails(user, sender, reply) {
   user.expectingContactDetails = true;
   database.updateUser(user, () => {
@@ -364,6 +414,9 @@ function displayContactDetails(user, sender, reply) {
   });
 }
 
+/**
+ * Build the FinalStage message and send it to the user.
+ */
 function displayFinalStage(habit, time, sender, reply) {
   reply(sender,
     {
@@ -381,6 +434,9 @@ function displayFinalStage(habit, time, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey1b message and send it to the user.
+ */
 function displaySurvey1b(habit, context, sender, reply) {
   reply(sender,
     {
@@ -396,6 +452,9 @@ function displaySurvey1b(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey1c message and send it to the user.
+ */
 function displaySurvey1c(habit, context, sender, reply) {
   reply(sender,
     {
@@ -411,6 +470,9 @@ function displaySurvey1c(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey1d message and send it to the user.
+ */
 function displaySurvey1d(habit, context, sender, reply) {
   reply(sender,
     {
@@ -426,6 +488,9 @@ function displaySurvey1d(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the ModalityQuestion1a message and send it to the user.
+ */
 function displayModalityQuestion1a(sender, reply) {
   reply(sender,
     {
@@ -441,6 +506,9 @@ function displayModalityQuestion1a(sender, reply) {
   );
 }
 
+/**
+ * Build the ModalityQuestion1b message and send it to the user.
+ */
 function displayModalityQuestion1b(sender, reply) {
   reply(sender,
     {
@@ -456,6 +524,9 @@ function displayModalityQuestion1b(sender, reply) {
   );
 }
 
+/**
+ * Build the ModalityQuestion1c message and send it to the user.
+ */
 function displayModalityQuestion1c(sender, reply) {
   reply(sender,
     {
@@ -471,6 +542,9 @@ function displayModalityQuestion1c(sender, reply) {
   );
 }
 
+/**
+ * Build the ModalityQuestion1d message and send it to the user.
+ */
 function displayModalityQuestion1d(sender, reply) {
   reply(sender,
     {
@@ -486,6 +560,9 @@ function displayModalityQuestion1d(sender, reply) {
   );
 }
 
+/**
+ * Build the AnyMoreFeedback message and send it to the user.
+ */
 function displayAnyMoreFeedback(user, sender, reply) {
   reply(sender,
     {
@@ -498,6 +575,9 @@ function displayAnyMoreFeedback(user, sender, reply) {
   );
 }
 
+/**
+ * Build the TakeFeedback message and send it to the user.
+ */
 function displayTakeFeedback(user, sender, reply) {
   user.expectingMoreFeedback = true;
   database.updateUser(user, () => {
@@ -509,6 +589,9 @@ function displayTakeFeedback(user, sender, reply) {
   });
 }
 
+/**
+ * Build the Survey2b message and send it to the user.
+ */
 function displaySurvey2b(habit, context, sender, reply) {
   reply(sender,
     {
@@ -525,6 +608,9 @@ function displaySurvey2b(habit, context, sender, reply) {
 }
 
 
+/**
+ * Build the Survey2c message and send it to the user.
+ */
 function displaySurvey2c(habit, context, sender, reply) {
   reply(sender,
     {
@@ -540,6 +626,9 @@ function displaySurvey2c(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey2d message and send it to the user.
+ */
 function displaySurvey2d(habit, context, sender, reply) {
   reply(sender,
     {
@@ -555,6 +644,9 @@ function displaySurvey2d(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey2e message and send it to the user.
+ */
 function displaySurvey2e(habit, context, sender, reply) {
   reply(sender,
     {
@@ -570,6 +662,9 @@ function displaySurvey2e(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey2f message and send it to the user.
+ */
 function displaySurvey2f(habit, context, sender, reply) {
   reply(sender,
     {
@@ -585,6 +680,9 @@ function displaySurvey2f(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey2g message and send it to the user.
+ */
 function displaySurvey2g(habit, context, sender, reply) {
   reply(sender,
     {
@@ -600,6 +698,9 @@ function displaySurvey2g(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey2h message and send it to the user.
+ */
 function displaySurvey2h(habit, context, sender, reply) {
   reply(sender,
     {
@@ -615,6 +716,9 @@ function displaySurvey2h(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey2i message and send it to the user.
+ */
 function displaySurvey2i(habit, context, sender, reply) {
   reply(sender,
     {
@@ -630,6 +734,9 @@ function displaySurvey2i(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey2j message and send it to the user.
+ */
 function displaySurvey2j(habit, context, sender, reply) {
   reply(sender,
     {
@@ -645,6 +752,9 @@ function displaySurvey2j(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey2k message and send it to the user.
+ */
 function displaySurvey2k(habit, context, sender, reply) {
   reply(sender,
     {
@@ -660,6 +770,9 @@ function displaySurvey2k(habit, context, sender, reply) {
   );
 }
 
+/**
+ * Build the Survey2l message and send it to the user.
+ */
 function displaySurvey2l(habit, context, sender, reply) {
   reply(sender,
     {
@@ -676,6 +789,9 @@ function displaySurvey2l(habit, context, sender, reply) {
 }
 
 
+/**
+ * Build the FinalFinalMessage message and send it to the user.
+ */
 function displayFinalFinalMessage(user, sender, reply) {
   reply(sender,
     {
@@ -690,6 +806,9 @@ function displayFinalFinalMessage(user, sender, reply) {
   );
 }
 
+/**
+ * Build the EndOfBotPeriod message and send it to the user.
+ */
 function displayEndOfBotPeriod(user, sender, reply) {
   const msgA = 'Thank you for your time! You will be unable to use me to track habits anymore.';
   const msgB = 'If you have any further questions about the study, please contact hm16679@my.bristol.ac.uk.';
@@ -705,6 +824,14 @@ function displayEndOfBotPeriod(user, sender, reply) {
   });
 }
 
+
+
+/**
+ * General function to read an incoming message and decide how to respond.
+ * The read function will check if the message is just a string or a quick reply object.
+ * It will then perform some database changes and then return a message back
+ * to the user.
+ */
 const read = function (sender, message, reply) {
   // Let's find the user object
   database.find(sender, user => {
@@ -1378,7 +1505,7 @@ const read = function (sender, message, reply) {
  * VISUAL
  * SOUND
  * VISUAL_AND_SOUND
-* NONE
+ * NONE
  * Based on the number of currently assigned users.
  *
  */

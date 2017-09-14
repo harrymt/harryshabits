@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Send a post request to our local chatbot.
+ */
 const send = json => {
   const options = {
     method: 'POST',
@@ -19,6 +22,9 @@ const send = json => {
   });
 };
 
+/**
+ * Build a message to send.
+ */
 const buildMessage = msg => {
   msg.mid = 'mid.1464990849238:b9a22a2bcb1de31773';
   msg.seq = 69;

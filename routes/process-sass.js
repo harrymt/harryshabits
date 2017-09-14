@@ -7,6 +7,9 @@ const sassFolder = './public/sass/';
 const cssFolder = './public/css/';
 const sassExtension = '.scss';
 
+/**
+ * Utility function to write a file with error handling.
+ */
 const writeFile = (destination, file) => {
   fs.writeFile(destination, file, error => {
     if (error) {

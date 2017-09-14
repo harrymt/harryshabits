@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+/**
+ * Server to display rewards and listen for incoming messages
+ * from Facebook Messenger.
+ */
 (function () {
   'use strict';
 
@@ -10,15 +14,20 @@
   const database = require('./connectors/database');
   const Bot = require('./bot');
 
+  /**
+   * Setup the express server.
+   */
   const app = express();
   app.use(helmet());
-
-  // View engine setup.
   app.set('views', './views');
   app.set('view engine', 'pug');
   app.use(require('body-parser').json());
 
-  // Load the .env file, that sets process.env.
+  /**
+   * Setup the development environment.
+   * Load the local .env file, that sets process.env.
+   * and process SCSS on page load.
+   */
   if (process.env.NODE_ENV !== 'production') {
     require('dotenv').load();
 
@@ -31,15 +40,25 @@
     });
   }
 
-  // Start server
+  /**
+   * Setup the server instance and start listening on the port.
+   */
   const serverInstance = app.listen(process.env.PORT, () => {
     console.log('> Running on port', process.env.PORT);
   });
 
+  /**
+   * Setup the static folder for the rewards website,
+   * and route the email and rewards routes.
+   */
   app.use(express.static('./public'));
   app.use('/rewards', require('./routes/rewards'));
   app.use('/email', require('./routes/email'));
 
+  /**
+   * Manually send reminders at specific times of the day
+   * useful for debugging.
+   */
   app.get(['/reminders/:timeOfDay', '/reminders'], (req, res) => {
     if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
       res.send('Invalid secret.');
@@ -57,29 +76,37 @@
     }
   });
 
+  /**
+   * Send all participants the final questionnaire.
+   */
   app.get('/finalsurvey', (req, res) => {
     if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
       res.send('Invalid secret.');
       return;
     }
 
-    const surveys = require('./bin/full-survey-message').startFullSurvey(() => {
+    require('./bin/full-survey-message').startFullSurvey(() => {
       console.log('Sent final survey messages');
     });
   });
 
+  /**
+   * Deprecated: send stats to people (used to be a post request).
+   */
   app.get('/stats', (req, res) => {
     if (!req.query.secret || req.query.secret !== process.env.API_SECRET) {
       res.send('Invalid secret.');
       return;
     }
     res.send('deprecated');
-    // Enable me // require('./routes/stats').sendStats(success => {
+    // require('./routes/stats').sendStats(success => {
       // res.send(success);
     // });
   });
 
-  // Index page
+  /**
+   * Debug page to display version information.
+   */
   app.get('/', (req, res) => {
     res.render('index', {
       version: process.env.npm_package_version,
@@ -156,7 +183,9 @@
     res.sendStatus(200);
   });
 
-  // For facebook to verify
+  /**
+   * Facebook verification middleware.
+   */
   app.get('/webhooks', (req, res) => {
     if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
       res.status(200).send(req.query['hub.challenge']);
