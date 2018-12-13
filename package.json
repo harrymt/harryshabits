@@ -22,14 +22,14 @@
   "author": "Harry Mumford-Turner",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.15.0",
+    "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",
-    "express": "^4.13.4",
-    "helmet": "^3.8.1",
+    "express": "^4.16.0",
+    "helmet": "^3.8.2",
     "nodemailer": "^4.0.1",
     "pg": "7.0.0",
-    "pug": "^2.0.0-rc.3",
-    "request": "^2.71.0"
+    "pug": "^2.0.0",
+    "request": "^2.84.0"
   },
   "xo": {
     "space": true
