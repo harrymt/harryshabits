@@ -29,7 +29,7 @@
     "nodemailer": "^4.0.1",
     "pg": "7.0.0",
     "pug": "^2.0.0-rc.3",
-    "request": "^2.71.0"
+    "request": "^2.81.0"
   },
   "xo": {
     "space": true
